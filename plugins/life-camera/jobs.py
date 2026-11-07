@@ -247,6 +247,33 @@ def send_work(b):
     return dict(ok=True, status=deferred or 'empty', job=None)
 
 
+def receipt_work(b, q):
+    """Read persisted send evidence for a later host run, without claiming a send."""
+    limit = q.get('limit', 8)
+    if type(limit) is not int or not 1 <= limit <= 20:
+        raise ValueError('camera_receipt_limit_required')
+    boundary, parameters = '', []
+    if q.get('cursor'):
+        cursor = store.get_job(b, library.text(q['cursor'], 100))
+        boundary = ' AND (created < ? OR (created = ? AND id < ?))'
+        parameters = [cursor['created'], cursor['created'], cursor['id']]
+    rows = b.db.execute("SELECT * FROM lc_job WHERE status IN ('sending','unknown')" +
+                        boundary + ' ORDER BY created DESC,id DESC LIMIT ?',
+                        (*parameters, limit + 1)).fetchall()
+    items = []
+    for row in rows[:limit]:
+        delivery = json.loads(row['delivery'])
+        generation = json.loads(row['generation'])
+        images = [dict(path=str((b.root / image['file']).absolute()), sha256=image['sha256'])
+                  for image in generation.get('images', [])]
+        items.append(dict(job=store.public_job(row), claim=delivery.get('claim'),
+                          started_at=delivery.get('started_at'), images=images,
+                          native_task_id=generation.get('native_task_id'),
+                          handoff_receipt=delivery.get('receipt')))
+    return dict(ok=True, items=items,
+                next_cursor=rows[limit - 1]['id'] if len(rows) > limit else None)
+
+
 def settle(b, q):
     from muse_ext.companion import _get, _set
     outcome = q.get('outcome')

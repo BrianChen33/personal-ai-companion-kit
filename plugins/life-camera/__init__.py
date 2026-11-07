@@ -3,7 +3,7 @@ from pathlib import Path
 from . import jobs, library, store
 
 API = 1
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 
 def initialize(b):
@@ -85,10 +85,10 @@ def dispatch(b, q):
         if not store.host_binding(b):
             return dict(ok=False, status='awaiting_host_binding', job=None)
         return jobs.plan(b, q)
-    if action == 'work':
+    if action in ('work', 'receipt_work'):
         if not store.host_binding(b):
             return dict(ok=False, status='awaiting_host_binding', job=None)
-        return jobs.work(b)
+        return jobs.receipt_work(b, q) if action == 'receipt_work' else jobs.work(b)
     if action == 'bind':
         return jobs.bind(b, q)
     if action == 'rendered':

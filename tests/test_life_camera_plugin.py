@@ -106,6 +106,57 @@ class LifeCamera(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'appraised'):
             self.plan(life_id=lid)
 
+    def test_native_final_receipt_survives_restart_without_resending(self):
+        job = self.plan()['job']
+        self.rendered(job)
+        send = self.call('send_work')
+        self.call('settle', id=job['id'], claim=send['claim'], outcome='unknown',
+                  receipt='native-final handoff: synthetic-run to synthetic-main')
+        self.b.close()
+        self.b = Brain(self.root)
+        self.addCleanup(self.b.close)
+        self.now.return_value += 3 * 3600
+        before = tuple(self.b.db.execute('SELECT * FROM lc_job WHERE id=?', (job['id'],)).fetchone())
+        pending = self.call('receipt_work')['items']
+        self.assertEqual(len(pending), 1)
+        self.assertEqual(pending[0]['job']['id'], job['id'])
+        self.assertEqual(pending[0]['claim'], send['claim'])
+        self.assertEqual(pending[0]['native_task_id'], 'native-fixture')
+        self.assertEqual(pending[0]['images'], send['images'])
+        self.assertEqual(pending[0]['handoff_receipt'],
+                         'native-final handoff: synthetic-run to synthetic-main')
+        self.assertEqual(tuple(self.b.db.execute('SELECT * FROM lc_job WHERE id=?',
+                                                (job['id'],)).fetchone()), before)
+        self.assertNotIn(send['claim'], json.dumps(presentation.camera(self.b, 'owner-private')))
+        with self.assertRaises(ValueError):
+            self.b.dispatch(dict(op='plugin_call', plugin='life-camera',
+                                 scope='group:fixture', action='receipt_work'))
+        self.call('settle', id=job['id'], claim=pending[0]['claim'],
+                  outcome='accepted', receipt='synthetic-main:actual-assistant-turn:photo')
+        self.assertEqual(self.call('receipt_work')['items'], [])
+        self.assertIsNone(self.call('send_work')['job'])
+
+    def test_receipt_work_paginates_without_losing_pending_jobs(self):
+        expected = set()
+        for _ in range(3):
+            self.now.return_value += 1
+            job = self.plan(source_event=self.user())['job']
+            expected.add(job['id'])
+            self.rendered(job)
+            send = self.call('send_work')
+            self.call('settle', id=job['id'], claim=send['claim'], outcome='unknown',
+                      receipt='synthetic final handoff')
+        page = self.call('receipt_work', limit=2)
+        self.assertEqual(len(page['items']), 2)
+        following = self.call('receipt_work', limit=2, cursor=page['next_cursor'])
+        self.assertEqual(len(following['items']), 1)
+        self.assertIsNone(following['next_cursor'])
+        actual = [item['job']['id'] for item in page['items'] + following['items']]
+        self.assertEqual(set(actual), expected)
+        self.assertEqual(len(actual), len(expected))
+        with self.assertRaises(ValueError):
+            self.call('receipt_work', limit=21)
+
     def test_quiet_auto_waits_but_explicit_owner_request_can_run(self):
         self.now.return_value = datetime.fromisoformat('2026-11-09T02:00:00+08:00').timestamp()
         job = self.plan()['job']

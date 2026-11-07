@@ -1,0 +1,82 @@
+{
+  "release": "0.9.3",
+  "runtime": "2.8.0",
+  "social_reading_version": "0.4.0",
+  "mi_fitness_version": "0.1.0",
+  "life_camera_version": "0.1.1",
+  "base_architecture": "014e6982effcc0c8e06f010334cf049ee8219a6d",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "2f9cd52f4389e2f5b7bd540963701e4c3a35335c8e004efd99614a3d1b11c7a8"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "2576e2f6d5388e7b249750c30b2a5b076102e52b75290a52d53684b38fa9d76a"
+    },
+    {
+      "path": "README.md",
+      "sha256": "54d369b1b6d5b79e8fe038261bbd9c25ef07b5c28f1ec8081eb70596b401789b"
+    },
+    {
+      "path": "docs/HOST_TASKS.md",
+      "sha256": "0f57b6a8917a73b0b75887f726db6f881b2592a8f96eb47c410fd20e4ec3e74c"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "57c1bc67bd9f3f482604932305945e7e5a4e928e07c21fd8028c7245c2b95fcd"
+    },
+    {
+      "path": "docs/VOICE_AND_LIFE_CAMERA.md",
+      "sha256": "155fdce6995afc737fc1940e405078680d64b4af9d9c8ea68d72a143fcf7ac40"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "38df22b25a7fe14b891b2c7e31fb7237e8053c9bbba7320b09bfe82666c49ab8"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "f6e8a8f0087faf39dbd3d5e27eb31a5844b230fe8fad20b0ec5996611bab7471"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "0f56619d8ff87c8b186921a2a0441d53a53017e5e1221914baca5b52018225da"
+    },
+    {
+      "path": "plugins/life-camera/PROTOCOL.md",
+      "sha256": "d3406902ebb6f91fe3d47badb15c80f34cfec98b244709c063c6793090225285"
+    },
+    {
+      "path": "plugins/life-camera/README.md",
+      "sha256": "5635a3cc9b1d244668c8a3df58953e414067ce80a9a4a6836bf8ef662ce339c1"
+    },
+    {
+      "path": "plugins/life-camera/__init__.py",
+      "sha256": "7e19df2851a1795a9edcee0924cf8789dcdb719d07b029f600eb82f8c3e93e88"
+    },
+    {
+      "path": "plugins/life-camera/jobs.py",
+      "sha256": "d400a1b224a432f8e8a5bfd3ed663cbf901aa1eb2fa8710fa98e16c90a504392"
+    },
+    {
+      "path": "plugins/life-camera/manifest.json",
+      "sha256": "29bd0b146ea68babe7e633712c2a5213a8b00f92ae47f56fc961cb11a309817c"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "6d9690a033ea944c9684cdc6640e9dee0cfcc8e0ec92029f0e00fb2c706b62f9"
+    },
+    {
+      "path": "tests/test_life_camera_plugin.py",
+      "sha256": "d1f5a8aa852d28d08eae86b878c9227d05274647348d51255d851d366503e905"
+    },
+    {
+      "path": "tools/build_plugin_manifest.py",
+      "sha256": "9c62cb6095625a3fd43a212d3d6749ed23c7c6d227a95ef1a51f4d5e83d96d9f"
+    },
+    {
+      "path": "tools/install_life_camera_host.py",
+      "sha256": "d2e2efd0514b4be215509545a4ef987f110de12dfd2d50d50744b7d3bc3ac1c5"
+    }
+  ]
+}

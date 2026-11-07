@@ -80,7 +80,7 @@ def main():
                             description=reference['description'], images=[str(art)]))
         brain.dispatch(dict(request, action='configure', authorized=True, patch={'character_id': reference['id']}))
         status = brain.dispatch(dict(request, action='status'))
-        print(json.dumps(dict(ok=True, plugin='life-camera', version='0.1.0',
+        print(json.dumps(dict(ok=True, plugin='life-camera', version=status['version'],
                               reference_sha256=reference['sha256'], status=status['status'],
                               next='Verify real host capabilities, bind_host, wire existing life tasks, then update version lock and private snapshot.'),
                          ensure_ascii=False))

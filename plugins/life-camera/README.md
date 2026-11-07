@@ -1,6 +1,6 @@
 # 生活相机
 
-可选插件 0.1.0，适配 Personal AI Companion Kit 0.9.2 / runtime 2.8.0。
+可选插件 0.1.1，适配 Personal AI Companion Kit 0.9.3 / runtime 2.8.0。
 由同一个宿主模型在已有生活评估或回复中决定是否拍照。人物、服饰、场景、道具
 组合成当前生活阶段的自拍、镜自拍或后置拍物。实际图片生成与发送使用宿主原生工具。
 
@@ -11,7 +11,7 @@ fbd8f662f29546c2574a21f8c17ae1bc68c9498a。作者许可见 THIRD_PARTY_LICENSE.t
 
 ## 安装顺序
 
-1. 取得固定架构 commit，核对 `docs/releases/0.9.2.json` 和本目录 manifest。
+1. 取得固定架构 commit，核对 `docs/releases/0.9.3.json` 和本目录 manifest。
 2. 核对宿主图片工具的实际 schema。必须能把本地参考图真正传作图片输入。
    核对原生后台任务、结果取回、图片是否会自动展示、主聊投递及真实回执。
 3. 使用现有 `plugin_manage install` 安装本目录，再显式 enable life-camera。
@@ -23,6 +23,10 @@ fbd8f662f29546c2574a21f8c17ae1bc68c9498a。作者许可见 THIRD_PARTY_LICENSE.t
    缺少绑定时状态为 awaiting_host_binding，计划和生成保持门禁。
    普通聊天只读 camera_context。生活模型顺带产生照片意图，后台处理工作。
 6. 读回 status、camera_context、面板与真实配置。仅做一次最终隔离验收。
+
+原生 final 的消息ID在轮次结束后产生时，发送前保存 unknown handoff，现有反馈
+任务通过只读 receipt_work 取回持久 claim，与真实图片消息核对后 settle accepted。
+具体匹配和分页流程见 PROTOCOL。升级0.1.0时保留既有资产、任务与全部照片账本。
 
 插件安装参数示例，实际请求仍通过目标系统已有 CLI/工具传入。
 

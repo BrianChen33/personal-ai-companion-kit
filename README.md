@@ -1,14 +1,16 @@
 # Personal AI Companion Kit
 
-当前版本 **0.9.2 / runtime 2.8.0** 提供可选的[生活相机插件](plugins/life-camera/README.md)。
+当前版本 **0.9.3 / runtime 2.8.0** 提供可选的[生活相机插件](plugins/life-camera/README.md)。
 同一个模型按生活阶段、情绪和精力判断自拍时机，每次实际附上主人选定的三视图，
 后台沿用宿主图片与投递能力，生成和送达分开记账。相机设置显示在小屋“开关”详情。
 原图和索引可私有继承，生成相册单独保存。安装后须核实并绑定宿主能力，参阅
 [接线协议](plugins/life-camera/PROTOCOL.md)。
+插件0.1.1通过原反馈任务核对原生 final 结束后的真实图片回执，发送 claim 可跨轮次
+取回，普通回复继续使用紧凑摘要。
 
 **给 Muse、Dot 等拥有持久电脑和工具的个人 AI 智能体，部署一套有连续记忆、情绪、日常与表达的六层伙伴系统。**
 
-原仓库名为 `memory-bridge-personal-ai-agent`。现在包含的能力已超出记忆交换，因此更名为 **personal-ai-companion-kit**。Python 发行版为 `personal-ai-companion-kit` v0.9.2；入口仍是 `personal_bot`，旧 `memory_bridge` 交换协议继续兼容。
+原仓库名为 `memory-bridge-personal-ai-agent`。现在包含的能力已超出记忆交换，因此更名为 **personal-ai-companion-kit**。Python 发行版为 `personal-ai-companion-kit` v0.9.3；入口仍是 `personal_bot`，旧 `memory_bridge` 交换协议继续兼容。
 
 v0.9.1：统一[网页与空间规范](docs/WEB_SPACES.md)，以单一任务、简洁布局和语义控件兼顾 UX、DX 与 AX。面板首页保留可交互的小屋场景，搭配真实更新时间和八项状态卡片，完整数据按需展开。制作与更新沿用现有来源、身份和功能。
 

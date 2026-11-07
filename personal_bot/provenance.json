@@ -462,5 +462,20 @@
     },
     "host": "pending actual native tool/background/delivery binding; no live deployment claim",
     "review": "one read-only review; corrected host-binding send gate, legacy receipt closure, scene-time expiry and promised-camera binding"
+  },
+  "life_camera_receipt_update": {
+    "date": "2026-11-08",
+    "release": "0.9.3",
+    "runtime": "2.8.0",
+    "plugin_id": "life-camera",
+    "plugin_version": "0.1.1",
+    "plugin_manifest_sha256": "29bd0b146ea68babe7e633712c2a5213a8b00f92ae47f56fc961cb11a309817c",
+    "changes": [
+      "owner-private bounded read-only persisted delivery claims",
+      "native final handoff before output and actual image receipt settlement in existing feedback",
+      "restart-safe late receipt closure with original generation and send ledger"
+    ],
+    "validation": "one final isolated pass: 484 Python cases with 2 platform skips and 13 Node cases; wheel accepted outside checkout; 2 focused restart/receipt/pagination regressions passed",
+    "host": "pending incremental deployment and readback; actual photo generation and delivery remain separate"
   }
 }

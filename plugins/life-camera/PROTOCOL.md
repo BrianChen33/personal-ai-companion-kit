@@ -55,6 +55,33 @@ plan 只入队。只有 work 返回 claimed 才取得生成权。
    accepted 表示宿主明确接受，unknown 表示结果不明。消息回执应保留实际消息ID。
    对于用户照片承诺，同一真实回执同时结清旧承诺。
 
+### 原生 final 的后续回执
+
+先核实消息ID的产生时点。宿主在 final 结束后才分配消息ID时，发送轮次取得
+send_work 后，先用 settle unknown 保存真实执行ID、目标聊天及实际图片引用的
+handoff receipt，再输出一次 caption 和图片。后台完成结果交回原父任务的投递聊天。
+
+现有反馈任务在 reconcile 前调用 receipt_work，默认返回8条，limit 可设1–20。
+结果含发送 claim、started_at、原后台 native_task_id、图片路径/SHA、原 handoff
+和 job。该入口只读既有账本，按 created/id 倒序分页，next_cursor 传回 cursor
+继续读取。普通 camera_context 继续保持紧凑，claim 仅在 owner-private 管理调用返回。
+
+反馈任务复用本轮已经读取的真实主聊消息，按发送时间、目标聊天、assistant角色
+以及实际图片附件或已解析图片引用匹配，原生执行关联字段可用时一并核对。
+只有唯一、可验证的实际图片消息才 settle accepted，receipt 记录其真实聊天与
+turn/message ID。纯文字承诺、工具受理ID、引用文字和同文案本身均保持 unknown。
+查到同一 turn/message 已用于其他照片时保留待核对。后续页按既有反馈预算读取，
+找不到证据的记录保留 unknown，随后运行 reconcile。
+
+部分宿主的聊天读取仅返回文字，助手附件未出现在 transcript 中。此时执行ID与
+caption 可定位文字轮次，图片仍保持 unknown。可用的图片证据包括原生媒体回执、
+实际界面图片卡片与目标轮次的对应关系，或主人明确确认该张照片的真实来信。
+记录这份证据的真实消息ID后再结清。receipt_work 的图片路径/SHA描述预期文件，
+其返回本身只证明本地已保存。
+
+该步骤可以结清旧版本持久化的 sending/unknown 记录及晚到回执。已结束记录自然
+退出 receipt_work；读取、补回执和超时对账都沿用原图片，保持单次生成与发送。
+
 若图片工具本身已向指定主聊展示图片，使用那次真实回执登记送达，避免另投一次。
 此时仍须先取得 send_work 的发送权。部署时核对工具展示行为，选用能够分开生成
 和投递的参数/通路；只能自动展示且无法先认领的工具应明确标为暂不兼容。
