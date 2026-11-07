@@ -477,5 +477,34 @@
     ],
     "validation": "one final isolated pass: 484 Python cases with 2 platform skips and 13 Node cases; wheel accepted outside checkout; 2 focused restart/receipt/pagination regressions passed",
     "host": "pending incremental deployment and readback; actual photo generation and delivery remain separate"
+  },
+  "daily_scene_update": {
+    "date": "2026-11-08",
+    "release": "0.10.0",
+    "runtime": "2.9.0",
+    "plugin_id": "life-camera",
+    "plugin_version": "0.2.0",
+    "reference_project": "https://github.com/aa1355721445-lgtm/dsh-daily-schedule",
+    "reference_commit": "eb6335a7e621add197c355ca4a48ea8231e3dcd3",
+    "reference_version": "0.4.0",
+    "source_use": "design inspiration; independent implementation; no upstream source copied",
+    "plugin_manifest_sha256": "75af894268610c760b4e67026ba15c0374c41dd0b2a00b600aee0dba8df31f37",
+    "changes": [
+      "bounded daily intentions and released shared scene in existing SQLite",
+      "same background model/tasks; compact foreground; original 40/60 activity draw",
+      "frozen source-validated camera capture and earlier-moment delivery guidance",
+      "cozy panel current scene/daily outline/photo states and eight-item history batches"
+    ],
+    "validation": {
+      "python_cases": 499,
+      "platform_skips": 2,
+      "node_cases": 13,
+      "method": "one full isolated phase496 Python; final review added3 passing regressions; focused checks only afterward",
+      "wheel": "accepted outside checkout",
+      "synthetic_projection_characters": 259,
+      "synthetic_local_context_avg_ms": 0.0965
+    },
+    "review": "one read-only reviewer; corrected atomic scene sync, retired-field inheritance and frozen-source validation",
+    "host": "pending pinned incremental deployment and real readback; preserve confirmed working first-photo pipeline"
   }
 }

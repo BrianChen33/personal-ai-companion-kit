@@ -1,0 +1,110 @@
+{
+  "release": "0.10.0",
+  "runtime": "2.9.0",
+  "life_camera_version": "0.2.0",
+  "social_reading_version": "0.4.0",
+  "mi_fitness_version": "0.1.0",
+  "base_architecture": "947027ca4c87eb1fb95725419871c3a8741d28fc",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "43371b2d07476d36679fb2aea9954f1e4c9ccd53fdeabf7682f4dbe41f8407c1"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "78a5f0dd10a1c4275436f6c4009a51fe73be55d2c539985bb625b8097d3fe90c"
+    },
+    {
+      "path": "README.md",
+      "sha256": "06283abf66c1234231a7ccdb7a3453e07c1104658b577a424acf720702d3bfa8"
+    },
+    {
+      "path": "docs/DAILY_SCENE.md",
+      "sha256": "a67ee19dcadfa7297bbda7278a5ab6e44750e7bc43b2334c7bd20128a69afe4c"
+    },
+    {
+      "path": "docs/HOST_TASKS.md",
+      "sha256": "327f48593a99b9843cbb433c88b5efcdbb8968f7e52f7969236d7485708e2f49"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "de7aa8f793b3794f8ce464cf1e88dfd75c1885bbf5a21ab1c90e7bd0ca0c99f4"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "3b217b52590484a84c6889c7781d76755d0689ac810e970d9c3819bb193ca5a0"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "164b3ef3796e3c5bc4fc0d7e6cabd3189b51583f6c78c5b8e7cf0f18e0fbb742"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion.py",
+      "sha256": "d77df577490781f67814f134ae1d22486c7959f14864496f9e3b2f33b8e6f83e"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion_panel.html",
+      "sha256": "1351554eca21602a5315bfa4e88afe4fcd3f5925b97f7a751a2c73eca00542fb"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/life_schedule.py",
+      "sha256": "a0fe6451d152d112809be4f1e73da96c7717f72304e1f88b574aec3feacb0ab5"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/panel_home.py",
+      "sha256": "825c5fa0349605b29c97261dd63ea4460313836695ab0278243896cfcc3fd4b4"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "8053ef6535f4557ff2bcadb47f830bdea4fb8b0944f49f388081437fefd5a2b2"
+    },
+    {
+      "path": "plugins/life-camera/PROTOCOL.md",
+      "sha256": "4e828dfa48371219ce3ff39df230bcd2072ce4dbfaa5f1894a8cfcb55268a900"
+    },
+    {
+      "path": "plugins/life-camera/README.md",
+      "sha256": "b458d28da97fc74b8070f047ce7165adca4fec81bd5a0553e6a229e02ae056b9"
+    },
+    {
+      "path": "plugins/life-camera/__init__.py",
+      "sha256": "56fce2d9881a09635a0cd8d12851f7431442832cd2834303e75e99543410e27a"
+    },
+    {
+      "path": "plugins/life-camera/jobs.py",
+      "sha256": "0dac8712667203d8729ee75f7bbe5acb47ec18197ac8c23f816d20610f880cbd"
+    },
+    {
+      "path": "plugins/life-camera/library.py",
+      "sha256": "a03836c80905699b4da7f6c81a236c471998045eeab8068dbf1d80d494b462fc"
+    },
+    {
+      "path": "plugins/life-camera/manifest.json",
+      "sha256": "75af894268610c760b4e67026ba15c0374c41dd0b2a00b600aee0dba8df31f37"
+    },
+    {
+      "path": "plugins/life-camera/store.py",
+      "sha256": "a332b762e7f9ab1dd58aca90fed012ce55772997db4dbc9ba9ab84984fdc2dfe"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "51516126dc0adea113a8d9d173f8bb2c457ef551a012ed1236a6eef497556cbf"
+    },
+    {
+      "path": "tests/test_home_panel_v061.py",
+      "sha256": "dfc5b9288b12c7ffec28ab23cd3b4c5d9e17c81ba0e0d08565f45709983344e8"
+    },
+    {
+      "path": "tests/test_life_camera_plugin.py",
+      "sha256": "7e2e7c2f1d8a61994873ae568b327c331e982c2c0b3c72b75d15cac60978d368"
+    },
+    {
+      "path": "tests/test_life_schedule.py",
+      "sha256": "0c550f4834f6f54ed12d92f324bd9c4db159ff4a042fc9f950268e9e81feffa5"
+    },
+    {
+      "path": "tools/build_plugin_manifest.py",
+      "sha256": "d3592deb33f32bb8f141a334464c7321a88e57d4cf3a8af74dc9793b6ab15a9b"
+    }
+  ]
+}

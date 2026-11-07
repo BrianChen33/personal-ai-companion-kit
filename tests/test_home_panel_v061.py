@@ -30,6 +30,21 @@ class HomePanel(unittest.TestCase):
         html=Path(path).read_text(encoding='utf-8')
         return html,json.loads(html.split('id="snapshot">')[1].split('</script>')[0])
 
+    def test_daily_plan_and_scene_details_preserve_home_and_bound_history(self):
+        from muse_ext import companion as c
+        self.b.dispatch(dict(op='companion_day', action='configure', authorized=True, enabled=True))
+        now = c.stamp()
+        day = __import__('datetime').datetime.fromtimestamp(now, c.TZ).date().isoformat()
+        self.b.dispatch(dict(op='companion_day', action='plan', expected_version=0,
+                             plan=dict(day=day, anchors=[dict(at=now + 1, activity='学习', intention='Synthetic intention')])) )
+        html, data = self.data(self.b.dispatch(dict(op='companion_panel'))['path'])
+        self.assertEqual(data['daily_scene']['plan']['anchors'][0]['intention'], 'Synthetic intention')
+        self.assertIn('function renderDailyScene()', html)
+        self.assertIn('最近日常', html)
+        self.assertIn('更多日常', html)
+        self.assertIn('id="house-sticker"', html)
+        self.assertEqual(html.count('class="card-top"'), 8)
+
     def test_complete_catalog_unknown_values_and_nonmutating_safe_profile(self):
         self.b.db.execute('INSERT OR REPLACE INTO emotion VALUES(?,?,?,?,?)',('owner-private','好奇',.005,'fixture',1000))
         self.b.db.execute('INSERT OR REPLACE INTO ct_label VALUES(?,?,?)',('owner-private','好奇',2))

@@ -186,6 +186,15 @@ body[data-room-period="night"] .room-lamp-glow { opacity: .3; }
 .timeline-title { font-size: 12px; font-weight: 500; }
 .timeline-head time { margin-left: auto; color: var(--muted); font-size: 10px; }
 .timeline-item p { margin-top: 7px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+.life-overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 16px; }
+.life-overview > section { min-width: 0; margin-top: 0; }
+.day-intentions { padding: 0; margin: 0; list-style: none; }
+.day-intention { display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.day-intention:first-child { border-top: 0; }
+.day-intention time { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+.day-intention p { margin: 0; overflow-wrap: anywhere; font-size: 12px; }
+.day-intention.elapsed { color: var(--muted); }
+.life-more { display: block; margin: 16px auto 0; padding: 8px 16px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
 .person-heading { display: flex; align-items: center; gap: 9px; }
 .person-name { font-size: 14px; font-weight: 550; }
 .person-role, .person-level { color: var(--muted); font-size: 10px; }
@@ -549,7 +558,8 @@ function renderOverview() {
   $('expectation-badge').textContent = expectations ? expectations + ' 项待回应期待' : '暂无待回应期待';
   const activity = companion.activity;
   $('activity-title').textContent = activity?.name ? activity.name + '中' : '自由时间';
-  $('activity-start').textContent = activity ? time(activity.started_at) + ' 开始' : '';
+  const scenePlace = companion.day_scene?.fields?.location;
+  $('activity-start').textContent = [scenePlace, activity ? time(activity.started_at) + ' 开始' : ''].filter(Boolean).join(' · ');
   let progress = 0;
   if (activity && typeof activity.ends_at === 'number' && activity.ends_at > activity.started_at) {
     progress = Math.max(0, Math.min(100,
@@ -607,12 +617,69 @@ function renderContact(){
  const policy=section('联系设置');policy.append(row('期待与短期心情','分别保存'),row('没有回应','只观察一次，不反复扣分'),row('心情缓和','安慰、新事件、自我调节'),row('主动分享','没有每日次数上限'),row('夜间主动消息','01:00–07:00 攒着，醒来再说'));body.append(policy,note('粘人程度表示角色的联系欲望，不等于真实人类依恋。沉默不是恶意，也不会自动推断对方不在乎。用户主动来聊天时照常回复。'));
 }
 function renderLife(){
+ renderDailyScene();
  const project=snapshot.activity_project;if(project){const current=section('正在发展的日常',project.origin==='virtual'?'虚拟活动 · 只展示已到达的阶段':'已有来源');current.append(row('活动',project.activity),row('主题',project.topic||'正在准备具体内容'),row('状态',({awaiting_plan:'等待准备',active:'进行中',paused:'暂停',completed:'已完成'})[project.status]||project.status),row('预计结束',time(project.ends_at)));for(const stage of project.visible_stages||[])current.append(row(time(stage.occurred_at),stage.description));current.append(note(project.artifact_ready?'作品已可索取；完整原稿按需读取。':'未来草稿保持封存，不提前当作经历。'));body.append(current);}
- const activity=snapshot.companion?.activity;body.append(hero('正在做的事',activity?activity.name+'中':'自由时间',activity?time(activity.started_at)+' 开始 · 云端虚拟日常':'先让生活自己发生。','book'));
- const routine=section('下一件日常怎样选择','选择新活动时抽一次，不是每次心跳都抽');routine.append(row('生活琐事',percent(snapshot.life_routine?.chores_probability)),row('刷手机',percent(snapshot.life_routine?.phone_probability),'贴吧，以及以后启用的B站、抖音；只使用已接通且允许的来源'),row('手机这一轮',snapshot.phone?.request?.status||'还没拿起手机','比例可以一句话更改；未实际读取就不编造内容'));body.append(routine);
- const s=section('今天的小事','按时间倒序'),timeline=node('div',null,'timeline'),origins={virtual:['虚拟日常','purple'],dream:['梦境','gold'],observed:['真实阅读','']};
- for(const x of [...(snapshot.life||[])].sort((a,b)=>b.occurred-a.occurred)){const item=node('article',null,'timeline-item'),head=node('div',null,'timeline-head'),origin=origins[x.origin]||['来源待核对',''];head.append(node('h3',x.activity,'timeline-title'),pill(origin[0],origin[1]),node('time',time(x.occurred)));item.append(head,node('p',x.description));timeline.append(item)}if(!snapshot.life?.length)timeline.append(node('p','还没有日常记录。','empty-message'));s.append(timeline);body.append(s);
+ renderLifeCamera();
+ const routine=section('活动偏好');routine.append(row('生活琐事',percent(snapshot.life_routine?.chores_probability)),row('刷手机',percent(snapshot.life_routine?.phone_probability)),row('当前阅读',snapshot.phone?.request?.status||'暂无'));body.append(routine);
+ renderLifeHistory();
  const reading=section('真实阅读与梗知识');reading.append(row('公共梗库',number(snapshot.meme_knowledge?.public_count)+' 条'),row('已学习的私人理解',number(snapshot.meme_knowledge?.private_counts?.active)+' 条'),row('待确认的联想',number(snapshot.meme_knowledge?.private_counts?.candidate)+' 条'),row('公共同步','每周日 07:40','普通聊天查本地，不临时联网翻整库'));body.append(reading,note('虚拟生活、梦境和真实阅读按原始记录分开标来源，不把云端日常说成现实发生的经历。'));
+}
+function renderDailyScene() {
+ const daily = snapshot.daily_scene || {};
+ const scene = daily.scene;
+ const activity = snapshot.companion?.activity;
+ const overview = node('div', null, 'life-overview');
+ const current = section('此刻', scene ? time(scene.occurred) : '');
+ const stages = {started:'刚开始', progress:'进行中', completed:'已完成', observed:'阅读中'};
+ current.append(row('活动', activity?.name || scene?.activity || '自由时间'));
+ if (scene) {
+   current.append(row('阶段', stages[scene.stage] || scene.stage));
+   for (const [key, label] of [['location','地点'], ['clothing','穿着'], ['props','手边'], ['light','光线'], ['appearance','细节']]) {
+     if (scene.fields?.[key]) current.append(row(label, scene.fields[key]));
+   }
+ } else current.append(node('p', daily.enabled ? '场景尚未记录。' : '日程与场景未开启。', 'detail-text'));
+ overview.append(current);
+ const anchors = daily.plan?.anchors || [];
+ const outline = section('今日打算', daily.plan?.day || '');
+ if (anchors.length) {
+   const list = node('ol', null, 'day-intentions');
+   for (const anchor of anchors) {
+     const item = node('li', null, 'day-intention' + (anchor.at <= snapshot.generated_at ? ' elapsed' : ''));
+     const clock = node('time', time(anchor.at));
+     item.append(clock, node('p', anchor.intention));
+     list.append(item);
+   }
+   outline.append(list, note('打算可调整；实际经历见下方记录。'));
+ } else outline.append(node('p', '今天暂未安排。', 'detail-text'));
+ overview.append(outline);
+ body.append(overview);
+}
+function renderLifeHistory() {
+ const entries = [...(snapshot.life || [])].sort((a,b) => b.occurred - a.occurred);
+ const box = section('最近日常', entries.length + ' 条');
+ const timeline = node('div', null, 'timeline');
+ const more = node('button', '更多日常', 'life-more');
+ more.type = 'button';
+ const origins = {virtual:['虚拟日常','purple'], dream:['梦境','gold'], observed:['真实阅读','']};
+ let shown = 0;
+ function appendBatch() {
+   for (const entry of entries.slice(shown, shown + 8)) {
+     const item = node('article', null, 'timeline-item');
+     const head = node('div', null, 'timeline-head');
+     const origin = origins[entry.origin] || ['来源待核对',''];
+     const date = new Date(entry.occurred * 1000).toLocaleString('zh-CN', {timeZone:snapshot.timezone || 'Asia/Shanghai', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hour12:false});
+     head.append(node('h3', entry.activity, 'timeline-title'), pill(...origin), node('time', date));
+     item.append(head, node('p', entry.description));
+     timeline.append(item);
+   }
+   shown += 8;
+   more.hidden = shown >= entries.length;
+ }
+ more.addEventListener('click', appendBatch);
+ appendBatch();
+ if (!entries.length) timeline.append(node('p', '还没有日常记录。', 'empty-message'));
+ box.append(timeline, more);
+ body.append(box);
 }
 function renderMemory(){
  const c=snapshot.counts||{},layers=section('记忆层次');body.append(hero('已经整理的记忆',number(c.memories)+' 条','记住事情，也记得它从哪里来。','memory'));
@@ -653,7 +720,8 @@ function renderLifeCamera() {
   for (const photo of (camera.recent || []).slice(0, 4)) {
     const status = {queued:'排队',claimed:'已认领',generating:'生成中',ready:'待发送',sending:'发送中',
       accepted:'已送达',unknown:'送达待核对',generation_unknown:'生成待核对',failed:'失败',stale:'场景已过期'};
-    sectionBox.append(row(photo.caption || views[photo.camera] || '生活照片', status[photo.status] || photo.status));
+    sectionBox.append(row(photo.caption || views[photo.camera] || '生活照片', status[photo.status] || photo.status,
+      photo.captured_at ? time(photo.captured_at) + ' · ' + (photo.scene_activity || '当时的场景') : ''));
   }
   body.append(sectionBox);
 }

@@ -52,8 +52,10 @@ def source(b, q):
 
 
 def valid(b, row):
+    from muse_ext.life_schedule import validate_frozen
     plan = json.loads(row['plan'])
     library.validate_plan(b, plan)
+    validate_frozen(b, plan.get('scene_snapshot'))
     original = plan['source']
     # Legacy promises may already be settled after a crash following actual delivery.
     if row['manual']:
@@ -220,6 +222,7 @@ def failed(b, q):
 
 
 def send_work(b):
+    from muse_ext.life_schedule import changed
     reconcile(b)
     with b.db:
         b.db.execute('BEGIN IMMEDIATE')
@@ -243,6 +246,9 @@ def send_work(b):
                          (store.encode(delivery), store.now(), row['id']))
             return dict(ok=True, job=store.public_job(store.get_job(b, row['id'])),
                         claim=claim, images=images, caption=frame['caption'], source=frame['source'],
+                        scene_snapshot=frame.get('scene_snapshot'),
+                        scene_changed=changed(b, frame.get('scene_snapshot')),
+                        caption_policy='If the scene changed, say this captures an earlier moment; suppress an obsolete photo through failed settlement. Never describe it as current or regenerate it.',
                         next='Send once through the existing owner main-chat route. Settle using its actual receipt.')
     return dict(ok=True, status=deferred or 'empty', job=None)
 

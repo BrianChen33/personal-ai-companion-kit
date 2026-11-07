@@ -1,6 +1,8 @@
 # 给部署 Agent 的执行手册（v0.8）
 
-当前可选生活相机使用 Kit0.9.3 / runtime2.8.0 / life-camera0.1.1。先按插件README
+当前使用 Kit0.10.0 / runtime2.9.0 / life-camera0.2.0。按 docs/DAILY_SCENE.md
+把可选粗日程与共享场景接入原任务，显式启用后复用原30m模型规划、原15m推进和面板刷新。
+普通聊天只读简短projection；保留40/60比例和原已跑通的生图/投递路径。先按插件README
 核manifest、原三视图SHA及宿主生图/后台/投递schema，再 install/enable、asset_put、
 configure、bind_host。将 PROTOCOL 接到现有生活任务、主聊 camera_context 与面板，
 读回真实ID/正文/工具绑定。已有用户授权的安装选择沿用，图片工具缺口如实报告。

@@ -1,6 +1,8 @@
 # Personal AI Companion Kit
 
-当前版本 **0.9.3 / runtime 2.8.0** 提供可选的[生活相机插件](plugins/life-camera/README.md)。
+当前版本 **0.10.0 / runtime 2.9.0** 将[每日粗安排、共享场景与自拍](docs/DAILY_SCENE.md)串进现有任务。普通聊天读简短本地状态，日程与生图在后台完成。小屋面板保留中央表情，并把此刻、今日打算、相机与有界历史放进日常详情。
+
+提供可选的[生活相机插件](plugins/life-camera/README.md)。
 同一个模型按生活阶段、情绪和精力判断自拍时机，每次实际附上主人选定的三视图，
 后台沿用宿主图片与投递能力，生成和送达分开记账。相机设置显示在小屋“开关”详情。
 原图和索引可私有继承，生成相册单独保存。安装后须核实并绑定宿主能力，参阅
@@ -10,7 +12,7 @@
 
 **给 Muse、Dot 等拥有持久电脑和工具的个人 AI 智能体，部署一套有连续记忆、情绪、日常与表达的六层伙伴系统。**
 
-原仓库名为 `memory-bridge-personal-ai-agent`。现在包含的能力已超出记忆交换，因此更名为 **personal-ai-companion-kit**。Python 发行版为 `personal-ai-companion-kit` v0.9.3；入口仍是 `personal_bot`，旧 `memory_bridge` 交换协议继续兼容。
+原仓库名为 `memory-bridge-personal-ai-agent`。现在包含的能力已超出记忆交换，因此更名为 **personal-ai-companion-kit**。Python 发行版为 `personal-ai-companion-kit` v0.10.0；入口仍是 `personal_bot`，旧 `memory_bridge` 交换协议继续兼容。
 
 v0.9.1：统一[网页与空间规范](docs/WEB_SPACES.md)，以单一任务、简洁布局和语义控件兼顾 UX、DX 与 AX。面板首页保留可交互的小屋场景，搭配真实更新时间和八项状态卡片，完整数据按需展开。制作与更新沿用现有来源、身份和功能。
 
@@ -129,6 +131,7 @@ https://github.com/BrianChen33/personal-ai-companion-kit
    阅读要真实打开资料并保留出处；虚拟跑步/吃饭/梦境不能当用户真实经历或外网观察。
    默认01:00–07:00 Asia/Shanghai只收集不主动打扰；没有每日分享次数上限。
    当前核心时区固定UTC+8，若我需要别的时区要实际适配，不能只改提示词。
+   若我选择连续日常与自拍，按docs/DAILY_SCENE.md显式启用companion_day。原30m同一次模型准备4–6个粗打算，原15m/30m用已释放life_id补当前场景，普通聊天只透传小摘要。未来计划不进情绪/经历，40/60配置保持单一来源。
    若我选择日常配图，按 plugins/life-camera/README.md 与 PROTOCOL.md 安装整个生活相机插件。
    询问缺失的角色原画/三视图，并作为每次实际图片输入锁定身份和画风，按后置/自拍/镜自拍及已开放阶段组织提示词。
    核对真实后台、参考图及分离投递能力后 bind_host，接到原生活任务，普通聊天只读本地摘要。

@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from muse_ext.emotion_catalog import LABELS, HALF, CATALOG_VERSION, normalize, reaction, schema as emotion_schema
 
-VERSION = '2.8.0'
+VERSION = '2.9.0'
 TZ = timezone(timedelta(hours=8))
 RNG = random.SystemRandom()
 
@@ -168,7 +168,10 @@ def context(b, scope, person=None):
         activity=view(b,activity['project_id'])
     elif activity:
         activity={k:v for k,v in activity.items() if k not in ('outcome','cost')}
-    return dict(version=VERSION,energy=current,contact_desire=round(clamp(contact),1),
+    from muse_ext.life_schedule import projection
+    day_scene=projection(b) if owner else None
+    return dict(**({'day_scene':day_scene} if day_scene is not None else {}),
+                version=VERSION,energy=current,contact_desire=round(clamp(contact),1),
                 relationship=({k:p[k] for k in ('id','name','affection','trust','familiarity')} if p else None),
                 pending_expectations=expectations,
                 activity=activity if owner else None,
@@ -479,6 +482,8 @@ def tick(b):
         b.db.commit()
         if not quiet(now) and not state.get('activity') and now>=state.get('next_at',0):
             s=vitals(b,now)
+            from muse_ext.life_schedule import preference
+            preferred_activity=preference(b)
             weights=[]
             for a in ACTIVITIES:
                 w=1.0
@@ -487,7 +492,7 @@ def tick(b):
                 if a[0]=='午睡' and local.hour not in (12,13,14,15): w=.08
                 if a[0] in ('跑步','学习') and min(s['physical'],s['mental'])<25: w=.05
                 if a[0]==state.get('last_activity'): w*=.15
-                weights.append(w)
+                weights.append(w*(2 if preferred_activity==a[0] else 1))
             from muse_ext.life_routine import settings as routine_settings, start as phone_start
             phone_selected=RNG.random()<routine_settings(b)['phone_probability']
             activity=(('刷手机',10,25,(-1,-3,0,2),['这一轮结束了，具体阅读以真实记录为准']) if phone_selected else
@@ -507,6 +512,8 @@ def tick(b):
                 made.append(_life_event(b,activity[0],'started','拿起手机，准备按已允许的来源真实阅读。'))
         _set(b,'life',state)
         b.db.commit()
+        from muse_ext.life_schedule import sync
+        sync(b,[x for x in made if x])
     from muse_ext.life_routine import pending as phone_pending, settings as routine_settings
     return dict(ok=True,created=[x for x in made if x],quiet_hours=quiet(now),next_at=state.get('next_at'),
                 life_routine=routine_settings(b),phone=phone_pending(b))
@@ -646,6 +653,10 @@ def install(Brain):
                 if not self.available('life'): return dict(ok=False,disabled=True)
                 from muse_ext import life_projects
                 return life_projects.dispatch(self,q)
+            if op=='companion_day':
+                if not self.available('life'): return dict(ok=False,disabled=True)
+                from muse_ext import life_schedule
+                return life_schedule.dispatch(self,q)
             if op=='companion_feedback':
                 from muse_ext import feedback
                 return feedback.dispatch(self,q)

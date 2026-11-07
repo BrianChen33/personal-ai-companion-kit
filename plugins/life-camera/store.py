@@ -94,7 +94,9 @@ def public_job(row):
     plan = json.loads(row['plan'])
     return dict(id=row['id'], status=row['status'], manual=bool(row['manual']),
                 created=row['created'], updated=row['updated'], camera=plan['camera'],
-                caption=plan['caption'], life_id=row['life_id'])
+                caption=plan['caption'], life_id=row['life_id'],
+                captured_at=(plan.get('scene_snapshot') or {}).get('captured_at'),
+                scene_activity=(plan.get('scene_snapshot') or {}).get('activity'))
 
 
 def quiet():

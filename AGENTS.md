@@ -1,5 +1,15 @@
 # Repository instructions
 
+Current0.10.0/runtime2.9.0/life-camera0.2.0 adds docs/DAILY_SCENE.md.
+Daily intentions and the released scene use existing ct_kv. Explicit enable only.
+Original30m model plans4–6 loose intentions; original15m/30m update released scenes.
+Foreground only reads compact companion.day_scene, without an extra tool/model.
+Future plans never become completed memories or emotion. Preserve40/60 choice.
+Camera plans freeze scene/capture time. Changed scenes require earlier-moment
+captions or honest cancellation, never regeneration/resending. Preserve working
+host generation/delivery bindings and legacy jobs. Panel uses existing enrich,
+template and target, retaining home/art/eight cards with bounded daily details.
+
 Current0.9.3/runtime2.8.0 uses optional life-camera0.1.1. Read its README and
 PROTOCOL before binding. Original owner-provided identity/style art must be actual
 image input, with reserved first reference quota. Same host model chooses photos

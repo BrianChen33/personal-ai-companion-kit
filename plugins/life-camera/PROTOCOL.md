@@ -1,5 +1,10 @@
 # 宿主生活相机接线
 
+0.2.0 按 docs/DAILY_SCENE.md 使用共享场景。plan 自动冻结 scene_snapshot 和 captured_at，
+work直接沿已冻结的prompt与原三视图生成。send_work若scene_changed=true，宿主用刚才
+的时态说明，或沿原claim结算failed并说明撤销原因。新场景不触发旧照片重生成。
+旧job没有scene_snapshot时继续走原链路。前台不重复读取完整日程或相机作业。
+
 ## 每轮读取
 
 部署先实际核对工具参数和任务入口，再调用 bind_host。binding 必须且仅含

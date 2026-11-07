@@ -101,6 +101,7 @@ def listing(b, q):
 
 
 def compose(b, q, source):
+    from muse_ext.life_schedule import freeze
     config = store.settings(b)
     character = get(b, 'characters', config['character_id'])
     promised = source.get('promised_camera')
@@ -113,11 +114,17 @@ def compose(b, q, source):
     caption = text(q.get('caption', ''), 180, False)
     parts = [
         'Use the attached original three-view character artwork as the canonical identity and drawing-style reference.',
-        'Match its face, eyes, hair, proportions, distinctive anatomy, costume and linework. Compose one new illustrated scene.',
+        'Match its face, eyes, hair, proportions, distinctive anatomy and linework. Preserve the original outfit unless a current outfit is specified. Compose one new illustrated scene.',
         'Released life stage: ' + source['description'],
         'Scene: ' + frame,
         'Character appearance: ' + character['description'],
     ]
+    frozen = freeze(b, source.get('life_id'))
+    if frozen:
+        parts.append('Frozen capture moment: ' + str(frozen['captured_at']) + '. This is a virtual life illustration.')
+        for field, value in frozen['fields'].items():
+            parts.append('Capture ' + field + ': ' + value)
+        parts.append('Use these known capture details consistently. Omitted details are unknown. Do not invent a later activity or use future daily intentions.')
     views = dict(
         selfie='An arm-length casual front-camera selfie. The phone is outside the frame. One character, with physically possible hands.',
         rear='A rear-camera POV of the objects ahead, using the reference drawing style. Only explicitly requested body parts enter the frame. The camera holder stays behind the camera.',
@@ -155,7 +162,8 @@ def compose(b, q, source):
         if len(refs) < config['max_references']:
             refs.append(dict(role=category, **verified(b, asset['images'][0])))
     refs = refs[:config['max_references']]
-    return dict(camera=camera, caption=caption, prompt='\n'.join(parts), references=refs,
+    return dict(**({'scene_snapshot': frozen} if frozen else {}),
+                camera=camera, caption=caption, prompt='\n'.join(parts), references=refs,
                 aspect='3:4' if camera != 'rear' else '4:3', identity_revision=character['revision'],
                 character_id=character['id'], source=source, count=1, origin='generated_virtual_illustration')
 

@@ -83,6 +83,57 @@ class LifeCamera(unittest.TestCase):
         self.assertEqual(self.call('work')['status'], 'busy')
         self.assertEqual(job['status'], 'queued')
 
+    def test_camera_freezes_shared_scene_and_announces_later_delivery(self):
+        from muse_ext import life_schedule as schedule
+        self.b.dispatch(dict(op='companion_day', action='configure', authorized=True, enabled=True))
+        lid = self.life('学习', 'started')
+        self.b.dispatch(dict(op='companion_day', action='scene', expected_version=0,
+                             life_id=lid, fields={'location': '窗边', 'clothing': '蓝色上衣'}))
+        job = self.plan(life_id=lid)['job']
+        self.now.return_value += 60
+        next_life = self.life('跑步', 'started')
+        schedule.sync(self.b, [next_life])
+        work = self.call('work')
+        self.assertEqual(work['request']['scene_snapshot']['fields']['location'], '窗边')
+        self.assertIn('蓝色上衣', work['request']['prompt'])
+        self.assertNotIn('跑步', work['request']['prompt'])
+        self.call('bind', id=job['id'], claim=work['claim'], native_task_id='native-scene-fixture')
+        self.call('rendered', id=job['id'], claim=work['claim'], native_task_id='native-scene-fixture',
+                  files=[str(self.image)], receipt='scene-image-receipt')
+        send = self.call('send_work')
+        self.assertTrue(send['scene_changed'])
+        self.assertIn('earlier', send['caption_policy'])
+        self.assertEqual(send['scene_snapshot']['fields']['location'], '窗边')
+
+    def test_legacy_jobs_without_scene_still_generate_and_send(self):
+        job = self.plan()['job']
+        self.rendered(job)
+        send = self.call('send_work')
+        self.assertFalse(send.get('scene_changed', False))
+        self.assertEqual(send['job']['id'], job['id'])
+
+    def test_older_source_cannot_borrow_current_scene(self):
+        self.b.dispatch(dict(op='companion_day', action='configure', authorized=True, enabled=True))
+        old = self.life('学习', 'started')
+        self.now.return_value += 60
+        current = self.life('跑步', 'started')
+        self.b.dispatch(dict(op='companion_day', action='scene', expected_version=0,
+                             life_id=current, fields={'location': '公园'}))
+        self.plan(life_id=old)
+        work = self.call('work')
+        self.assertNotIn('公园', work['request']['prompt'])
+        self.assertEqual(work['request']['scene_snapshot']['fields'], {})
+
+    def test_manual_frozen_scene_retirement_blocks_generation(self):
+        self.b.dispatch(dict(op='companion_day', action='configure', authorized=True, enabled=True))
+        lid = self.life('学习', 'started')
+        self.b.dispatch(dict(op='companion_day', action='scene', expected_version=0,
+                             life_id=lid, fields={'location': '窗边'}))
+        self.call('plan', source_event=self.user(), camera='selfie', prompt='A synthetic request.')
+        with self.b.db:
+            self.b.db.execute("UPDATE source_events SET status='retired' WHERE id=(SELECT source_event FROM ct_life WHERE id=?)", (lid,))
+        self.assertIsNone(self.call('work')['job'])
+
     def test_one_job_per_source_and_one_sender(self):
         lid = self.life()
         first = self.plan(life_id=lid)
