@@ -1,6 +1,9 @@
 # Repository instructions
 
-Current0.11.0/runtime2.10.0/life-camera0.2.0 uses docs/DAILY_SCENE.md.
+Current0.11.1/runtime2.10.0/life-camera0.2.1 uses docs/DAILY_SCENE.md.
+Character-sheet views describe one individual. Final camera geometry overrides
+conflicting scene/pose details. Existing background visual check includes one
+subject and coherent anatomy before rendered/send; use the real failure ledger.
 The companion plans its OWN virtual day: subject=companion, independent day_kind.
 Owner calendar/classes/work/health keep owner attribution. Same existing model
 checks each intention/activity subject. Old unreviewed plans stay out of foreground

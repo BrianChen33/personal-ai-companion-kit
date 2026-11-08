@@ -1,10 +1,12 @@
 # 生活相机
 
-可选插件 0.2.0，适配 Personal AI Companion Kit 0.10.0 / runtime 2.9.0。
+可选插件 0.2.1，适配 Personal AI Companion Kit 0.11.1 / runtime 2.10.0。
 共享场景接线见 [每日粗安排](../../docs/DAILY_SCENE.md)。拍照时冻结地点、衣着、道具与
 光线，出图后生活已改变就说明是刚才的照片。原三视图、后台执行和回执链继续沿用。
 由同一个宿主模型在已有生活评估或回复中决定是否拍照。人物、服饰、场景、道具
 组合成当前生活阶段的自拍、镜自拍或后置拍物。实际图片生成与发送使用宿主原生工具。
+三视图共同描述同一个角色。统一镜头约束放在组合提示词末尾，自拍一个角色、镜自拍一个镜中形象，
+后置拍物保持第一人称，人物头脸和躯干留在镜头后。后台原快速检查包含角色数量及肢体归属。
 
 参考 dsh-image-studio 0.5.1，固定源提交
 fbd8f662f29546c2574a21f8c17ae1bc68c9498a。作者许可见 THIRD_PARTY_LICENSE.txt。
@@ -13,7 +15,7 @@ fbd8f662f29546c2574a21f8c17ae1bc68c9498a。作者许可见 THIRD_PARTY_LICENSE.t
 
 ## 安装顺序
 
-1. 取得固定架构 commit，核对 `docs/releases/0.9.3.json` 和本目录 manifest。
+1. 取得固定架构 commit，核对 `docs/releases/0.11.1.json` 和本目录 manifest。
 2. 核对宿主图片工具的实际 schema。必须能把本地参考图真正传作图片输入。
    核对原生后台任务、结果取回、图片是否会自动展示、主聊投递及真实回执。
 3. 使用现有 `plugin_manage install` 安装本目录，再显式 enable life-camera。

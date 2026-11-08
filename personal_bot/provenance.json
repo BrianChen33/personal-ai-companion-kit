@@ -96,7 +96,7 @@
     ]
   },
   "current_code_hashes": {
-    "__init__.py": "5a2c746dff0205892b2f19bd3fe1af3fa722a6b9d421b7579b78bc6eb551bf76",
+    "__init__.py": "b0cac37133159f5b8e591319aea6f1be6fa0ae1d56a9fffdbeaf335d89108029",
     "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "cli.py": "7d827b169c9c9cc67f9823c2f494b9c0eb56d7f562ce7968595b62258e4c433b",
     "deploy.py": "ef179422270daa56976db4a47d53d6cec475e061cc129ba2c54e486a42593b96",
@@ -149,7 +149,7 @@
     "runtime/sticker_emotion.mjs": "6d6b4275602d9fda9bc2eca0e62e31d40ed15179c4720d0dcd25b8212a3258bc",
     "runtime/sticker_intent.mjs": "691e4fafb83a9ba179cb6b3e6b5f6bf5472ca0ab50355572f0505c55f2e22084",
     "runtime/sticker_main.mjs": "38129adb0e9ee51eda0f85d306e12c1acd73958864342fb82b6233bfc29675c8",
-    "vault.py": "b6696dd374dfa6ab1f0455f3729933e24fb32bdd88d5cfc5185c68e06c38e71f"
+    "vault.py": "773f5edbe7a55910b7bf10f54074f5cbaf2c1da680931002e8dbf9164113f7f1"
   },
   "emotion48_update": {
     "date": "2026-11-05",
@@ -556,5 +556,29 @@
     },
     "review": "one read-only reviewer; fixed partial project recovery, free-phone continuity and late accepted receipts",
     "host": "pending pinned incremental deployment, actual task/claim readback and private architecture lock"
+  },
+  "single_subject_camera_update": {
+    "date": "2026-11-08",
+    "release": "0.11.1",
+    "runtime": "2.10.0",
+    "plugin_id": "life-camera",
+    "plugin_version": "0.2.1",
+    "base_architecture": "355de5993db3d995e16e36718c8951ca9b12498c",
+    "plugin_manifest_sha256": "586e58b68fdf59053a092cc808492e7d391dc073f15bb6b9b6cb316b4108d6d5",
+    "changes": [
+      "character-sheet views explicitly identify one individual and only camera-visible features",
+      "final single-subject selfie, first-person rear and single-reflection mirror geometry after scene, pose and asset instructions",
+      "same native background visual check covers subject count and coherent anatomy before rendered/send",
+      "existing generation failure ledger handles rejected composition without automatic retries"
+    ],
+    "validation": {
+      "python_cases": 517,
+      "platform_skips": 2,
+      "node_cases": 13,
+      "wheel": "accepted outside checkout",
+      "method": "one complete final isolated acceptance phase; camera23 passed; final visible-feature clarification focused1 passed"
+    },
+    "review": "one narrow read-only review, ready",
+    "host": "pending incremental plugin upgrade and native task readback; no new generated image validation"
   }
 }

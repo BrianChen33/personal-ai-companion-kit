@@ -114,7 +114,8 @@ def compose(b, q, source):
     caption = text(q.get('caption', ''), 180, False)
     parts = [
         'Use the attached original three-view character artwork as the canonical identity and drawing-style reference.',
-        'Match its face, eyes, hair, proportions, distinctive anatomy and linework. Preserve the original outfit unless a current outfit is specified. Compose one new illustrated scene.',
+        'Apply the reference identity, proportions, distinctive anatomy and linework to the features visible '
+        'from the selected camera. Preserve the original outfit unless a current outfit is specified. Compose one new illustrated scene.',
         'Released life stage: ' + source['description'],
         'Scene: ' + frame,
         'Character appearance: ' + character['description'],
@@ -125,16 +126,11 @@ def compose(b, q, source):
         for field, value in frozen['fields'].items():
             parts.append('Capture ' + field + ': ' + value)
         parts.append('Use these known capture details consistently. Omitted details are unknown. Do not invent a later activity or use future daily intentions.')
-    views = dict(
-        selfie='An arm-length casual front-camera selfie. The phone is outside the frame. One character, with physically possible hands.',
-        rear='A rear-camera POV of the objects ahead, using the reference drawing style. Only explicitly requested body parts enter the frame. The camera holder stays behind the camera.',
-        mirror='A mirror selfie with one real mirror in the scene and one consistent reflected character. Specify the phone and reflection direction.')
-    parts.append(views[camera])
     for field in ('expression', 'pose', 'light'):
         value = text(q.get(field, ''), 240, False)
         if value:
             parts.append(field + ': ' + value)
-    parts.append('Use the present emotion for expression. Clothing and scene follow this released event. Render a single image, without sheet panels or copied reference labels.')
+    parts.append('Use the present emotion in any visible expression or posture. Clothing and scene follow this released event. Render a single image, without sheet panels or copied reference labels.')
     refs = []
     # The first image is always the owner's original character sheet.
     for image in character['images'][:2]:
@@ -162,6 +158,24 @@ def compose(b, q, source):
         if len(refs) < config['max_references']:
             refs.append(dict(role=category, **verified(b, asset['images'][0])))
     refs = refs[:config['max_references']]
+    views = dict(
+        selfie='An arm-length front-camera selfie with the phone outside the frame. '
+               'Exactly one visible face and one coherent body, with anatomically consistent hands and limbs. '
+               'Exclude extra people, reflected duplicates and detached first-person arms.',
+        rear='A rear-camera first-person POV of the objects ahead. The camera holder stays behind the camera. '
+             'Keep the holder\'s face, head and torso outside the image. Only explicitly requested hands or forearms '
+             'may enter from the lower edge, belonging to that same holder. Exclude a side/back view of the holder, '
+             'a second seated character and extra limbs or tails.',
+        mirror='A mirror selfie with one mirror and physically consistent phone/reflection direction. '
+               'Show the character only once, inside the mirror. Keep the direct body outside the frame. '
+               'Exclude a second reflection, extra character and detached first-person arms.')
+    parts.extend([
+        'Camera geometry takes priority over conflicting scene, pose and reference composition details.',
+        'All views on the character sheet depict the same single individual. Use them for identity and style. '
+        'Compose one continuous scene with at most one depiction of that individual; exclude multi-view layouts, '
+        'clones, extra bodies, repeated anatomy and copied reference labels.',
+        views[camera],
+    ])
     return dict(**({'scene_snapshot': frozen} if frozen else {}),
                 camera=camera, caption=caption, prompt='\n'.join(parts), references=refs,
                 aspect='3:4' if camera != 'rear' else '4:3', identity_revision=character['revision'],

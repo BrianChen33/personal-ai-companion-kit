@@ -1,9 +1,21 @@
 # 宿主生活相机接线
 
-0.2.0 按 docs/DAILY_SCENE.md 使用共享场景。plan 自动冻结 scene_snapshot 和 captured_at，
+0.2.1 按 docs/DAILY_SCENE.md 使用共享场景。plan 自动冻结 scene_snapshot 和 captured_at，
 work直接沿已冻结的prompt与原三视图生成。send_work若scene_changed=true，宿主用刚才
 的时态说明，或沿原claim结算failed并说明撤销原因。新场景不触发旧照片重生成。
 旧job没有scene_snapshot时继续走原链路。前台不重复读取完整日程或相机作业。
+
+## 单角色与镜头
+
+三视图的正侧背面都属于同一个角色，只提供外观和画风。每张生活照最多呈现一个角色形象。
+compose在场景、动作及素材说明之后追加统一镜头约束，冲突时按所选camera的视点组织画面。
+selfie呈现一个脸和连贯身体；rear拍眼前的物品，持机者的头脸和躯干留在镜头后，仅按明确
+构图需要从画面下缘露出同一人的手或前臂；mirror仅呈现一个镜中形象，镜外本体留在画外。
+规划阶段由原模型检查场景与镜头一致性。后置拍饭菜时，侧后方人物头部不能与第一人称持筷手混画。
+
+原生生图返回后，复用原快速检查环节核角色数量、头脸/四肢/尾巴归属和镜头。发现多角色或混合
+视点时，在rendered和发送前沿原generation_failed入口记录真实错误及工具回执，该job结束。
+检查由现有后台轮次完成，保留真实生成文件和账本，不追加独立模型或自动重生成。
 
 ## 每轮读取
 
@@ -52,7 +64,7 @@ plan 只入队。只有 work 返回 claimed 才取得生成权。
 2. bind 提交实际后台任务 ID。任务ID在生成前保存，调用原生图片工具一次。
    将 request.references 的实际文件，按宿主 schema 逐项作为图片输入。
    references[0] 是原三视图。prompt 中的引用文字不能代替上传图片。
-3. 工具返回后快速检查外观、镜头和阶段。rendered 提交 id、claim、native_task_id、
+3. 工具返回后快速检查单角色、肢体归属、外观、镜头和阶段。rendered 提交 id、claim、native_task_id、
    单元素 files 数组和真实图片工具 receipt。得到 ready 仅表示文件已收妥。
 4. send_work 会执行时间、冷却、原图版本、文件SHA和来源检查，然后原子认领发送。
    使用返回的 caption/image，通过已有主人主聊投递入口发送一次。

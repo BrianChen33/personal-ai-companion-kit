@@ -83,6 +83,25 @@ class LifeCamera(unittest.TestCase):
         self.assertEqual(self.call('work')['status'], 'busy')
         self.assertEqual(job['status'], 'queued')
 
+    def test_each_camera_has_one_subject_and_final_geometry_priority(self):
+        geometries = {
+            'selfie': 'Exactly one visible face and one coherent body',
+            'rear': 'Keep the holder\'s face, head and torso outside the image',
+            'mirror': 'Show the character only once, inside the mirror',
+        }
+        for camera, expected in geometries.items():
+            with self.subTest(camera=camera):
+                self.call('plan', life_id=self.life(), camera=camera,
+                          prompt='Synthetic mixed-view scene.', pose='Synthetic pose request.')
+                request = self.call('work')['request']
+                with self.b.db:
+                    self.b.db.execute("UPDATE lc_job SET status='failed' WHERE status='claimed'")
+                prompt = request['prompt']
+                self.assertIn('All views on the character sheet depict the same single individual', prompt)
+                self.assertIn(expected, prompt)
+                self.assertGreater(prompt.index('Camera geometry takes priority'), prompt.index('pose:'))
+                self.assertEqual(request['count'], 1)
+
     def test_camera_freezes_shared_scene_and_announces_later_delivery(self):
         from muse_ext import life_schedule as schedule
         self.b.dispatch(dict(op='companion_day', action='configure', authorized=True, enabled=True))

@@ -3,7 +3,7 @@ from pathlib import Path
 from . import jobs, library, store
 
 API = 1
-VERSION = '0.2.0'
+VERSION = '0.2.1'
 
 
 def initialize(b):
