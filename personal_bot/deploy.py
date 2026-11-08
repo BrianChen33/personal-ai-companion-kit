@@ -101,6 +101,7 @@ def blueprint(root):
     tasks=[]
     specs=[('life-news',{'kind':'interval','minutes':30},['life','news'],
             'Use authorized news sources and local interests. News must pass current scoring/date/source/dedup gates. '
+            'If companion_day is enabled, use pending and the SAME model to plan8–10 connected OWN day slots (max12), subject=companion with independent day_kind; preserve past intentions. '
             'Prepare companion_activity pending plans with concrete 2-6 stages and a native artifact using the SAME host model; read docs/LIFE_PROJECTS.md. '
             'Never prewrite observed web results. Heavy browsing/drafts yield to owner conversation. '
             'Social phone reading uses docs/READING_QUEUE.md: enqueue an actionable companion_phone intent once, then queue_work(worker_id=actual native run ID) consumes at most one bounded batch. '
@@ -109,13 +110,14 @@ def blueprint(root):
             'No panel record/bind or delayed runonce; panel refresh belongs only to the existing emotion heartbeat.'),
            ('emotion',{'kind':'interval','minutes':15},['emotion'],
             'If companion_v2=true: run companion_tick, companion_pending claim=true; appraise each registered original event with the SAME host model using returned full48 template, then companion_life_assess. '
-            'Advance activity stages, but keep heavy planning/drafts in life-news. Use companion_feedback scan/claim/repair for recent24h missing/invalid ORIGINAL events (max2 per run); successful appraisals never replay. '
+            'Advance activity stages and due companion-day slots before free-time40/60 choices, but keep heavy planning/drafts in life-news. Use companion_feedback scan/claim/repair for recent24h missing/invalid ORIGINAL events (max2 per run); successful appraisals never replay. '
             'NEVER browse or wait for a browser in this15m job. Phone intents only queue_enqueue; a necessary one-shot dispatch uses queue_handoff actual future native read-back, never a fabricated schedule. '
             'Native main-chat samples use main_native_entry phase=feedback lossless user projection; no assistant self-appraisal. Late emotion decays from original time, no relationship/expectation/send/sticker replay. '
             'Last, publish panel_refresh heartbeat on the existing emotion run to the exact configured private HTML, no delay/runonce/notification. '
-            'Use companion_share claim then the real host sender; settle only actual receipts, unknown never automatically retries. Quiet01-07 collects only. '
-            'Actual mood updates require model assessment on registered sources; never use keyword rules or the task clock to add emotion. Share pending meaningful emotion candidates; do not duplicate threshold candidates. '
-            'Recovery may enqueue once with the same real active sources and stable recovery topic. No real change means silence.'),
+            'Always run companion_share claim in the existing sharing phase, then the real host sender; settle only actual receipts, unknown never automatically retries. Quiet01-07 collects only. '
+            'Claims reconcile stale leases and include required planned starts and results of previously shared activities, with continuity context. Share meaningful progress naturally, without a news score or strong-emotion gate. '
+            'Actual mood updates require model assessment on registered sources; never use keyword rules or the task clock to add emotion. '
+            'Recovery uses the original active source. No newly released development means silence.'),
            ('reading',{'kind':'interval','minutes':120},['reading'],
             'If the explicitly installed social-reading plugin is enabled, read its PROTOCOL.md. '
             'Social reading consumes only the shared actionable phone intent via queue_enqueue and queue_work; no independent phone draw or legacy direct plan. Read docs/READING_QUEUE.md once at binding. '

@@ -42,6 +42,8 @@ class HomePanel(unittest.TestCase):
         self.assertEqual(data['daily_scene']['plan']['anchors'][0]['intention'], 'Synthetic intention')
         self.assertIn('function renderDailyScene()', html)
         self.assertIn('我的今日打算', html)
+        self.assertIn('daily.execution', html)
+        self.assertIn('分享后续', html)
         self.assertIn('最近日常', html)
         self.assertIn('更多日常', html)
         self.assertIn('id="house-sticker"', html)

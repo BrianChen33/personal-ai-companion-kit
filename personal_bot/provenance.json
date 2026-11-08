@@ -96,10 +96,10 @@
     ]
   },
   "current_code_hashes": {
-    "__init__.py": "d46916e543f8f650452740885e8ff03b2efd2c64e995a6f87a8f26843e3a2c28",
+    "__init__.py": "5a2c746dff0205892b2f19bd3fe1af3fa722a6b9d421b7579b78bc6eb551bf76",
     "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "cli.py": "7d827b169c9c9cc67f9823c2f494b9c0eb56d7f562ce7968595b62258e4c433b",
-    "deploy.py": "ace0ac30e24c2ecbd806682ef85cf05da7fb5ae75f49efd48d51f471ddbb3b4c",
+    "deploy.py": "ef179422270daa56976db4a47d53d6cec475e061cc129ba2c54e486a42593b96",
     "runtime/__init__.py": "0982936c2756201cd74c82711cf33c9063e2df95828ee25a47b6f884fafc0e98",
     "runtime/brain.py": "7c67d25ca06d63fc1d85d7106fdcb087b34da3b8d863340e66baab8c8160fc7a",
     "runtime/learn.mjs": "790eae305518c953216740b1f72a64736483ef3eaaf62f05c1abed542622ad0e",
@@ -108,9 +108,9 @@
     "runtime/model-assets.json": "123babcabc0903fd4cc02a7269d59fd224867324b7e9c24ec9090918482421c3",
     "runtime/muse_ext/__init__.py": "4bf8f41e81a7e6b2930c051cf08e6cdef6a1d35f6d099ace496bcb1521c8cf5f",
     "runtime/muse_ext/backup.py": "1a20e5cd1fe9ea818a4a3ba049c37e13909e53bc860bc31c0a14a5e6539ea6f4",
-    "runtime/muse_ext/companion.py": "931452d9f5eec77ae03c02281c3d001be8b497866172eb1f9495f615e8e8a0d0",
+    "runtime/muse_ext/companion.py": "832b5e1d4a54f80b85ca6e0867d7769c992dc3b2bb95faf7adbc44b07b494227",
     "runtime/muse_ext/companion_io.py": "4b3a95c14cc81beae6aeafdbb17b8e2912b783aea0fa040e33f679528e6f5044",
-    "runtime/muse_ext/companion_panel.html": "c09705a770477d7db691720c2f926152bff076ef36f3aca16b7c8089ad47490f",
+    "runtime/muse_ext/companion_panel.html": "cb560fb1247f5b1c8a81001537f965206457b66ed2842295dab9d84f6fd5c38d",
     "runtime/muse_ext/consolidation.py": "8931583ee8b842199cd7d54144aeeaa2ae774403eaaf523b6ab740b899c937e1",
     "runtime/muse_ext/embedding_server.py": "24b80165d9426dd4ed8ab69583a76f2e134a2d461aa11f6f6d220656c5691131",
     "runtime/muse_ext/embeddings.py": "c303b6175965a3b5717026c2a655aff03f8d5ffc7fc4b42b8af06983f814d22e",
@@ -123,12 +123,14 @@
     "runtime/muse_ext/feedback.py": "ac42bbba829b8307f151a9432dab4f0acf6c2f6559e5704ddffdd70eeeb4dd5f",
     "runtime/muse_ext/humor.py": "b429c0ead4def80dad8f32c8efe7da56e81148b085d1b4b87c838c6c3164daa9",
     "runtime/muse_ext/insights.py": "9999fdbd4e931c728431d3983b09ffa54363810b02f7e56741ac438a437a8a0f",
-    "runtime/muse_ext/life_projects.py": "3b1185dc5c8822503798aac23391cc0ea27d04b1812ea745edafe022c43969a7",
-    "runtime/muse_ext/life_routine.py": "b1811f0e2c1095daf6948ecefdfc8d593986c9b806656549606a94d3df02f6ae",
+    "runtime/muse_ext/life_projects.py": "3778b34234f4e872cb71b90aec4fc7b9ccd7a8804e4dfb4938872cc366aa8cf4",
+    "runtime/muse_ext/life_routine.py": "07fca04b19978b48afeb887141a6df025a8a211658eb10aadf4af54072e46f98",
+    "runtime/muse_ext/life_schedule.py": "5fd168130a87b3308cbbe7ec9945f7474c90f07d24c622f13cbb97b8e2b95d24",
+    "runtime/muse_ext/life_updates.py": "d34c67ffaafc2337218ea10e3bf1fad695578bdf6cf76ebbf97ee3ada4ecf53f",
     "runtime/muse_ext/main_commit.py": "587e81d0ff8242bd21c1eaa42305860f4cef902c83bcf7eaad5f7bb0eb8ddd89",
     "runtime/muse_ext/meme_store.py": "831877a465fb2854a5ffe8bc5029e864b046b8eccbb86f8c12b4c51b4aa1c6b9",
     "runtime/muse_ext/meme_sync.py": "c8ae3ef8bb2b0de7d03282055d733f30201c7e821298d82d68341dcdc8c194d0",
-    "runtime/muse_ext/panel_home.py": "4b80aeacf6d8d0563a49c5a669dc5feb3d59f6c2cdaf890eebdbb79025dcf52b",
+    "runtime/muse_ext/panel_home.py": "f7f0a88ebb8ea25df23caf939b2894a705ecf94263620352dee309f47b83189c",
     "runtime/muse_ext/panel_refresh.py": "4c252e3d00969eaa6d4cd7fd1029ebca4de43b7df121571eefc456a10b0c6fba",
     "runtime/muse_ext/pause.py": "aeb2fcc3fcd171428c0fd1e5bddd50750b86a6798cae9231cfa7e3b77569792b",
     "runtime/muse_ext/plugins.py": "9adffd2ca2515d4e95c4c0d3e7aff61330658f368b51015c83c13671a94e23ac",
@@ -140,12 +142,14 @@
     "runtime/ops.py": "cc52bf4c364784a1c09d9129a38f6fa789853f3997847a40030796c6cbc29e8c",
     "runtime/proactive.py": "50ab1b55db3cc35c2d9d2036eb6b704acb51bf9e88c6167c03437eda3d40f4aa",
     "runtime/qq-adapter.mjs": "2302e48614d96149cc131ecb0546848021822001b2a443f3c371c662d5b7da8c",
+    "runtime/reply_driver.mjs": "b59142668ed3d336e35991c30ebfedecbf29c7108956a69852fe67e218d71230",
+    "runtime/reply_media.mjs": "a644f416375f0d1d46e3413b8ff1174395b4c9ee0fe57e953998f71233be5464",
     "runtime/requirements-embedding.txt": "1843de70ebdd99b72b76b9208cb1ffbb6684a50d7a0501f4e3a2dba7cf051d84",
     "runtime/sticker_decision.mjs": "bddb1e4478550efc57ecf2d852ba98e6d14d0ee19b7f4eebf91b993a786ba5c4",
     "runtime/sticker_emotion.mjs": "6d6b4275602d9fda9bc2eca0e62e31d40ed15179c4720d0dcd25b8212a3258bc",
     "runtime/sticker_intent.mjs": "691e4fafb83a9ba179cb6b3e6b5f6bf5472ca0ab50355572f0505c55f2e22084",
     "runtime/sticker_main.mjs": "38129adb0e9ee51eda0f85d306e12c1acd73958864342fb82b6233bfc29675c8",
-    "vault.py": "fae6e545e08a6d9e6e42b52e7559941753094a488a82e9175fddc37f7697bf50"
+    "vault.py": "b6696dd374dfa6ab1f0455f3729933e24fb32bdd88d5cfc5185c68e06c38e71f"
   },
   "emotion48_update": {
     "date": "2026-11-05",
@@ -527,5 +531,30 @@
       "method": "one final isolated acceptance phase; four new ownership/repair regressions"
     },
     "host": "pending pinned incremental deployment, targeted attribution correction and private lock refresh"
+  },
+  "life_continuity_update": {
+    "date": "2026-11-08",
+    "release": "0.11.0",
+    "runtime": "2.10.0",
+    "base_architecture": "cbee9cff3e5cf4ef64ff65a41e230e0fdac871ae",
+    "changes": [
+      "8-10 connected own-day slots with a maximum of12, execution derived from existing project and life rows",
+      "due plans before free-time40/60 choice, stable recovery of partially registered projects",
+      "continuity for planned starts and results of announced projects including free phone activity",
+      "bounded stale ordinary-life lease reconciliation, late real receipt settlement and no unknown replay",
+      "existing panel execution states, actual times and bounded sharing followups",
+      "same original15m/30m tasks and same appraisal model; no new foreground calls or services"
+    ],
+    "validation": {
+      "python_cases": 516,
+      "platform_skips": 2,
+      "node_cases": 13,
+      "method": "one final isolated phase513 Python and13 Node; three reproduced review defects fixed, focused27 passed afterward",
+      "wheel": "accepted outside checkout before focused review fixes",
+      "synthetic_projection_characters": 256,
+      "synthetic_local_context_avg_ms": 0.4028
+    },
+    "review": "one read-only reviewer; fixed partial project recovery, free-phone continuity and late accepted receipts",
+    "host": "pending pinned incremental deployment, actual task/claim readback and private architecture lock"
   }
 }

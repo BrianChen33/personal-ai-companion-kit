@@ -80,6 +80,7 @@ def enrich(b, snapshot):
     snapshot['activity_project']=activity_view(b)
     from muse_ext.life_schedule import status as daily_status
     snapshot['daily_scene']=daily_status(b)
+    snapshot['life_sharing'] = dict(counts=dict(b.db.execute('SELECT share,count(*) FROM ct_life GROUP BY share')))
     profile = read_json(b.root / 'panel-profile.json')
     snapshot['panel_profile'] = {k: profile[k][:200] for k in PROFILE_KEYS if isinstance(profile.get(k), str)}
     voice = profile.get('voice', {})

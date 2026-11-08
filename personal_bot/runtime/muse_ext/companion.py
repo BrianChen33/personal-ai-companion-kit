@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from muse_ext.emotion_catalog import LABELS, HALF, CATALOG_VERSION, normalize, reaction, schema as emotion_schema
 
-VERSION = '2.9.1'
+VERSION = '2.10.0'
 TZ = timezone(timedelta(hours=8))
 RNG = random.SystemRandom()
 
@@ -354,8 +354,10 @@ def assess(b,event_id,raw,legacy_submit,repair=False):
             b.db.execute('UPDATE ct_life SET appraised=1,lease_until=0 WHERE id=?',(life['id'],))
         elif life:
             from muse_ext.plugins import share_allowed
+            from muse_ext.life_updates import context as update_context
+            share_selected=raw.get('share') or update_context(b,life)['required']
             b.db.execute('UPDATE ct_life SET appraised=1,lease_until=0,share=? WHERE id=?',
-                         ('pending' if raw.get('share') and share_allowed(b,event_id) else 'none',life['id']))
+                         ('pending' if share_selected and share_allowed(b,event_id) else 'none',life['id']))
     return dict(status=status,source_event=event_id,version=2,evidence='inference',effect=emotion_effect(b,event_id))
 
 
@@ -480,7 +482,9 @@ def tick(b):
                     _set(b,key,event)
                     b.db.commit()
         b.db.commit()
-        if not quiet(now) and not state.get('activity') and now>=state.get('next_at',0):
+        from muse_ext.life_schedule import due
+        scheduled=due(b,now) if not quiet(now) and not state.get('activity') else None
+        if not quiet(now) and not state.get('activity') and (scheduled or now>=state.get('next_at',0)):
             s=vitals(b,now)
             from muse_ext.life_schedule import preference
             preferred_activity=preference(b)
@@ -494,14 +498,25 @@ def tick(b):
                 if a[0]==state.get('last_activity'): w*=.15
                 weights.append(w*(2 if preferred_activity==a[0] else 1))
             from muse_ext.life_routine import settings as routine_settings, start as phone_start
-            phone_selected=RNG.random()<routine_settings(b)['phone_probability']
-            activity=(('刷手机',10,25,(-1,-3,0,2),['这一轮结束了，具体阅读以真实记录为准']) if phone_selected else
-                      RNG.choices(ACTIVITIES,weights=weights,k=1)[0])
+            phone_selected=(scheduled['activity']=='刷手机') if scheduled else RNG.random()<routine_settings(b)['phone_probability']
+            if phone_selected:
+                activity=('刷手机',10,25,(-1,-3,0,2),['这一轮结束了，具体阅读以真实记录为准'])
+            elif scheduled:
+                activity=next(a for a in ACTIVITIES if a[0]==scheduled['activity'])
+            else:
+                activity=RNG.choices(ACTIVITIES,weights=weights,k=1)[0]
             duration=RNG.randint(activity[1],activity[2])*60
             current=dict(name=activity[0],started_at=now,ends_at=now+duration,
                          outcome=RNG.choice(activity[4]),cost=activity[3],origin='virtual')
+            if scheduled:
+                current.update(intention=scheduled['intention'],day_anchor=scheduled['at'])
+                if not phone_selected:
+                    current['project_id']=scheduled['life_id']
+                    current['started_at']=scheduled.get('started_at',now)
+                    current['ends_at']=scheduled.get('ends_at',now+duration)
             if phone_selected:
-                current['phone_intent']=phone_start(b,now,duration)['id']
+                phone=phone_start(b,now,duration,identity=scheduled['life_id'] if scheduled else None)
+                current.update(phone_intent=phone['id'],started_at=phone['created_at'],ends_at=phone['deadline'])
                 b.db.commit()
             else:
                 from muse_ext import life_projects
@@ -509,7 +524,8 @@ def tick(b):
             state['activity']=current
             state['last_activity']=activity[0]
             if phone_selected:
-                made.append(_life_event(b,activity[0],'started','拿起手机，准备按已允许的来源真实阅读。'))
+                made.append(_life_event(b,activity[0],'started','拿起手机，准备按已允许的来源真实阅读。',
+                                        occurred=current['started_at'],event_id=current['phone_intent']))
         _set(b,'life',state)
         b.db.commit()
         from muse_ext.life_schedule import sync
@@ -529,21 +545,32 @@ def life_pending(b,q):
                 b.db.execute('UPDATE ct_life SET lease_until=? WHERE id=?',(now+900,row['id']))
     from muse_ext.presentation import camera, persona
     from muse_ext.emotion_full48 import template,frame
-    return dict(ok=True,events=[dict(r) for r in rows],context=context(b,'owner-private'),
+    from muse_ext.life_updates import context as update_context
+    events=[dict(r,continuity=update_context(b,r)) for r in rows]
+    return dict(ok=True,events=events,context=context(b,'owner-private'),
                 current_persona=persona(b), camera_context=camera(b,'owner-private'),
                 emotion_template=template(),emotion_frame=frame(b,'owner-private',now),
                 mood=mood(b,'owner-private'),quiet_hours=quiet(now))
 
 
 def share(b,q):
+    from muse_ext import life_updates
+    if not b.available('life'):
+        return dict(ok=False,disabled=True,events=[])
     action=q.get('action','claim')
     if action=='claim' and quiet():
         return dict(ok=True,quiet_hours=True,events=[])
     with b.db:
         b.db.execute('BEGIN IMMEDIATE')
+        if action=='reconcile':
+            return life_updates.reconcile(b)
         if action=='claim':
+            life_updates.reconcile(b)
+            life_updates.enqueue_results(b)
             lease=uuid.uuid4().hex
-            rows=b.db.execute("SELECT * FROM ct_life WHERE appraised=1 AND share='pending' ORDER BY occurred LIMIT 3").fetchall()
+            rows=b.db.execute("SELECT l.* FROM ct_life l JOIN source_events s ON s.id=l.source_event "
+                              "WHERE s.status='active' AND l.appraised=1 AND l.share='pending' AND l.occurred<=? "
+                              "ORDER BY l.occurred LIMIT 3",(stamp(),)).fetchall()
             allowed_rows=[]
             for r in rows:
                 from muse_ext.plugins import share_allowed
@@ -551,13 +578,21 @@ def share(b,q):
                     b.db.execute("UPDATE ct_life SET share='none' WHERE id=?",(r['id'],))
                     continue
                 b.db.execute("UPDATE ct_life SET share='sharing',share_lease=? WHERE id=?",(lease,r['id']))
-                allowed_rows.append(dict(r))
+                allowed_rows.append(dict(r,continuity=life_updates.context(b,r)))
+            if allowed_rows:
+                claims=_get(b,'life_share_claims',{})
+                claims[lease]=stamp()
+                _set(b,'life_share_claims',claims)
             return dict(ok=True,lease=lease,events=allowed_rows,meaning='claim_only_not_sent')
         outcome=q.get('outcome')
         if outcome not in ('accepted','unknown','failed'):
             raise ValueError('invalid_delivery_outcome')
-        count=b.db.execute("UPDATE ct_life SET share=? WHERE share='sharing' AND share_lease=?",
-                           (outcome,q.get('lease'))).rowcount
+        count=b.db.execute("UPDATE ct_life SET share=? WHERE share_lease=? "
+                           "AND (share='sharing' OR (share='unknown' AND ?='accepted'))",
+                           (outcome,q.get('lease'),outcome)).rowcount
+        claims=_get(b,'life_share_claims',{})
+        claims.pop(q.get('lease'),None)
+        _set(b,'life_share_claims',claims)
         return dict(ok=True,count=count,outcome=outcome)
 
 

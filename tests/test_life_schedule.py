@@ -193,6 +193,106 @@ class DailyScene(unittest.TestCase):
         self.assertGreater(schedule.preference(self.b, '做饭吃饭'), schedule.preference(self.b, '跑步'))
         self.assertEqual(life_routine.settings(self.b)['phone_probability'], .6)
 
+    def meal(self):
+        outline = self.outline()
+        outline['anchors'] = [dict(at=self.now.return_value + 60, activity='做饭吃饭', intention='Synthetic lunch project')]
+        self.call('plan', expected_version=0, plan=outline)
+        c._set(self.b, 'dream_day', outline['day'])
+        c._set(self.b, 'life', dict(activity=None, next_at=self.now.return_value + 7200))
+        self.b.db.commit()
+        self.now.return_value += 60
+        return outline
+
+    def test_due_plan_starts_before_free_phone_draw_and_idle_gap(self):
+        self.enable()
+        self.meal()
+        with patch.object(c.RNG, 'random', return_value=0):
+            self.b.dispatch(dict(op='companion_tick'))
+        current = c._get(self.b, 'life')['activity']
+        self.assertEqual(current['name'], '做饭吃饭')
+        self.assertIn('Synthetic lunch project', self.b.dispatch(dict(op='companion_activity', action='pending'))['intention'])
+        run = self.call('status')['execution'][0]
+        self.assertEqual(run['life_id'], current['project_id'])
+        self.assertEqual(run['status'], 'awaiting_plan')
+
+    def test_scheduled_project_recovers_existing_identity_after_state_loss(self):
+        self.enable()
+        self.meal()
+        self.b.dispatch(dict(op='companion_tick'))
+        first = c._get(self.b, 'life')['activity']
+        count = self.b.db.execute('SELECT count(*) FROM source_events').fetchone()[0]
+        c._set(self.b, 'life', dict(activity=None, next_at=self.now.return_value + 7200))
+        self.b.db.commit()
+        self.now.return_value += 60
+        self.b.dispatch(dict(op='companion_tick'))
+        again = c._get(self.b, 'life')['activity']
+        self.assertEqual(again['project_id'], first['project_id'])
+        self.assertEqual(again['started_at'], first['started_at'])
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM source_events').fetchone()[0], count)
+
+    def test_missed_plan_does_not_fabricate_a_past_activity(self):
+        self.enable()
+        self.meal()
+        self.now.return_value += 7201
+        self.assertEqual(self.call('status')['execution'][0]['status'], 'missed')
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM ct_life').fetchone()[0], 0)
+
+    def test_scheduled_project_recovers_partial_registration(self):
+        from muse_ext import life_projects
+        self.enable()
+        self.meal()
+        started = self.now.return_value
+        with patch.object(life_projects.c, '_life_event', side_effect=RuntimeError('interrupted source write')):
+            with self.assertRaisesRegex(RuntimeError, 'interrupted'):
+                self.b.dispatch(dict(op='companion_tick'))
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM ct_life').fetchone()[0], 0)
+        self.now.return_value += 6000
+        self.assertEqual(self.call('status')['execution'][0]['status'], 'awaiting_plan')
+        self.b.dispatch(dict(op='companion_tick'))
+        current = c._get(self.b, 'life')['activity']
+        self.assertEqual(current['started_at'], started)
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM ct_activity_project').fetchone()[0], 1)
+
+    def test_due_plan_waits_for_existing_activity_to_finish(self):
+        from muse_ext import life_projects
+        self.enable()
+        self.meal()
+        current = dict(name='阅读', started_at=self.now.return_value-10, ends_at=self.now.return_value+600,
+                       origin='virtual', cost=(1,-5,3,2))
+        life_projects.register(self.b, current)
+        c._set(self.b, 'life', dict(activity=current, next_at=0))
+        self.b.db.commit()
+        self.b.dispatch(dict(op='companion_tick'))
+        self.assertEqual(c._get(self.b, 'life')['activity']['name'], '阅读')
+        self.assertEqual(self.call('status')['execution'][0]['status'], 'waiting')
+
+    def test_full_day_can_have_twelve_connected_slots(self):
+        self.enable()
+        outline = self.outline()
+        outline['anchors'] = [dict(at=self.now.return_value + 900 + n * 3600,
+                                   activity='刷手机' if n % 2 else '学习', intention='Synthetic slot ' + str(n)) for n in range(12)]
+        self.call('plan', expected_version=0, plan=outline)
+        self.assertEqual(len(self.call('status')['execution']), 12)
+
+    def test_scheduled_phone_has_stable_start_and_honest_completion(self):
+        self.enable()
+        outline = self.outline()
+        outline['anchors'] = [dict(at=self.now.return_value + 60, activity='刷手机', intention='Read approved sources')]
+        self.call('plan', expected_version=0, plan=outline)
+        c._set(self.b, 'dream_day', outline['day'])
+        c._set(self.b, 'life', dict(activity=None, next_at=self.now.return_value + 7200))
+        self.b.db.commit()
+        self.now.return_value += 60
+        self.b.dispatch(dict(op='companion_tick'))
+        current = c._get(self.b, 'life')['activity']
+        self.assertEqual(current['name'], '刷手机')
+        self.assertEqual(self.call('status')['execution'][0]['life_id'], current['phone_intent'])
+        self.now.return_value = current['ends_at'] + 1
+        self.b.dispatch(dict(op='companion_tick'))
+        self.assertEqual(self.call('status')['execution'][0]['status'], 'completed')
+        event = self.b.db.execute("SELECT description FROM ct_life WHERE id=?", ('phone:' + current['phone_intent'] + ':completed',)).fetchone()
+        self.assertIn('没有成功读取', event[0])
+
     def test_retired_scene_details_do_not_reappear_on_next_activity(self):
         from muse_ext import life_schedule as schedule
         self.enable()

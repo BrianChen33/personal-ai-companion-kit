@@ -108,7 +108,9 @@ def register(b, current):
     current['project_id'] = pid
     current.pop('outcome', None)
     current['ends_at'] = previous['ends']
-    return c._life_event(b, activity, 'started', '开始' + activity + '。',
+    intention = _text(current['intention'], 140) if current.get('intention') else ''
+    description = '开始' + activity + '。' + ('这次打算' + intention if intention else '')
+    return c._life_event(b, activity, 'started', description,
                          origin='virtual', occurred=start, event_id=pid)
 
 
@@ -259,6 +261,7 @@ def dispatch(b, q):
         pid = _current_id(b)
         project = view(b, pid) if pid else None
         return dict(ok=True, projects=[project] if project and project['status'] in ('awaiting_plan', 'paused') else [],
+                    intention=(c._get(b, 'life', {}).get('activity') or {}).get('intention'),
                     author='same_host_reply_model', schema_version=1, stages_min=2, stages_max=6,
                     stage_fields=['after_seconds', 'description'], stage_seconds_bounds=[1, 21600],
                     plan_fields=['version', 'origin', 'activity', 'topic', 'stages', 'artifact'],

@@ -7,7 +7,7 @@ def settings(b):
     from muse_ext.companion import _get
     probability = _get(b, 'life_routine', {}).get('phone_probability', .6)
     return dict(phone_probability=probability, chores_probability=round(1-probability, 6),
-                meaning='probability at each new autonomous activity selection, not per heartbeat or time quota')
+                meaning='probability at each free-time activity selection; due plans take priority, not a time quota')
 
 
 def configure(b, q):
@@ -32,9 +32,12 @@ def pending(b):
                        'No successful observation means no claim of reading, watching or learning.')
 
 
-def start(b, now, duration):
-    from muse_ext.companion import _set
-    request = dict(id=uuid.uuid4().hex, status='pending', created_at=now, deadline=now+duration,
+def start(b, now, duration, identity=None):
+    from muse_ext.companion import _get, _set
+    previous = _get(b, 'phone_intent', {})
+    if identity and previous.get('id') == identity:
+        return previous
+    request = dict(id=identity or uuid.uuid4().hex, status='pending', created_at=now, deadline=now+duration,
                    activity='刷手机', provider=None)
     _set(b, 'phone_intent', request)
     return request

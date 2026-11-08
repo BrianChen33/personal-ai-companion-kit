@@ -1,6 +1,6 @@
 # 哪些记忆能继承，如何装到新的 Agent
 
-0.10.1 的粗日程和场景随原SQLite的 day_plan:*、day_scene、day_scene_enabled 继承，详细接线见 DAILY_SCENE.md。日程的subject固定companion、day_kind独立选择；用户日程保留用户归属。旧计划归属需同一后台模型复核，必要时按授权repair撤销错误意图。日程仅为意图，未来草稿继续封存。新宿主先验证来源、当前选择和任务，再启用后台；camera scene_snapshot保留拍照当时场景，旧相机作业无需补写新字段。
+0.11.0 的日程和场景随原SQLite的 day_plan:*、day_scene、day_scene_enabled 继承，详细接线见 DAILY_SCENE.md。计划执行从既有ct_activity_project/ct_life稳定ID推导，sharing认领时间随life_share_claims继承。新宿主先对账真实发送，unknown保留单次记录。日程subject固定companion、day_kind独立选择，用户日程保留用户归属。旧计划归属由同一后台模型复核，按授权repair撤销错误意图，未来草稿继续封存。新宿主验证来源与任务后启用后台；camera scene_snapshot保留拍照当时场景。
 
 life-camera 的 lc_asset/lc_job/settings 随原SQLite继承，已注册的原参考图按快照路径
 与SHA恢复。生成相册独立保管。先安装匹配插件和代码，再核对图片文件及实际工具。

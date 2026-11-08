@@ -3,6 +3,7 @@
 No timers, model calls, wardrobe database or synthetic emotional stimuli.
 """
 from datetime import datetime, timedelta
+import hashlib
 
 from muse_ext import companion as c
 
@@ -63,8 +64,8 @@ def _save_plan(b, q, repair=False):
     if set(value) != {'day', 'subject', 'day_kind', 'anchors'} or value['day_kind'] not in DAY_KINDS:
         raise ValueError('invalid_companion_day_kind_or_fields')
     anchors = value['anchors']
-    if not isinstance(anchors, list) or not 1 <= len(anchors) <= 6:
-        raise ValueError('daily_anchors_1_to_6_required')
+    if not isinstance(anchors, list) or not 1 <= len(anchors) <= 12:
+        raise ValueError('daily_anchors_1_to_12_required')
     start = datetime.combine(_day(), datetime.min.time(), c.TZ).timestamp()
     allowed = {a[0] for a in c.ACTIVITIES} | {'刷手机'}
     previous_at = start - 1
@@ -171,6 +172,56 @@ def preference(b, activity=None):
     return 2.0 if preferred == activity else 1.0
 
 
+def anchor_id(day, at):
+    return hashlib.sha256(c.dump(['companion-day', day, float(at)]).encode()).hexdigest()[:32]
+
+
+def execution(b, plan):
+    """Bind intentions to existing life/project records; no second execution ledger."""
+    if not plan or plan.get('subject') != 'companion':
+        return []
+    ids = [anchor_id(plan['day'], a['at']) for a in plan['anchors']]
+    if not ids:
+        return []
+    event_ids = ids + ['phone:' + identity + ':completed' for identity in ids]
+    marks = ','.join('?' for _ in event_ids)
+    events = {r['id']: dict(r) for r in b.db.execute(
+        'SELECT l.*,s.status source_status FROM ct_life l JOIN source_events s ON s.id=l.source_event '
+        'WHERE l.id IN (' + marks + ')', event_ids)}
+    projects = {r['id']: dict(r) for r in b.db.execute(
+        'SELECT id,status,started,ends FROM ct_activity_project WHERE id IN (' + ','.join('?' for _ in ids) + ')', ids)}
+    result = []
+    for anchor, identity in zip(plan['anchors'], ids):
+        event, project = events.get(identity), projects.get(identity)
+        item = dict(anchor, life_id=identity, status='planned')
+        if project:
+            item.update(started_at=project['started'], ends_at=project['ends'], status=project['status'])
+        if event:
+            item['started_at'] = event['occurred']
+            if event['source_status'] != 'active':
+                item['status'] = 'withdrawn'
+            elif not project:
+                item['status'] = 'active'
+                if 'phone:' + identity + ':completed' in events:
+                    item.update(status='completed', ends_at=events['phone:' + identity + ':completed']['occurred'])
+        elif not project:
+            if c.stamp() > anchor['at'] + 5400:
+                item['status'] = 'missed'
+            elif c.stamp() >= anchor['at']:
+                item['status'] = 'waiting'
+        result.append(item)
+    return result
+
+
+def due(b, now):
+    if not enabled(b):
+        return None
+    for item in execution(b, _plan(b)):
+        if item['at'] <= now and item['status'] in ('waiting', 'active', 'awaiting_plan'):
+            return item
+    return None
+
+
 def projection(b):
     """One small foreground value, with no full plan or future scene suggestions."""
     if not enabled(b):
@@ -180,7 +231,7 @@ def projection(b):
     if plan and plan.get('subject') != 'companion':
         plan = None
     now = c.stamp()
-    future = next((a for a in (plan or {}).get('anchors', []) if a['at'] > now), None)
+    future = next((a for a in execution(b, plan) if a['status'] in ('waiting','active','awaiting_plan','planned')), None)
     result = dict(scene_version=(scene or {}).get('version', 0), subject='companion')
     if plan and plan.get('subject') == 'companion':
         result['day_kind'] = plan.get('day_kind')
@@ -188,7 +239,7 @@ def projection(b):
         result.update(activity=scene['activity'][:40], stage=scene['stage'][:24], occurred=scene['occurred'],
                       fields={k: v[:40] for k, v in scene['fields'].items()})
     if future:
-        result['next_intention'] = dict(at=future['at'], text=future['intention'][:60], origin='intention')
+        result['next_intention'] = dict(at=future['at'], text=future['intention'][:60], origin='intention', status=future['status'])
     return result
 
 
@@ -220,7 +271,8 @@ def validate_frozen(b, frozen):
 
 
 def status(b):
-    return dict(ok=True, enabled=enabled(b), plan=_plan(b), scene=_scene(b),
+    plan = _plan(b)
+    return dict(ok=True, enabled=enabled(b), plan=plan, execution=execution(b, plan), scene=_scene(b),
                 scene_version=(c._get(b, 'day_scene') or {}).get('version', 0))
 
 
@@ -255,6 +307,7 @@ def dispatch(b, q):
                            'Choose busy/overtime/leisure/rest/mixed independently of the owner calendar, classes, work and health. '
                            'Check each intention subject in this SAME background model pass. Owner appointments stay owner facts. '
                            'An explicit joint agreement is a separate interaction, not a copied calendar or day theme. '
-                           'Usually4–6 broad future intentions, fewer when little day remains. No emotions, future facts or new timer. '
+                           'Usually8–10 connected day slots (max12), fewer for a partial day. Plan ordinary transitions and phone time. '
+                           'Due slots bind real activity projects before free-time40/60 selection. No emotions, future facts or new timer. '
                            'Scene fields only describe a released life_id. Intentions never claim completion.')
     raise ValueError('unknown_daily_scene_action')

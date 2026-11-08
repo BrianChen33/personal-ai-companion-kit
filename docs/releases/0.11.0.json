@@ -1,0 +1,106 @@
+{
+  "release": "0.11.0",
+  "runtime": "2.10.0",
+  "life_camera_version": "0.2.0",
+  "social_reading_version": "0.4.0",
+  "mi_fitness_version": "0.1.0",
+  "base_architecture": "cbee9cff3e5cf4ef64ff65a41e230e0fdac871ae",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "7e2db97391db5d03fd9a0f12dc803993885535299cb5436bd02c693cfe520b9e"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "0e70d6aff32ae78227368b1baee7d21a866da97e49e1c3e47a505d857acd4114"
+    },
+    {
+      "path": "README.md",
+      "sha256": "271c97bfd2fce3ab3a5b2344f33590e7f176e99c9e6c1e9f119fa75644431038"
+    },
+    {
+      "path": "docs/DAILY_SCENE.md",
+      "sha256": "4a8b4f4fe6da2e1f6fd57bc783e773f5fbfc99df05d6f0953152fa5074492e25"
+    },
+    {
+      "path": "docs/FEEDBACK_HEARTBEAT.md",
+      "sha256": "fc42b8ebbe759f8439895fb8fae54836710b20352fab1e9f62d78a57e0e2f007"
+    },
+    {
+      "path": "docs/HOST_TASKS.md",
+      "sha256": "50b761c1e40ca154797fa835cf18e6c509496d05e92823e38f16c5de8c47a5bf"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "82c06a78a7aa605fa3262db53b6ea6b7582bac470309a6fd4bb565be2c4eec41"
+    },
+    {
+      "path": "docs/LIFE_PROJECTS.md",
+      "sha256": "457dd8c000bd378844b28cd6a2c69fe852b11241a315271090ad284d9a29944c"
+    },
+    {
+      "path": "docs/LIFE_ROUTINE.md",
+      "sha256": "30cd4631dd68b139f7fd8919af95a04ca0a4e2e02c59f6a5e871560c892f44be"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "5a2c746dff0205892b2f19bd3fe1af3fa722a6b9d421b7579b78bc6eb551bf76"
+    },
+    {
+      "path": "personal_bot/deploy.py",
+      "sha256": "ef179422270daa56976db4a47d53d6cec475e061cc129ba2c54e486a42593b96"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "100abbe7b85e63ea1fec28d5549239b662f900b775cef2b655c3d3ecd710a1c8"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion.py",
+      "sha256": "832b5e1d4a54f80b85ca6e0867d7769c992dc3b2bb95faf7adbc44b07b494227"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion_panel.html",
+      "sha256": "cb560fb1247f5b1c8a81001537f965206457b66ed2842295dab9d84f6fd5c38d"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/life_projects.py",
+      "sha256": "3778b34234f4e872cb71b90aec4fc7b9ccd7a8804e4dfb4938872cc366aa8cf4"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/life_routine.py",
+      "sha256": "07fca04b19978b48afeb887141a6df025a8a211658eb10aadf4af54072e46f98"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/life_schedule.py",
+      "sha256": "5fd168130a87b3308cbbe7ec9945f7474c90f07d24c622f13cbb97b8e2b95d24"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/life_updates.py",
+      "sha256": "d34c67ffaafc2337218ea10e3bf1fad695578bdf6cf76ebbf97ee3ada4ecf53f"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/panel_home.py",
+      "sha256": "f7f0a88ebb8ea25df23caf939b2894a705ecf94263620352dee309f47b83189c"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "b6696dd374dfa6ab1f0455f3729933e24fb32bdd88d5cfc5185c68e06c38e71f"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "0f1e5267197059ee32b7acaaf130341f0f81aef582d4e47d2bcaa0d49c71e40c"
+    },
+    {
+      "path": "tests/test_home_panel_v061.py",
+      "sha256": "9e5b48556931bb3396f6c8e090c92a3f8afcafcd84b02d9e45365377f0f5b856"
+    },
+    {
+      "path": "tests/test_life_schedule.py",
+      "sha256": "fad1c7c1ba32fa9c644ea184c08f39819b4eb2b6d64472d50e47c9faaffbb388"
+    },
+    {
+      "path": "tests/test_life_updates.py",
+      "sha256": "5c326eb649d34f3b0cdd3ea65c090f9a7b359c7ce10f05f5aa13febad1ba5ca9"
+    }
+  ]
+}
