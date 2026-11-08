@@ -611,13 +611,14 @@
     "release": "0.12.1",
     "runtime": "2.10.0",
     "bridge_repository": "BrianChen33/qq-webhook-bridge",
-    "bridge_commit": "f70bf389e3091d0710cb7b8abffb00f52c25249a",
+    "bridge_commit": "3be8f620db307734970d7fb97859d3269adbc88a",
     "adaptations": [
       "optional native Redis TLS transport on an existing always-on host",
       "atomic FIFO claim and durable idempotent inbox before acknowledgement",
       "serverless waiting retired after host cutover; cached short token proxy retained",
       "obsolete Blob connection audit and historical-usage reporting",
       "fresh authorized encrypted credential handoff outside memory backups",
+      "persistent service config path and approved proxy CA inherited at Node startup",
       "cognitive runtime and all plugin versions preserved"
     ]
   }

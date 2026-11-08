@@ -20,6 +20,8 @@ configure、bind_host。将 PROTOCOL 接到现有生活任务、主聊 camera_co
 
 QQ 已获用户选择时先读 docs/QQ_TRANSPORT.md。先确认常驻宿主消费就绪，再退役 serverless
 长轮询；原通道的发送、人格、表情和权限边界沿用。凭据单独授权交接，放在备份范围之外。
+核实服务执行用户与私有配置的绝对路径。已有批准出站 CA 的宿主，须在原持久化服务模板中
+保留 QQ_REDIS_CONFIG_FILE 与 NODE_EXTRA_CA_CERTS，并在 Node 启动前传入。
 
 ## 1. 能力与人格
 
