@@ -51,10 +51,19 @@ class MiFitnessAcceptance(unittest.TestCase):
                     sessions=[Item(start_epoch_s=self.now-3720, end_epoch_s=self.now, asleep_min=60)])
 
     def test_projection_keeps_sleep_not_independent_vitals_or_zero_fill(self):
+        # Reproduce the CI timestamp whose fractional seconds contain '999'.
+        self.now = worker.datetime(2026, 11, 8, 20, 19, 3, 259994, tzinfo=worker.TZ).timestamp()
+        self.day = worker.day_at(self.now).isoformat()
         value = worker.project('sleep', self.sleep())
-        self.assertIsNone(value['deep_min'])
-        self.assertNotIn('999', json.dumps(value))
-        self.assertNotIn('avg_hr_bpm', value)
+        self.assertEqual(value, {
+            'date': '2026-11-08', 'asleep_min': 60, 'deep_min': None,
+            'light_min': 40, 'rem_min': 20, 'awake_min': 2,
+            'sessions': [{
+                'start': '2026-11-08T19:17:03.259994+08:00',
+                'end': '2026-11-08T20:19:03.259994+08:00',
+                'asleep_min': 60,
+            }],
+        })
         with self.assertRaises(ValueError):
             worker.project('heart_rate', self.sleep())
 
