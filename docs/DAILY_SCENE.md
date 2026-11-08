@@ -1,6 +1,14 @@
 # 每日粗安排与生活场景
 
-Kit 0.10.0 / runtime 2.9.0 / life-camera 0.2.0。继续沿用输入、记忆、情绪、生活、表达、反馈六层。借鉴 dsh-daily-schedule 的粗日程、本地读取和衣着场景连续性，保留本系统既有的事件进程、封存作品、真实阅读与情绪来源。
+Kit 0.10.1 / runtime 2.9.1 / life-camera 0.2.0。继续沿用输入、记忆、情绪、生活、表达、反馈六层。借鉴 dsh-daily-schedule 的粗日程、本地读取和衣着场景连续性，保留本系统既有的事件进程、封存作品、真实阅读与情绪来源。
+
+## 自己的一天
+
+日程的主体固定为 companion。模型在原30m同一次规划中，根据自己的兴趣、精力、待续作品和虚拟生活，选择 busy（忙碌）、overtime（加班赶工）、leisure（休闲）、rest（休息）或 mixed（混合）日型。赶工可以是赶自己的故事、画作或学习项目，生活细节由当前人格发挥。
+
+用户的课表、讲座、工作、日历、睡眠与运动保留用户归属。关心用户、协助提醒与自己的生活安排分别处理。每个意图、活动主题和作品在同一次生成中检查主体，避免把用户刚说的活动自动写成自己的经历，或据此决定自己的忙闲日型。明确约定的共同活动单独记为互动。
+
+主体检查使用当前宿主模型的原规划轮次。结构校验验证subject与日型字段，语义归属由同一次模型判断，后台反馈据真实纠正复核。
 
 ## 最短链路
 
@@ -19,12 +27,15 @@ Kit 0.10.0 / runtime 2.9.0 / life-camera 0.2.0。继续沿用输入、记忆、�
 | configure | authorized=true, enabled=true/false | 当前启用状态、日程和场景 |
 | pending | 无 | 是否缺今日计划、当前version、可用活动名与字段规范 |
 | plan | expected_version, plan | 保存或幂等读回今日计划 |
+| repair | authorized=true, expected_version, reason, plan | 纠正已确认的错误意图，可移除错误过去打算，保留修正摘要 |
 | scene | expected_version, life_id, fields | 保存或幂等读回真实已释放阶段的场景 |
 | status | 无 | 完整今日计划及当前场景，仅后台、明确查询和面板使用 |
 
 新安装及升级默认关闭，宿主经用户选择后显式启用。已有用户批准的部署直接沿用授权。
 
-`plan` 只有两个键，day 为上海时区今天的 YYYY-MM-DD，anchors 有1–6项。每项只有 at、activity、intention，分别为当天严格递增的Unix秒、pending所列活动名、最多140字的打算。新安排的时间必须晚于当前时刻。已有过去打算的时间与内容保留，未来部分可修订。expected_version 初次为0，后续为读回版本。完全相同的日程重试返回 replayed，不重复加版本。
+`plan` 包含 day、subject、day_kind、anchors 四个键。subject必须是companion，day_kind从pending返回的五种日型选择。day为上海时区今天的YYYY-MM-DD，anchors有1–6项。每项只有at、activity、intention，分别为当天严格递增的Unix秒、pending所列活动名、最多140字的打算。新安排的时间必须晚于当前时刻。已有过去打算的时间与内容保留，未来部分可修订。expected_version初次为0，后续为读回版本。日型或内容改变会增加版本；完全相同的计划重试返回replayed。
+
+旧SQLite中没有主体字段的计划仍可通过status读取，pending返回ownership_review_required=true；普通聊天与活动偏好先隔离这份未复核计划。宿主在原后台模型轮次检查归属，沿用户授权调用repair。repair接受完整正确计划，只能保留或移除过去意图，禁止编写另一段过去；原始实际生活与用户日程另行逐项核实。修正只保存原因、时间和撤销的过去时间点，避免错误内容持续进入活动上下文。主体混淆已流入活动/记忆时，按源ID作定向纠正，保留用户真实事项，禁止关键词批量删除。
 
 `scene.fields` 可含 location、clothing、props、light、appearance，每项最多100字。省略表示未知，提交完整当前已知字段，避免意外删掉衣着。life_id 必须对应已有、未撤销、发生时间已到的 ct_life。初次expected_version=0，随后使用当前scene.version。完全相同且base_version相同的重试幂等；过期写入被拒绝，重新读取后决定。禁止把未来计划或封存稿当场景事实。
 

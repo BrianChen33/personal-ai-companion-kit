@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from muse_ext import companion as c
 
 FIELDS = ('location', 'clothing', 'props', 'light', 'appearance')
+DAY_KINDS = ('busy', 'overtime', 'leisure', 'rest', 'mixed')
 
 
 def enabled(b):
@@ -49,11 +50,18 @@ def _text(value, limit):
     return value.strip()
 
 
-def _save_plan(b, q):
+def _save_plan(b, q, repair=False):
+    if repair and q.get('authorized') is not True:
+        raise ValueError('daily_plan_authorized_repair_required')
+    reason = _text(q.get('reason'), 160) if repair else None
     value = q.get('plan')
     day = _day().isoformat()
-    if not isinstance(value, dict) or set(value) != {'day', 'anchors'} or value.get('day') != day:
+    if not isinstance(value, dict) or value.get('day') != day:
         raise ValueError('current_day_plan_required')
+    if value.get('subject') != 'companion':
+        raise ValueError('companion_plan_subject_required')
+    if set(value) != {'day', 'subject', 'day_kind', 'anchors'} or value['day_kind'] not in DAY_KINDS:
+        raise ValueError('invalid_companion_day_kind_or_fields')
     anchors = value['anchors']
     if not isinstance(anchors, list) or not 1 <= len(anchors) <= 6:
         raise ValueError('daily_anchors_1_to_6_required')
@@ -75,16 +83,27 @@ def _save_plan(b, q):
     with b.db:
         b.db.execute('BEGIN IMMEDIATE')
         old = _plan(b)
-        if old and old['anchors'] == cleaned:
+        if old and all(old.get(k) == value[k] for k in ('subject', 'day_kind')) and old['anchors'] == cleaned:
             return dict(ok=True, replayed=True, plan=old)
         if expected != (old['version'] if old else 0):
             raise ValueError('daily_plan_version_conflict')
         # Past intentions remain intentions, but are immutable even after a revision.
         old_past = [a for a in (old or {}).get('anchors', []) if a['at'] <= c.stamp()]
         new_past = [a for a in cleaned if a['at'] <= c.stamp()]
-        if old_past != new_past:
+        if repair:
+            if not old:
+                raise ValueError('existing_daily_plan_required_for_repair')
+            if any(anchor not in old_past for anchor in new_past):
+                raise ValueError('daily_plan_repair_cannot_invent_past')
+        elif old_past != new_past:
             raise ValueError('daily_plan_past_intentions_immutable')
-        result = dict(day=day, version=expected + 1, anchors=cleaned, updated=c.stamp(), origin='intention')
+        result = dict(day=day, subject='companion', day_kind=value['day_kind'], version=expected + 1,
+                      anchors=cleaned, updated=c.stamp(), origin='intention')
+        if (old or {}).get('correction'):
+            result['correction'] = old['correction']
+        if repair:
+            result['correction'] = dict(at=c.stamp(), reason=reason,
+                                        removed_past_times=[a['at'] for a in old_past if a not in new_past])
         c._set(b, 'day_plan:' + day, result)
         cutoff = (_day() - timedelta(days=6)).isoformat()
         b.db.execute("DELETE FROM ct_kv WHERE key LIKE 'day_plan:%' AND key<?", ('day_plan:' + cutoff,))
@@ -143,6 +162,8 @@ def sync(b, ids):
 def preference(b, activity=None):
     """A soft ordinary-activity weight; never changes the phone selection draw."""
     plan = _plan(b) if enabled(b) else None
+    if plan and plan.get('subject') != 'companion':
+        plan = None
     due = [a for a in (plan or {}).get('anchors', []) if a['at'] <= c.stamp() < a['at'] + 5400]
     preferred = due[-1]['activity'] if due else None
     if activity is None:
@@ -156,9 +177,13 @@ def projection(b):
         return None
     scene = _scene(b)
     plan = _plan(b)
+    if plan and plan.get('subject') != 'companion':
+        plan = None
     now = c.stamp()
     future = next((a for a in (plan or {}).get('anchors', []) if a['at'] > now), None)
-    result = dict(scene_version=(scene or {}).get('version', 0))
+    result = dict(scene_version=(scene or {}).get('version', 0), subject='companion')
+    if plan and plan.get('subject') == 'companion':
+        result['day_kind'] = plan.get('day_kind')
     if scene:
         result.update(activity=scene['activity'][:40], stage=scene['stage'][:24], occurred=scene['occurred'],
                       fields={k: v[:40] for k, v in scene['fields'].items()})
@@ -213,16 +238,23 @@ def dispatch(b, q):
         return status(b)
     if not enabled(b):
         return dict(ok=False, disabled=True)
-    if action == 'plan':
-        return _save_plan(b, q)
+    if action in ('plan', 'repair'):
+        return _save_plan(b, q, repair=action == 'repair')
     if action == 'scene':
         return _save_scene(b, q)
     if action == 'pending':
         current = status(b)
-        return dict(current, needed=current['plan'] is None, expected_version=(current['plan'] or {}).get('version', 0),
+        plan = current['plan'] or {}
+        review = bool(plan) and plan.get('subject') != 'companion'
+        return dict(current, needed=not plan or review, ownership_review_required=review,
+                    expected_version=plan.get('version', 0),
                     day=_day().isoformat(), anchor_fields=['at', 'activity', 'intention'],
+                    plan_fields=['day', 'subject', 'day_kind', 'anchors'], subject='companion', day_kinds=list(DAY_KINDS),
                     activities=[a[0] for a in c.ACTIVITIES] + ['刷手机'],
-                    policy='Same existing background model run. Usually4–6 broad future intentions, '
-                           'fewer when little day remains. No emotions, future facts or new timer. '
+                    policy='Plan the companion own virtual day from its interests, energy and unfinished projects. '
+                           'Choose busy/overtime/leisure/rest/mixed independently of the owner calendar, classes, work and health. '
+                           'Check each intention subject in this SAME background model pass. Owner appointments stay owner facts. '
+                           'An explicit joint agreement is a separate interaction, not a copied calendar or day theme. '
+                           'Usually4–6 broad future intentions, fewer when little day remains. No emotions, future facts or new timer. '
                            'Scene fields only describe a released life_id. Intentions never claim completion.')
     raise ValueError('unknown_daily_scene_action')

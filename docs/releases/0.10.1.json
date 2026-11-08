@@ -1,0 +1,74 @@
+{
+  "release": "0.10.1",
+  "runtime": "2.9.1",
+  "life_camera_version": "0.2.0",
+  "social_reading_version": "0.4.0",
+  "mi_fitness_version": "0.1.0",
+  "base_architecture": "bac26195c23353af2983df39ec8e7eefde52977a",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "639340cf9bb4e0d457b03eded06cacb88c946417e98cf9d37a0e03f784d3cca1"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "4934336ed1dc94d8f83aaeffb6caf3be2d2328d4e18862aff129fb6eae2f7f17"
+    },
+    {
+      "path": "README.md",
+      "sha256": "d32a7aefdf066712a9daeca16256e0c0baf271d1989b1a031776b8e30fd571c8"
+    },
+    {
+      "path": "docs/DAILY_SCENE.md",
+      "sha256": "761bd9d5020ef20e301f9e00c2653623f654044e53dc134cabe2f512dea6ee17"
+    },
+    {
+      "path": "docs/HOST_TASKS.md",
+      "sha256": "ab8ba98ee5065bca114a2e62ab09b7fbc6ee4137e10feb4b7d05bbf82e727e6c"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "4113eae130a1a4f71ced1fb7b87e3e3d0e9a7dc426ee5a657a4f38e128f88817"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "802b05889bc31fd72ae40969b7405d58818762210760c0e93669c4eea573cfe2"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "d339e0d3dcff274fd4a7b677ce4fb4a10a0a87a3ca33f23c13cd2e0152ceb2d4"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion.py",
+      "sha256": "416a7b25f7492c4e4501845c535d3abc41f319a6fa3348297864102044e5854f"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion_panel.html",
+      "sha256": "ed8dc8e3e7a15e40bdd9c69648d71d962859dc37be66f6808efda10b9b9f5288"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/life_projects.py",
+      "sha256": "e502fc9d94d4a1abfd6be8aa47696e08a1e09d31303d5f09ca18e7f0a9469446"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/life_schedule.py",
+      "sha256": "2a0a46891a3b53d778cc5fd8032800b7c373394f4f28e30a2b14d246bd1c578c"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "9bc3a56bfdc39b5a86f93962ba2cdce6c835a76ff61ef813d089fa29241f1756"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "a3081e793eea405369838b9c5f0249f376f05cb6e53ddf3dde2730d8bc075c89"
+    },
+    {
+      "path": "tests/test_home_panel_v061.py",
+      "sha256": "f0d3fc15a4b891208f0e7a139b7d6c11133dc95f0dca9ce458633507b312c9a6"
+    },
+    {
+      "path": "tests/test_life_schedule.py",
+      "sha256": "80ad5af69b6f95ebe4d314bcd572d4445ee8ebac5e59ec0950c6bcabf97f9765"
+    }
+  ]
+}

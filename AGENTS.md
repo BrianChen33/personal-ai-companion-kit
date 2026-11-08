@@ -1,6 +1,11 @@
 # Repository instructions
 
-Current0.10.0/runtime2.9.0/life-camera0.2.0 adds docs/DAILY_SCENE.md.
+Current0.10.1/runtime2.9.1/life-camera0.2.0 uses docs/DAILY_SCENE.md.
+The companion plans its OWN virtual day: subject=companion, independent day_kind.
+Owner calendar/classes/work/health keep owner attribution. Same existing model
+checks each intention/activity subject. Old unreviewed plans stay out of foreground
+and activity preferences; authorized repair can drop false past intentions but
+cannot invent replacement history. Shared agreements are separate interactions.
 Daily intentions and the released scene use existing ct_kv. Explicit enable only.
 Original30m model plans4–6 loose intentions; original15m/30m update released scenes.
 Foreground only reads compact companion.day_scene, without an extra tool/model.

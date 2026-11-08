@@ -1,6 +1,8 @@
 # 给部署 Agent 的执行手册（v0.8）
 
-当前使用 Kit0.10.0 / runtime2.9.0 / life-camera0.2.0。按 docs/DAILY_SCENE.md
+当前使用 Kit0.10.1 / runtime2.9.1 / life-camera0.2.0。按 docs/DAILY_SCENE.md
+让伙伴规划自己的日程与日型，原后台同一模型检查主体；用户日历、课表、工作和健康保留用户归属。
+旧计划归属不明时先隔离，再按明确授权repair纠正；过去只可撤销错误意图，不能补造经历。
 把可选粗日程与共享场景接入原任务，显式启用后复用原30m模型规划、原15m推进和面板刷新。
 普通聊天只读简短projection；保留40/60比例和原已跑通的生图/投递路径。先按插件README
 核manifest、原三视图SHA及宿主生图/后台/投递schema，再 install/enable、asset_put、

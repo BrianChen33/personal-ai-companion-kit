@@ -639,8 +639,10 @@ function renderDailyScene() {
    }
  } else current.append(node('p', daily.enabled ? '场景尚未记录。' : '日程与场景未开启。', 'detail-text'));
  overview.append(current);
- const anchors = daily.plan?.anchors || [];
- const outline = section('今日打算', daily.plan?.day || '');
+ const anchors = daily.plan?.subject === 'companion' ? daily.plan.anchors || [] : [];
+ const dayKinds = {busy:'忙碌日', overtime:'赶工日', leisure:'休闲日', rest:'休息日', mixed:'自由安排'};
+ const dayCaption = [daily.plan?.day, dayKinds[daily.plan?.day_kind]].filter(Boolean).join(' · ');
+ const outline = section('我的今日打算', dayCaption);
  if (anchors.length) {
    const list = node('ol', null, 'day-intentions');
    for (const anchor of anchors) {

@@ -506,5 +506,26 @@
     },
     "review": "one read-only reviewer; corrected atomic scene sync, retired-field inheritance and frozen-source validation",
     "host": "pending pinned incremental deployment and real readback; preserve confirmed working first-photo pipeline"
+  },
+  "independent_day_update": {
+    "date": "2026-11-08",
+    "release": "0.10.1",
+    "runtime": "2.9.1",
+    "base_architecture": "bac26195c23353af2983df39ec8e7eefde52977a",
+    "changes": [
+      "explicit companion subject and self-chosen busy/overtime/leisure/rest/mixed day kind",
+      "same-pass model ownership review in daily and detailed activity generation",
+      "legacy unreviewed plans excluded from foreground and activity preferences",
+      "authorized correction drops mistaken intentions without inventing past events",
+      "existing panel shows companion-owned daily outline and day kind"
+    ],
+    "validation": {
+      "python_cases": 503,
+      "platform_skips": 2,
+      "node_cases": 13,
+      "wheel": "accepted outside checkout",
+      "method": "one final isolated acceptance phase; four new ownership/repair regressions"
+    },
+    "host": "pending pinned incremental deployment, targeted attribution correction and private lock refresh"
   }
 }

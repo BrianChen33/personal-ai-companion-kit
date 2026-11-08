@@ -2,6 +2,8 @@
 
 ## 每日粗安排与共享场景
 
+日程属于companion自己的虚拟生活。原30m同一次模型从自己的兴趣/精力/项目选择独立day_kind并逐条检查主体，提交subject=companion。用户日历、讲座、工作、健康保持用户归属，协助提醒与自己的日程分别处理。旧计划pending要求ownership_review时，按授权repair更正，禁止补造过去。活动主题和封存作品同样检查归属。
+
 按[DAILY_SCENE.md](DAILY_SCENE.md)在原30m轮次读取companion_day pending、同一次模型补今日剩余打算；原15m/30m推进已释放事件后按需提交一次scene。先沿用当前活动，再准备未来；不增加模型、定时器或前台读取步骤。面板仍在原15m末尾更新。源事件与未来意图分开，40/60由原life_routine控制。升级后刷新实际native任务导出，再建私库快照。
 
 ## 可选生活相机 0.2.0

@@ -263,7 +263,10 @@ def dispatch(b, q):
                     stage_fields=['after_seconds', 'description'], stage_seconds_bounds=[1, 21600],
                     plan_fields=['version', 'origin', 'activity', 'topic', 'stages', 'artifact'],
                     artifact_fields=['title', 'text'],
-                    policy='Model supplies concrete virtual topic, process and native artifact. Offsets begin at acceptance. '
+                    policy='Model supplies its own concrete virtual topic, process and native artifact. '
+                           'Check the subject in this same pass: owner classes, calendar, work and health remain owner facts. '
+                           'Use companion interests, energy and its unfinished projects; joint agreements stay separate interactions. '
+                           'Offsets begin at acceptance. '
                            'Future drafts are sealed; no observed web reading or factual learning may be invented. '
                            'Use expected_version and pause before revising only the future. No extra model or timer.')
     if action == 'view':

@@ -34,7 +34,7 @@ class DailyScene(unittest.TestCase):
         self.call('configure', authorized=True, enabled=True)
 
     def outline(self):
-        return dict(day='2026-11-08', anchors=[
+        return dict(day='2026-11-08', subject='companion', day_kind='leisure', anchors=[
             dict(at=self.now.return_value + n * 3600, activity=name, intention='PLAN-ONLY ' + name)
             for n, name in enumerate(['做饭吃饭', '学习', '刷手机', '跑步'], 1)])
 
@@ -74,6 +74,59 @@ class DailyScene(unittest.TestCase):
         original['anchors'][0]['intention'] = 'Rewritten past'
         with self.assertRaisesRegex(ValueError, 'past'):
             self.call('plan', expected_version=1, plan=original)
+
+    def test_plan_subject_and_day_kind_are_explicit(self):
+        self.enable()
+        for subject in ('owner', None):
+            outline = self.outline()
+            outline['subject'] = subject
+            with self.assertRaisesRegex(ValueError, 'subject'):
+                self.call('plan', expected_version=0, plan=outline)
+        outline = self.outline()
+        first = self.call('plan', expected_version=0, plan=outline)
+        outline['day_kind'] = 'overtime'
+        changed = self.call('plan', expected_version=1, plan=outline)
+        self.assertEqual(changed['plan']['version'], first['plan']['version'] + 1)
+        self.assertEqual(c.context(self.b, 'owner-private')['day_scene']['day_kind'], 'overtime')
+
+    def test_legacy_plan_requests_same_pass_ownership_review(self):
+        self.enable()
+        old = dict(day='2026-11-08', version=1, anchors=self.outline()['anchors'])
+        with self.b.db:
+            c._set(self.b, 'day_plan:2026-11-08', old)
+        pending = self.call('pending')
+        self.assertTrue(pending['needed'])
+        self.assertTrue(pending['ownership_review_required'])
+        self.assertEqual(pending['expected_version'], 1)
+        self.assertNotIn('next_intention', c.context(self.b, 'owner-private')['day_scene'])
+        self.now.return_value += 3601
+        from muse_ext.life_schedule import preference
+        self.assertIsNone(preference(self.b))
+
+    def test_authorized_repair_removes_bad_past_intention_without_rewriting_life(self):
+        self.enable()
+        old = self.outline()
+        self.call('plan', expected_version=0, plan=old)
+        self.now.return_value += 3700
+        repaired = copy.deepcopy(old)
+        repaired['anchors'] = repaired['anchors'][1:]
+        result = self.call('repair', authorized=True, expected_version=1, plan=repaired, reason='Synthetic subject correction')
+        self.assertEqual(result['plan']['correction']['removed_past_times'], [old['anchors'][0]['at']])
+        self.assertTrue(self.call('repair', authorized=True, expected_version=1, plan=repaired,
+                                  reason='Synthetic subject correction')['replayed'])
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM ct_life').fetchone()[0], 0)
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM source_events').fetchone()[0], 0)
+
+    def test_repair_requires_authority_and_cannot_invent_a_different_past(self):
+        self.enable()
+        old = self.outline()
+        self.call('plan', expected_version=0, plan=old)
+        self.now.return_value += 3700
+        old['anchors'][0]['intention'] = 'Invented replacement past'
+        with self.assertRaisesRegex(ValueError, 'authorized'):
+            self.call('repair', expected_version=1, plan=old, reason='Synthetic correction')
+        with self.assertRaisesRegex(ValueError, 'past'):
+            self.call('repair', authorized=True, expected_version=1, plan=old, reason='Synthetic correction')
 
     def test_bounded_foreground_never_includes_full_plan(self):
         self.enable()

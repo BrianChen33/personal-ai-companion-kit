@@ -36,10 +36,12 @@ class HomePanel(unittest.TestCase):
         now = c.stamp()
         day = __import__('datetime').datetime.fromtimestamp(now, c.TZ).date().isoformat()
         self.b.dispatch(dict(op='companion_day', action='plan', expected_version=0,
-                             plan=dict(day=day, anchors=[dict(at=now + 1, activity='学习', intention='Synthetic intention')])) )
+                             plan=dict(day=day, subject='companion', day_kind='rest',
+                                       anchors=[dict(at=now + 1, activity='学习', intention='Synthetic intention')])) )
         html, data = self.data(self.b.dispatch(dict(op='companion_panel'))['path'])
         self.assertEqual(data['daily_scene']['plan']['anchors'][0]['intention'], 'Synthetic intention')
         self.assertIn('function renderDailyScene()', html)
+        self.assertIn('我的今日打算', html)
         self.assertIn('最近日常', html)
         self.assertIn('更多日常', html)
         self.assertIn('id="house-sticker"', html)
