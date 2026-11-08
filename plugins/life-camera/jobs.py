@@ -144,9 +144,14 @@ def work(b):
             generation = dict(claim=claim, claimed_at=store.now())
             b.db.execute("UPDATE lc_job SET status='claimed',generation=?,updated=? WHERE id=?",
                          (store.encode(generation), store.now(), row['id']))
-            return dict(ok=True, status='claimed', job=store.public_job(store.get_job(b, row['id'])),
-                        claim=claim, request=frame, generation_started=False,
-                        next='Bind the actual background task, then invoke the host image tool once with these image inputs.')
+            result = dict(ok=True, status='claimed', job=store.public_job(store.get_job(b, row['id'])),
+                          claim=claim, request=frame, generation_started=False,
+                          next='Bind the actual background task, then invoke the host image tool once with these image inputs. '
+                               'View the actual output against request.shot before rendered; report observations, not expected counts.')
+            if frame.get('shot'):
+                result['composition_review_template'] = dict(image_sha256=None, subject_count=None,
+                    capture_device_count=None, objects={item['id']: None for item in frame['shot']['objects']}, issues=[])
+            return result
     return dict(ok=True, status=deferred or 'empty', job=None)
 
 
@@ -190,7 +195,15 @@ def rendered(b, q):
     paths = q.get('files')
     if not isinstance(paths, list) or len(paths) != 1 or not isinstance(paths[0], str):
         raise ValueError('camera_one_output_image_required')
+    frame = json.loads(row['plan'])
+    composition_review = None
+    if frame.get('shot'):
+        from . import shots
+        raw, _ = library.image_bytes(paths[0])
+        composition_review = shots.review(frame['shot'], frame['camera'], raw, q.get('composition_review'))
     image = library.keep_image(b, paths[0], 'photos')
+    if composition_review and image['sha256'] != composition_review['image_sha256']:
+        raise ValueError('camera_composition_review_image_changed')
     with b.db:
         b.db.execute('BEGIN IMMEDIATE')
         row, generation = claimed(b, q)
@@ -199,6 +212,8 @@ def rendered(b, q):
                 raise ValueError('camera_generation_receipt_conflict')
             return dict(ok=True, replayed=True, job=store.public_job(row))
         generation.update(receipt=receipt, images=[image])
+        if composition_review:
+            generation['composition_review'] = composition_review
         frame = json.loads(row['plan'])
         frame['prompt_sha256'] = hashlib.sha256(frame.pop('prompt').encode()).hexdigest()
         b.db.execute("UPDATE lc_job SET status='ready',generation=?,plan=?,updated=? WHERE id=?",

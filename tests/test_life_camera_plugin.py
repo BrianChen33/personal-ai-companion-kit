@@ -1,5 +1,7 @@
 """Synthetic plugin acceptance. No image service, network, native sends or persona."""
 import base64
+import copy
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -59,7 +61,13 @@ class LifeCamera(unittest.TestCase):
     def plan(self, **args):
         return self.call('plan', life_id=args.pop('life_id', None) or self.life(),
                          camera=args.pop('camera', 'selfie'), prompt='Resting by the window.',
-                         expression='quietly amused', caption='A synthetic caption.', **args)
+                         expression='quietly amused', caption='A synthetic caption.', shot=args.pop('shot', self.shot()), **args)
+
+    def observed(self, work):
+        frame = work['request']
+        return dict(image_sha256=hashlib.sha256(PNG).hexdigest(), subject_count=1,
+                    capture_device_count=1 if frame['camera'] == 'mirror' else 0,
+                    objects={item['id']: item['quantity'] for item in frame.get('shot', {}).get('objects', [])}, issues=[])
 
     def rendered(self, job):
         work = self.call('work')
@@ -67,7 +75,7 @@ class LifeCamera(unittest.TestCase):
         token = work['claim']
         self.call('bind', id=job['id'], claim=token, native_task_id='native-fixture')
         ready = self.call('rendered', id=job['id'], claim=token, native_task_id='native-fixture',
-                          files=[str(self.image)], receipt='synthetic-tool-receipt')
+                          files=[str(self.image)], receipt='synthetic-tool-receipt', composition_review=self.observed(work))
         return ready
 
     def test_reference_is_first_real_file_and_context_stays_compact(self):
@@ -92,15 +100,77 @@ class LifeCamera(unittest.TestCase):
         for camera, expected in geometries.items():
             with self.subTest(camera=camera):
                 self.call('plan', life_id=self.life(), camera=camera,
-                          prompt='Synthetic mixed-view scene.', pose='Synthetic pose request.')
+                          prompt='Synthetic mixed-view scene.', pose='Synthetic pose request.', shot=self.shot())
                 request = self.call('work')['request']
                 with self.b.db:
                     self.b.db.execute("UPDATE lc_job SET status='failed' WHERE status='claimed'")
                 prompt = request['prompt']
                 self.assertIn('All views on the character sheet depict the same single individual', prompt)
                 self.assertIn(expected, prompt)
-                self.assertGreater(prompt.index('Camera geometry takes priority'), prompt.index('pose:'))
+                self.assertGreater(prompt.index('Physical capture setup'), prompt.index('Scene:'))
+                self.assertNotIn('Synthetic pose request.', prompt)
                 self.assertEqual(request['count'], 1)
+
+    def shot(self):
+        return dict(support='left_hand', viewpoint='Above the meal, tilted gently downward',
+                    framing='Rice bowl and utensil over a small table', hands={'right': 'lifting one bite'},
+                    objects=[dict(id='chopsticks', label='wooden chopsticks', quantity=1, unit='pair', location='right_hand'),
+                             dict(id='rice', label='rice', quantity=1, unit='bowl', location='surface')])
+
+    def test_shot_owns_actions_inventory_and_survives_prompt_compaction(self):
+        job = self.plan(camera='rear', shot=self.shot(), pose='Conflicting legacy pose')['job']
+        work = self.call('work')
+        self.assertEqual(work['request']['shot'], self.shot())
+        self.assertIn('1 pair of wooden chopsticks', work['request']['prompt'])
+        self.assertIn('left hand supports the capture device behind its lens', work['request']['prompt'])
+        self.assertNotIn('Conflicting legacy pose', work['request']['prompt'])
+        self.call('bind', id=job['id'], claim=work['claim'], native_task_id='native-shot-fixture')
+        review = dict(image_sha256=hashlib.sha256(PNG).hexdigest(), subject_count=1,
+                      capture_device_count=0, objects={'chopsticks': 1, 'rice': 1}, issues=[])
+        self.call('rendered', id=job['id'], claim=work['claim'], native_task_id='native-shot-fixture',
+                  files=[str(self.image)], receipt='shot-fixture-receipt', composition_review=review)
+        row = self.b.db.execute('SELECT plan,generation FROM lc_job WHERE id=?', (job['id'],)).fetchone()
+        self.assertEqual(json.loads(row['plan'])['shot'], self.shot())
+        self.assertEqual(json.loads(row['generation'])['composition_review'], review)
+        self.assertNotIn('prompt', json.loads(row['plan']))
+
+    def test_shot_rejects_busy_camera_hand_and_duplicate_object_identity(self):
+        busy = self.shot()
+        busy['hands']['left'] = 'holding an extra tool'
+        duplicate = self.shot()
+        duplicate['objects'].append(dict(duplicate['objects'][0], location='surface'))
+        for invalid in (busy, duplicate):
+            with self.subTest(shot=invalid), self.assertRaisesRegex(ValueError, 'shot'):
+                self.plan(camera='rear', shot=invalid)
+
+    def test_new_shot_required_but_old_frozen_job_and_retry_still_work(self):
+        lid = self.life()
+        with self.assertRaisesRegex(ValueError, 'shot'):
+            self.call('plan', life_id=lid, camera='rear', prompt='Unplanned fixture')
+        job = self.plan(life_id=lid, camera='rear')['job']
+        row = self.b.db.execute('SELECT plan FROM lc_job WHERE id=?', (job['id'],)).fetchone()
+        frozen = json.loads(row['plan'])
+        frozen.pop('shot')
+        with self.b.db:
+            self.b.db.execute('UPDATE lc_job SET plan=? WHERE id=?', (json.dumps(frozen), job['id']))
+        self.assertTrue(self.call('plan', life_id=lid, camera='rear')['replayed'])
+        self.rendered(job)
+        self.assertEqual(self.call('send_work')['job']['id'], job['id'])
+
+    def test_observed_extra_utensil_or_visible_capture_device_cannot_become_ready(self):
+        job = self.plan(camera='rear', shot=self.shot())['job']
+        work = self.call('work')
+        self.call('bind', id=job['id'], claim=work['claim'], native_task_id='native-review-fixture')
+        valid = dict(image_sha256=hashlib.sha256(PNG).hexdigest(), subject_count=1,
+                     capture_device_count=0, objects={'chopsticks': 1, 'rice': 1}, issues=[])
+        extra_utensil = copy.deepcopy(valid)
+        extra_utensil['objects']['chopsticks'] = 2
+        for invalid in (None, extra_utensil, dict(valid, capture_device_count=1), dict(valid, image_sha256='0'*64)):
+            with self.subTest(review=invalid), self.assertRaisesRegex(ValueError, 'composition_review'):
+                self.call('rendered', id=job['id'], claim=work['claim'], native_task_id='native-review-fixture',
+                          files=[str(self.image)], receipt='review-fixture-receipt', composition_review=invalid)
+        self.assertEqual(self.b.db.execute('SELECT status FROM lc_job WHERE id=?', (job['id'],)).fetchone()[0], 'generating')
+        self.assertFalse((self.root/'assets/life-camera/photos').exists())
 
     def test_camera_freezes_shared_scene_and_announces_later_delivery(self):
         from muse_ext import life_schedule as schedule
@@ -118,7 +188,7 @@ class LifeCamera(unittest.TestCase):
         self.assertNotIn('跑步', work['request']['prompt'])
         self.call('bind', id=job['id'], claim=work['claim'], native_task_id='native-scene-fixture')
         self.call('rendered', id=job['id'], claim=work['claim'], native_task_id='native-scene-fixture',
-                  files=[str(self.image)], receipt='scene-image-receipt')
+                  files=[str(self.image)], receipt='scene-image-receipt', composition_review=self.observed(work))
         send = self.call('send_work')
         self.assertTrue(send['scene_changed'])
         self.assertIn('earlier', send['caption_policy'])
@@ -148,7 +218,7 @@ class LifeCamera(unittest.TestCase):
         lid = self.life('学习', 'started')
         self.b.dispatch(dict(op='companion_day', action='scene', expected_version=0,
                              life_id=lid, fields={'location': '窗边'}))
-        self.call('plan', source_event=self.user(), camera='selfie', prompt='A synthetic request.')
+        self.call('plan', source_event=self.user(), camera='selfie', prompt='A synthetic request.', shot=self.shot())
         with self.b.db:
             self.b.db.execute("UPDATE source_events SET status='retired' WHERE id=(SELECT source_event FROM ct_life WHERE id=?)", (lid,))
         self.assertIsNone(self.call('work')['job'])
@@ -303,7 +373,7 @@ class LifeCamera(unittest.TestCase):
             self.call('asset_put', authorized=True, category=category, id=identity, name=identity,
                       description='Synthetic ' + category, images=[str(self.image)])
         result = self.call('plan', life_id=self.life(), camera='rear', prompt='A cup on a table.',
-                           outfit='clothes', scene='room', props=['cup'])
+                           outfit='clothes', scene='room', props=['cup'], shot=self.shot())
         work = self.call('work')
         self.assertEqual(work['job']['id'], result['job']['id'])
         self.assertEqual(len(work['request']['references']), 2)
@@ -352,7 +422,7 @@ class LifeCamera(unittest.TestCase):
             try:
                 args = dict(op='plugin_call', plugin='life-camera', scope='owner-private', action=action)
                 if action == 'plan':
-                    args.update(life_id=lid, camera='selfie', prompt='A concurrent synthetic scene.')
+                    args.update(life_id=lid, camera='selfie', prompt='A concurrent synthetic scene.', shot=self.shot())
                 return brain.dispatch(args)
             finally:
                 brain.close()

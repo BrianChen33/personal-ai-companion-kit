@@ -1,6 +1,10 @@
 # Repository instructions
 
-Current0.11.1/runtime2.10.0/life-camera0.2.1 uses docs/DAILY_SCENE.md.
+Current0.12.0/runtime2.10.0/life-camera0.3.0 uses docs/DAILY_SCENE.md.
+New photo plans require a physical shot in the existing BACKGROUND pass (support,
+visible hands, object quantities/locations). Ordinary replies record intent only.
+Actual visual observations bind the generated image SHA
+before rendered accepts it. Preserve old frozen jobs; read camera PROTOCOL.
 Character-sheet views describe one individual. Final camera geometry overrides
 conflicting scene/pose details. Existing background visual check includes one
 subject and coherent anatomy before rendered/send; use the real failure ledger.

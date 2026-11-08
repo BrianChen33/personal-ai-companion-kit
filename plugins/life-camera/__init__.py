@@ -3,7 +3,7 @@ from pathlib import Path
 from . import jobs, library, store
 
 API = 1
-VERSION = '0.2.1'
+VERSION = '0.3.0'
 
 
 def initialize(b):
@@ -39,7 +39,8 @@ def camera(b, scope):
                            'Use only released current stages and present emotion/energy/relationship. '
                            'Call plan with a real owner source or appraised life_id, then let the existing '
                            'background runner claim work. Every selfie must attach the original character '
-                           'sheet as actual image input. Keep ordinary text responsive. Actual native '
+                           'sheet as actual image input. Ordinary replies record only the photo intent. Physical '
+                           'shot planning runs in the existing background pass; rendered needs actual image-bound composition_review. Actual native '
                            'generation and send receipts close the job. Quiet hours01–07 Shanghai apply '
                            'to autonomous photos. Sticker draws keep their independent existing entry.')
     # The plugin owns the reference index. Avoid echoing old full reference paths.

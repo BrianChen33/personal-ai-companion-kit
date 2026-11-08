@@ -1,6 +1,7 @@
 # 给部署 Agent 的执行手册（v0.8）
 
-当前使用 Kit0.11.1 / runtime2.10.0 / life-camera0.2.1。按相机PROTOCOL接上单角色、固定视点与
+当前使用 Kit0.12.0 / runtime2.10.0 / life-camera0.3.0。新plan必须同轮填写shot，原后台实际看图
+后提交绑定图片SHA的composition_review。按相机PROTOCOL接上单角色、固定视点与
 原后台快速检查，实际生图继续沿work给定的组合prompt及原参考图。按 docs/DAILY_SCENE.md
 安排连贯时段，原tick到点绑定现有项目，空档使用原40/60。原15m分享阶段每轮claim，
 接上已开口活动的实际结果并对账失联认领，unknown保持单次交接。

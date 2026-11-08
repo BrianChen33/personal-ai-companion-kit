@@ -1,16 +1,17 @@
 {
   "id": "life-camera",
   "name": "生活相机",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "api": 1,
   "source": "https://github.com/aa1355721445-lgtm/dsh-image-studio",
   "reference_commit": "fbd8f662f29546c2574a21f8c17ae1bc68c9498a",
   "files": {
-    "__init__.py": "b2c22c0bd7cde34a68258e41af927eb2d1478d281f82f497c4401f56e5e19c02",
-    "jobs.py": "0dac8712667203d8729ee75f7bbe5acb47ec18197ac8c23f816d20610f880cbd",
-    "library.py": "dea657d1d550fc2d6d05c63e1aa4fbcfda20f607c4f27e84e2ff8d476085f156",
-    "PROTOCOL.md": "6b63389b1cfa9db6ad2b19528eb2893cd0e20424e07909b794dca167e8dff9d0",
-    "README.md": "af393bd69d0e69b4318e0affd461803276e512b96fc3dc77342dd7791481b7b0",
+    "__init__.py": "a02f441f3fe53eb4a007691c41cee2e77cbab5c11e1092bbab81223893a81767",
+    "jobs.py": "2add05be5ff112b98fdfc5073abe6fa158550a52776f12237fe1003c2fe72e17",
+    "library.py": "4cbdd780784bd0a9962a69db3e5dca355eabdc7765fd9bbc41a4eca84e2bd240",
+    "PROTOCOL.md": "147fa5a1203fb4ee05ef08a0cf01fe5e06ba945828cd05fd4e62afb7033f8975",
+    "README.md": "a9fdd1d9c860cebb779396a98eb89e911f154c71d03b0b889706e4ba9c040a62",
+    "shots.py": "b29d8e81a17276e42f524ed0370e229c751dd71b2340f5746684b8046dbc6007",
     "store.py": "a332b762e7f9ab1dd58aca90fed012ce55772997db4dbc9ba9ab84984fdc2dfe",
     "THIRD_PARTY_LICENSE.txt": "ee1e14f63504df6438524a2e73d30f1542d697d7cc63cbd1dc49dd5b0172fdd3"
   }

@@ -102,6 +102,7 @@ def listing(b, q):
 
 def compose(b, q, source):
     from muse_ext.life_schedule import freeze
+    from . import shots
     config = store.settings(b)
     character = get(b, 'characters', config['character_id'])
     promised = source.get('promised_camera')
@@ -110,6 +111,7 @@ def compose(b, q, source):
     camera = q.get('camera', promised or config['camera_preference'])
     if camera not in ('selfie', 'rear', 'mirror'):
         raise ValueError('model_camera_choice_required')
+    shot = shots.prepare(q.get('shot'), camera)
     frame = text(q.get('prompt'), 1400)
     caption = text(q.get('caption', ''), 180, False)
     parts = [
@@ -127,6 +129,8 @@ def compose(b, q, source):
             parts.append('Capture ' + field + ': ' + value)
         parts.append('Use these known capture details consistently. Omitted details are unknown. Do not invent a later activity or use future daily intentions.')
     for field in ('expression', 'pose', 'light'):
+        if field == 'pose' or (field == 'expression' and camera == 'rear'):
+            continue
         value = text(q.get(field, ''), 240, False)
         if value:
             parts.append(field + ': ' + value)
@@ -160,15 +164,12 @@ def compose(b, q, source):
     refs = refs[:config['max_references']]
     views = dict(
         selfie='An arm-length front-camera selfie with the phone outside the frame. '
-               'Exactly one visible face and one coherent body, with anatomically consistent hands and limbs. '
-               'Exclude extra people, reflected duplicates and detached first-person arms.',
+               'Exactly one visible face and one coherent body, with anatomically consistent hands and limbs.',
         rear='A rear-camera first-person POV of the objects ahead. The camera holder stays behind the camera. '
              'Keep the holder\'s face, head and torso outside the image. Only explicitly requested hands or forearms '
-             'may enter from the lower edge, belonging to that same holder. Exclude a side/back view of the holder, '
-             'a second seated character and extra limbs or tails.',
+             'may enter from the lower edge, belonging to that same holder.',
         mirror='A mirror selfie with one mirror and physically consistent phone/reflection direction. '
-               'Show the character only once, inside the mirror. Keep the direct body outside the frame. '
-               'Exclude a second reflection, extra character and detached first-person arms.')
+               'Show the character only once, inside the mirror. Keep the direct body outside the frame.')
     parts.extend([
         'Camera geometry takes priority over conflicting scene, pose and reference composition details.',
         'All views on the character sheet depict the same single individual. Use them for identity and style. '
@@ -176,7 +177,8 @@ def compose(b, q, source):
         'clones, extra bodies, repeated anatomy and copied reference labels.',
         views[camera],
     ])
-    return dict(**({'scene_snapshot': frozen} if frozen else {}),
+    parts.append(shots.describe(shot, camera))
+    return dict(**({'scene_snapshot': frozen} if frozen else {}), shot=shot,
                 camera=camera, caption=caption, prompt='\n'.join(parts), references=refs,
                 aspect='3:4' if camera != 'rear' else '4:3', identity_revision=character['revision'],
                 character_id=character['id'], source=source, count=1, origin='generated_virtual_illustration')

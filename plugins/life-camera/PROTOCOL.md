@@ -1,9 +1,34 @@
 # 宿主生活相机接线
 
-0.2.1 按 docs/DAILY_SCENE.md 使用共享场景。plan 自动冻结 scene_snapshot 和 captured_at，
+0.3.0 按 docs/DAILY_SCENE.md 使用共享场景。plan 自动冻结 scene_snapshot 和 captured_at，
 work直接沿已冻结的prompt与原三视图生成。send_work若scene_changed=true，宿主用刚才
 的时态说明，或沿原claim结算failed并说明撤销原因。新场景不触发旧照片重生成。
 旧job没有scene_snapshot时继续走原链路。前台不重复读取完整日程或相机作业。
+
+## 同一轮先安排拍摄，再组织画面
+
+新plan必须提供shot。由已有宿主模型在原生活后台拍照判断或原生生图worker的原轮次中一起填写。
+普通聊天只登记真实索图意图，立即交给已有后台runner；该worker接真实source_event/life_id后
+先plan再work。普通文字回复不等待构图，后台不另拆一个构图代理或分析轮次。
+先确定光学观察点和持机方式，再安排可见手的动作，最后分配每件主要道具的数量和位置。
+prompt只写环境、氛围和场景；人物动作交给shot，旧pose字段由shot接替。后置拍物时不输出面部神态。
+
+shot恰含support、viewpoint、framing、hands、objects五项。support为left_hand/right_hand/surface，
+后者表示设备由稳定支撑放置，双手才可同时做事。viewpoint/framing各最多200字；hands只列实际
+可见的left/right手及动作，每项最多160字。后置/前置手持时，持机手位于光学观察点后。
+mirror中的持机手由镜中构图呈现。拍摄设备由support处理，物品表不重复登记capture_device。
+
+objects最多8项，每项只含id、label、quantity、unit、location。quantity为1–32整数，unit明确
+计数单位，一副筷子用quantity=1、unit=pair。location为left_hand/right_hand/surface/background。
+同一物理物品组只用一个id和一个位置，拿起后位置移到手中。每只手安排一个主要道具组；手持
+拍摄设备的那只手已占用。物品语义与数量由原模型根据实际场景决定，本地只校验结构及占用关系。
+
+```json
+{"support":"left_hand","viewpoint":"用持机者眼前略向下的镜头看餐桌","framing":"白饭、两碟菜和右手","hands":{"right":"夹起一小口菜"},"objects":[{"id":"chopsticks","label":"木筷子","quantity":1,"unit":"pair","location":"right_hand"},{"id":"rice","label":"白饭","quantity":1,"unit":"bowl","location":"surface"},{"id":"greens","label":"青菜","quantity":1,"unit":"plate","location":"surface"},{"id":"egg","label":"炒蛋","quantity":1,"unit":"plate","location":"surface"}]}
+```
+
+组装器把shot转成连贯的拍摄位置、可见动作和物品分布，原数据保存在同一lc_job.plan。
+生成完成后提示词照常缩为SHA，shot保留，后续可以读回当时如何构图。
 
 ## 单角色与镜头
 
@@ -13,9 +38,21 @@ selfie呈现一个脸和连贯身体；rear拍眼前的物品，持机者的头�
 构图需要从画面下缘露出同一人的手或前臂；mirror仅呈现一个镜中形象，镜外本体留在画外。
 规划阶段由原模型检查场景与镜头一致性。后置拍饭菜时，侧后方人物头部不能与第一人称持筷手混画。
 
-原生生图返回后，复用原快速检查环节核角色数量、头脸/四肢/尾巴归属和镜头。发现多角色或混合
-视点时，在rendered和发送前沿原generation_failed入口记录真实错误及工具回执，该job结束。
-检查由现有后台轮次完成，保留真实生成文件和账本，不追加独立模型或自动重生成。
+原生生图返回后，原后台轮次实际打开/查看生成文件，按shot核人物、镜头、手与道具。图片工具已
+直接呈现该图时复用当次视觉结果。纯文件数、文件名和口头“已检查”不能作为构图观察。
+rendered同时提交composition_review，恰含image_sha256、subject_count、capture_device_count、
+objects、issues。objects用shot中同一id和计量单位登记实际观察数量；issues列出具体不符点。
+自拍/镜自拍subject_count必须为1，后置可为0或1；拍摄设备入镜数为镜自拍1、其他镜头0。
+逐项数值与空issues通过才接受，观察绑定这张图原始字节SHA，记录进原generation账本。
+
+```json
+{"image_sha256":"ACTUAL_IMAGE_SHA256","subject_count":1,"capture_device_count":0,"objects":{"chopsticks":1,"rice":1,"greens":1,"egg":1},"issues":[]}
+```
+
+缺少视觉能力或实际观察不符时，沿generation_failed记录真实任务/claim/receipt与具体原因。
+本地校验核对宿主报告的一致性，图片语义仍由宿主实际看图判断。不能把期望数量抄成观察结果，
+不能为通过校验改小观察数。生成文件按原宿主规则清理，不自动重生成或发送失败图。
+旧版已冻结且没有shot的job继续按原账本处理；同源plan重试仍返回已有job，新创建须有shot。
 
 ## 每轮读取
 
@@ -37,7 +74,7 @@ reference_images=true、separate_delivery=true。该调用要求 authorized=true
 所有请求含 op=plugin_call、plugin=life-camera、scope=owner-private。以下省略这三项。
 
 ```json
-{"action":"plan","life_id":"ACTUAL_RELEASED_APPRAISED_LIFE_ID","camera":"selfie","prompt":"当前阶段实际可见的画面","expression":"模型结合当前情绪给出的神态","pose":"自然动作","light":"当前光线","caption":"一两句短话"}
+{"action":"plan","life_id":"ACTUAL_RELEASED_APPRAISED_LIFE_ID","camera":"selfie","prompt":"窗边的房间，当前光线与氛围","shot":{"support":"surface","viewpoint":"正面眼高的稳定机位","framing":"窗边一个角色的半身画面","hands":{},"objects":[]},"expression":"模型结合当前情绪给出的神态","light":"当前光线","caption":"一两句短话"}
 ```
 
 自动照片要求 life_id 对应已发生、已评估的正式 ct_life 记录。显式索图另带真实的
@@ -57,6 +94,7 @@ plan 只入队。只有 work 返回 claimed 才取得生成权。
 
 在现有30m生活任务完成判断后 enqueue，并将处理交给一个真实的原生后台任务。
 后台任务在生成结束时立即继续取回/发送，15m/30m heartbeat 只作补偿核对。
+显式索图沿现有companion_photo/真实来信入口记录意图，并立即交原后台worker准备shot/plan。
 生成结果无需等待下一个半小时 tick。使用宿主实际 task schema，读回 ID，不能用
 “已安排”几个字冒充已注册。后台任务先调用 work 再执行后续步骤。
 
@@ -64,7 +102,7 @@ plan 只入队。只有 work 返回 claimed 才取得生成权。
 2. bind 提交实际后台任务 ID。任务ID在生成前保存，调用原生图片工具一次。
    将 request.references 的实际文件，按宿主 schema 逐项作为图片输入。
    references[0] 是原三视图。prompt 中的引用文字不能代替上传图片。
-3. 工具返回后快速检查单角色、肢体归属、外观、镜头和阶段。rendered 提交 id、claim、native_task_id、
+3. 工具返回后实际看图，对照shot登记composition_review。rendered 提交 id、claim、native_task_id、
    单元素 files 数组和真实图片工具 receipt。得到 ready 仅表示文件已收妥。
 4. send_work 会执行时间、冷却、原图版本、文件SHA和来源检查，然后原子认领发送。
    使用返回的 caption/image，通过已有主人主聊投递入口发送一次。

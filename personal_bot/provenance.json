@@ -96,7 +96,7 @@
     ]
   },
   "current_code_hashes": {
-    "__init__.py": "b0cac37133159f5b8e591319aea6f1be6fa0ae1d56a9fffdbeaf335d89108029",
+    "__init__.py": "9ec5e3998045bbe0dc93c492043c8722ba3b0ec28e8ba49c44f4663a5b79f1d1",
     "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "cli.py": "7d827b169c9c9cc67f9823c2f494b9c0eb56d7f562ce7968595b62258e4c433b",
     "deploy.py": "ef179422270daa56976db4a47d53d6cec475e061cc129ba2c54e486a42593b96",
@@ -149,7 +149,7 @@
     "runtime/sticker_emotion.mjs": "6d6b4275602d9fda9bc2eca0e62e31d40ed15179c4720d0dcd25b8212a3258bc",
     "runtime/sticker_intent.mjs": "691e4fafb83a9ba179cb6b3e6b5f6bf5472ca0ab50355572f0505c55f2e22084",
     "runtime/sticker_main.mjs": "38129adb0e9ee51eda0f85d306e12c1acd73958864342fb82b6233bfc29675c8",
-    "vault.py": "773f5edbe7a55910b7bf10f54074f5cbaf2c1da680931002e8dbf9164113f7f1"
+    "vault.py": "402390436ee75ab0d57200ad3a95aca7159ec72ca6eb9a86f2a6df9e780ef48d"
   },
   "emotion48_update": {
     "date": "2026-11-05",
@@ -580,5 +580,30 @@
     },
     "review": "one narrow read-only review, ready",
     "host": "pending incremental plugin upgrade and native task readback; no new generated image validation"
+  },
+  "physical_shot_update": {
+    "date": "2026-11-08",
+    "release": "0.12.0",
+    "runtime": "2.10.0",
+    "plugin_id": "life-camera",
+    "plugin_version": "0.3.0",
+    "base_architecture": "c37a22017bb1b72d7ba10467d538454ed121f3ee",
+    "plugin_manifest_sha256": "cf8041b8eb0d9d04f3dd9dbf0ef327d8881c007f37d5e6a32763fc654013925e",
+    "changes": [
+      "same existing background pass authors capture support, optical viewpoint, visible hand actions and bounded object identities/quantities/locations",
+      "local hand occupancy and object identity validation, positive physical scene composition, structured shot supersedes free pose",
+      "actual host visual observation bound to output SHA and planned inventory before rendered accepts ready",
+      "null observation template in work, durable shot and review in existing job ledger, old frozen job/replay compatibility",
+      "ordinary replies record photo intent only and hand off to the existing background runner"
+    ],
+    "validation": {
+      "python_cases": 521,
+      "platform_skips": 2,
+      "node_cases": 13,
+      "wheel": "accepted outside checkout",
+      "method": "one final acceptance phase; initial313 discovery had27 plugin seal errors due Windows README line endings; source normalized to LF, focused27 passed, remaining208 Python and13 Node passed without rerunning unaffected discovery"
+    },
+    "review": "one narrow read-only review ready after clarifying background-only physical planning",
+    "host": "pending incremental install and actual image observation/native task readback; image semantics remain host visual judgment"
   }
 }
