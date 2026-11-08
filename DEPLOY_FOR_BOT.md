@@ -1,6 +1,6 @@
 # 给部署 Agent 的执行手册（v0.8）
 
-当前使用 Kit0.12.0 / runtime2.10.0 / life-camera0.3.0。新plan必须同轮填写shot，原后台实际看图
+当前使用 Kit0.12.1 / runtime2.10.0 / life-camera0.3.0。新plan必须同轮填写shot，原后台实际看图
 后提交绑定图片SHA的composition_review。按相机PROTOCOL接上单角色、固定视点与
 原后台快速检查，实际生图继续沿work给定的组合prompt及原参考图。按 docs/DAILY_SCENE.md
 安排连贯时段，原tick到点绑定现有项目，空档使用原40/60。原15m分享阶段每轮claim，
@@ -17,6 +17,9 @@ configure、bind_host。将 PROTOCOL 接到现有生活任务、主聊 camera_co
 所有通用更新遵守 docs/MAINTENANCE.md，公开commit与私库当前代码锁分别核实。
 
 先读README里的完整提示词。它规定顺序：能力摸底→人格与选择→核心→真实宿主接线→专用任务→面板/可选私库→一次最终隔离验收。不要只写几条规则就宣布完成。
+
+QQ 已获用户选择时先读 docs/QQ_TRANSPORT.md。先确认常驻宿主消费就绪，再退役 serverless
+长轮询；原通道的发送、人格、表情和权限边界沿用。凭据单独授权交接，放在备份范围之外。
 
 ## 1. 能力与人格
 

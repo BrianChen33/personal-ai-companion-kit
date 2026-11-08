@@ -1,5 +1,11 @@
 # Repository instructions
 
+Current0.12.1 adds docs/QQ_TRANSPORT.md for optional QQ transport. Existing
+always-on hosts wait through authenticated Redis/TLS and durable inbox handoff.
+Publish serverless poll retirement only after the single consumer is ready.
+Preserve original channel behavior, private credentials and opt-in authorization.
+Core runtime2.10.0 and life-camera0.3.0 remain the same versions.
+
 Current0.12.0/runtime2.10.0/life-camera0.3.0 uses docs/DAILY_SCENE.md.
 New photo plans require a physical shot in the existing BACKGROUND pass (support,
 visible hands, object quantities/locations). Ordinary replies record intent only.

@@ -96,7 +96,7 @@
     ]
   },
   "current_code_hashes": {
-    "__init__.py": "9ec5e3998045bbe0dc93c492043c8722ba3b0ec28e8ba49c44f4663a5b79f1d1",
+    "__init__.py": "a27b7b31ba1f868be1e5f352493014a248a53b5a57595aee365ca7152069604a",
     "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "cli.py": "7d827b169c9c9cc67f9823c2f494b9c0eb56d7f562ce7968595b62258e4c433b",
     "deploy.py": "ef179422270daa56976db4a47d53d6cec475e061cc129ba2c54e486a42593b96",
@@ -149,7 +149,7 @@
     "runtime/sticker_emotion.mjs": "6d6b4275602d9fda9bc2eca0e62e31d40ed15179c4720d0dcd25b8212a3258bc",
     "runtime/sticker_intent.mjs": "691e4fafb83a9ba179cb6b3e6b5f6bf5472ca0ab50355572f0505c55f2e22084",
     "runtime/sticker_main.mjs": "38129adb0e9ee51eda0f85d306e12c1acd73958864342fb82b6233bfc29675c8",
-    "vault.py": "402390436ee75ab0d57200ad3a95aca7159ec72ca6eb9a86f2a6df9e780ef48d"
+    "vault.py": "82bf5fea8b0f61dc54abb7e7e49bea0c6d610fff372b6805c702896455fee628"
   },
   "emotion48_update": {
     "date": "2026-11-05",
@@ -605,5 +605,20 @@
     },
     "review": "one narrow read-only review ready after clarifying background-only physical planning",
     "host": "pending incremental install and actual image observation/native task readback; image semantics remain host visual judgment"
+  },
+  "qq_transport_update": {
+    "date": "2026-11-08",
+    "release": "0.12.1",
+    "runtime": "2.10.0",
+    "bridge_repository": "BrianChen33/qq-webhook-bridge",
+    "bridge_commit": "f70bf389e3091d0710cb7b8abffb00f52c25249a",
+    "adaptations": [
+      "optional native Redis TLS transport on an existing always-on host",
+      "atomic FIFO claim and durable idempotent inbox before acknowledgement",
+      "serverless waiting retired after host cutover; cached short token proxy retained",
+      "obsolete Blob connection audit and historical-usage reporting",
+      "fresh authorized encrypted credential handoff outside memory backups",
+      "cognitive runtime and all plugin versions preserved"
+    ]
   }
 }
