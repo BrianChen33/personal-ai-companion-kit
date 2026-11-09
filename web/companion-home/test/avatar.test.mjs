@@ -81,7 +81,9 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
     face: { width: 1, bottom: 1.7, height: 0.6, front: 0.3 },
     tail: { pivot: [0.4, 0.25, -0.2], start: 0.5, full: 0.8, top: [0.5, 0.8], rear: 0, max_angle: 0.18 },
     hands: [{ mesh: 'SyntheticHand', center: [0.15, 1, 0.5], radius: 0.1, grip: [0.1, 1.2, 0.7] }] };
-  const avatar = prepareAvatar(model);
+  const avatar = prepareAvatar(model, { expressionTexture: new T.Texture({ width: 1, height: 1 }) });
+  const shader = { uniforms: {}, vertexShader: '#include <begin_vertex>', fragmentShader: '#include <map_fragment>' };
+  mesh.material.onBeforeCompile(shader);
   avatar.setState({ action: 'resting', expression: 'happy', expressionStrength: 0.6 }, POSES.idle, []);
   avatar.update(0.1, 1, false);
   assert.ok(mesh.morphTargetInfluences[0] > 0);
@@ -91,6 +93,8 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
   assert.equal(mesh.morphTargetInfluences[2], 1);
   assert.equal(mesh.morphTargetInfluences[0], 0);
   assert.ok(mesh.geometry.morphAttributes.position[2].getY(3) > 0);
+  assert.equal(mesh.geometry.getAttribute('avatarHandWeight').getX(3), 1);
+  assert.equal(shader.uniforms.avatarHandPose.value, 1);
   avatar.setState({ action: 'writing' }, POSES.writing, []);
   avatar.update(0.1, 1, true);
   assert.equal(mesh.morphTargetInfluences[3], 1);
@@ -106,5 +110,8 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
   assert.ok(POSES.eating[1] > 0.2);
   assert.ok(Math.abs(POSES.writing[0] - 1.95) < 0.01);
   assert.equal(POSES.writing[3], Math.PI);
+  avatar.setState({ action: 'resting' }, POSES.resting, []);
+  avatar.update(0.1, 1, true);
+  assert.equal(shader.uniforms.avatarHandPose.value, 0);
   avatar.dispose();
 });

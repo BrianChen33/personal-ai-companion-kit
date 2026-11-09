@@ -129,6 +129,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
   const uniforms = {
     avatarFace: { value: null }, avatarTile: { value: 0 },
     avatarFaceEnabled: { value: 0 }, avatarSkin: { value: new T.Color(0xffdfce) },
+    avatarHandPose: { value: 0 },
     avatarFaceBounds: { value: new T.Vector4(
       rig.face.width * scale, rig.face.bottom * scale, rig.face.height * scale, rig.face.front * scale) },
   };
@@ -169,6 +170,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
       smoothFace(geometry, rig.face, scale, appearance?.visible);
     }
     const positions = geometry.getAttribute('position');
+    const handWeights = new Float32Array(positions.count);
     const deltas = Array.from({ length: 5 }, () => new Float32Array(positions.count * 3));
     for (let i = 0; i < positions.count; i++) {
       point.fromBufferAttribute(positions, i);
@@ -194,6 +196,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
         (mesh.name === rig.mesh && point.distanceTo(item.centerPoint) < item.radius * scale));
       if (hand) {
         const weight = mesh.name === hand.mesh ? 1 : 1 - smooth(hand.radius * scale * 0.5, hand.radius * scale, point.distanceTo(hand.centerPoint));
+        handWeights[i] = weight;
         const phoneHand = new T.Vector3(Math.sign(hand.centerPoint.x) * 0.24, PHONE_POSITION[1] - 0.12, PHONE_POSITION[2]);
         deltas[2].set([(phoneHand.x - hand.centerPoint.x) * weight,
           (phoneHand.y - hand.centerPoint.y) * weight, (phoneHand.z - hand.centerPoint.z) * weight], i * 3);
@@ -204,6 +207,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
       }
     }
     geometry.morphTargetsRelative = true;
+    geometry.setAttribute('avatarHandWeight', new T.Float32BufferAttribute(handWeights, 1));
     geometry.morphAttributes.position = deltas.map(values => new T.Float32BufferAttribute(values, 3));
     mesh.updateMorphTargets();
     animated.push(mesh);
@@ -211,15 +215,17 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
       mesh.material = mesh.material.clone();
       mesh.material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, uniforms);
-        shader.vertexShader = 'attribute float avatarFaceWeight;\nattribute float avatarFaceColorWeight;\nvarying float avatarSmoothFace;\nvarying float avatarColorFace;\nvarying vec3 avatarPosition;\n' + shader.vertexShader.replace(
-          '#include <begin_vertex>', '#include <begin_vertex>\navatarPosition = position;\navatarSmoothFace = avatarFaceWeight;\navatarColorFace = avatarFaceColorWeight;');
+        shader.vertexShader = 'attribute float avatarFaceWeight;\nattribute float avatarFaceColorWeight;\nattribute float avatarHandWeight;\nvarying float avatarSmoothFace;\nvarying float avatarColorFace;\nvarying float avatarHandSkin;\nvarying vec3 avatarPosition;\n' + shader.vertexShader.replace(
+          '#include <begin_vertex>', '#include <begin_vertex>\navatarPosition = position;\navatarSmoothFace = avatarFaceWeight;\navatarColorFace = avatarFaceColorWeight;\navatarHandSkin = avatarHandWeight;');
         shader.fragmentShader = `varying vec3 avatarPosition;
 varying float avatarSmoothFace;
 varying float avatarColorFace;
+varying float avatarHandSkin;
 uniform sampler2D avatarFace;
 uniform float avatarTile;
 uniform float avatarFaceEnabled;
 uniform vec3 avatarSkin;
+uniform float avatarHandPose;
 uniform vec4 avatarFaceBounds;
 ` + shader.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
 vec2 faceUV = vec2(avatarPosition.x / avatarFaceBounds.x + 0.5,
@@ -236,18 +242,21 @@ vec3 atlasSkin = sRGBTransferEOTF(texture2D(avatarFace, skinUV)).rgb;
 float featureMask = expressionColor.a * (1.0 - smoothstep(0.385, 0.42, length(faceUV - 0.5)));
 vec3 faceColor = avatarSkin * mix(vec3(1.0), expressionColor.rgb / max(atlasSkin, vec3(0.01)), featureMask);
 diffuseColor.rgb = mix(diffuseColor.rgb, faceColor, faceMask * avatarFaceEnabled);
+float avatarArmMask = smoothstep(0.025, 0.16, avatarHandSkin) * avatarHandPose;
+diffuseColor.rgb = mix(diffuseColor.rgb, avatarSkin, avatarArmMask);
+float avatarSurfaceMask = max(avatarSmoothFace, avatarArmMask);
 `);
         shader.fragmentShader = shader.fragmentShader
-          .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize(mix(normal, nonPerturbedNormal, avatarSmoothFace));')
-          .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.9, avatarSmoothFace);')
-          .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor *= 1.0 - avatarSmoothFace;')
+          .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize(mix(normal, nonPerturbedNormal, avatarSurfaceMask));')
+          .replace('#include <roughnessmap_fragment>', '#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.9, avatarSurfaceMask);')
+          .replace('#include <metalnessmap_fragment>', '#include <metalnessmap_fragment>\nmetalnessFactor *= 1.0 - avatarSurfaceMask;')
           .replace('#include <aomap_fragment>', `vec3 avatarBeforeAO = reflectedLight.indirectDiffuse;
 vec3 avatarSpecularBeforeAO = reflectedLight.indirectSpecular;
 #include <aomap_fragment>
-reflectedLight.indirectDiffuse = mix(reflectedLight.indirectDiffuse, avatarBeforeAO, avatarSmoothFace);
-reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpecularBeforeAO, avatarSmoothFace);`);
+reflectedLight.indirectDiffuse = mix(reflectedLight.indirectDiffuse, avatarBeforeAO, avatarSurfaceMask);
+reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpecularBeforeAO, avatarSurfaceMask);`);
       };
-      mesh.material.customProgramCacheKey = () => 'companion-rounded-face-atlas-v5';
+      mesh.material.customProgramCacheKey = () => 'companion-rounded-face-atlas-v6';
     }
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
@@ -286,11 +295,12 @@ reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpe
       const speed = state.expression === 'angry' ? 2.4 : state.expression === 'sad' ? 0.8 : 1.35;
       const wave = reducedMotion ? 0 : Math.sin(elapsed * speed) * safeAngle * (0.45 + strength * 0.55) / rig.tail.max_angle;
       grip = T.MathUtils.lerp(grip, state.action === 'phone' ? 1 : 0, reducedMotion ? 1 : Math.min(1, dt * 7));
+      const atDesk = ['reading', 'writing', 'eating'].includes(state.action);
+      uniforms.avatarHandPose.value = Math.max(grip, atDesk ? 1 : 0);
       for (const mesh of animated) {
         mesh.morphTargetInfluences[0] = Math.max(0, wave);
         mesh.morphTargetInfluences[1] = Math.max(0, -wave);
         mesh.morphTargetInfluences[2] = grip;
-        const atDesk = ['reading', 'writing', 'eating'].includes(state.action);
         mesh.morphTargetInfluences[3] = atDesk || SOFA_ACTIONS.includes(state.action) ? 1 : 0;
         mesh.morphTargetInfluences[4] = atDesk ? 1 : 0;
       }
