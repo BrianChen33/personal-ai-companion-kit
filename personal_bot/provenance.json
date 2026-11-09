@@ -621,5 +621,29 @@
       "persistent service config path and approved proxy CA inherited at Node startup",
       "cognitive runtime and all plugin versions preserved"
     ]
+  },
+  "home_space_update": {
+    "date": "2026-11-09",
+    "release": "0.13.0",
+    "runtime": "2.11.0",
+    "base_architecture": "08ac3f4d0ef9c717426c5ae3c2604e19b2543189",
+    "changes": [
+      "optional private Three.js home with cached GLB and bounded mutable state",
+      "released companion-only activity, away notice and explicit unknown return state",
+      "post-success local dirty marker, native independent publisher hook, leases and matching receipts",
+      "same canonical panel snapshot without repeated private image payloads",
+      "native private asset upload and actual host binding require deployment acceptance"
+    ],
+    "validation": {
+      "python_cases": 523,
+      "platform_skips": 2,
+      "node_adapter_cases": 13,
+      "frontend_cases": 5,
+      "build": "passed; engine gzip177.7KB, private GLB supplied separately",
+      "wheel": "accepted outside checkout",
+      "method": "single assembled acceptance; stale vault version fixed and13 targeted cases passed;2 home publication regressions passed; remaining208 runtime and13 Node passed",
+      "review": "one final read-only review; coherent SQLite capture and unfamiliar-location handling fixed"
+    },
+    "host": "private fullstack trial in progress; no live transport binding yet"
   }
 }

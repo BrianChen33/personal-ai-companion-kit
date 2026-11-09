@@ -1,3 +1,10 @@
+0.13.0/runtime2.11.0 adds optional private 3D home delivery. Read docs/HOME_SPACE.md.
+Use actual released companion activity, never owner calendar or elapsed deadlines.
+Foreground writes only a tiny local dirty marker after success. Native hook publishes
+in an independent sidechat worker with a receipt and retry lease;15m feedback reconciles.
+Private GLB/stickers stay outside public git. Verify host private upload, WebGL, actions
+and actual access before migration. Unrigged models support placement, not joint poses.
+
 # Repository instructions
 
 Current0.12.1 adds docs/QQ_TRANSPORT.md for optional QQ transport. Existing

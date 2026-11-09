@@ -1,3 +1,10 @@
+0.13.0/runtime2.11.0 adds optional private 3D home delivery. Read docs/HOME_SPACE.md.
+Use actual released companion activity, never owner calendar or elapsed deadlines.
+Foreground writes only a tiny local dirty marker after success. Native hook publishes
+in an independent sidechat worker with a receipt and retry lease;15m feedback reconciles.
+Private GLB/stickers stay outside public git. Verify host private upload, WebGL, actions
+and actual access before migration. Unrigged models support placement, not joint poses.
+
 # 给部署 Agent 的执行手册（v0.8）
 
 当前使用 Kit0.12.1 / runtime2.10.0 / life-camera0.3.0。新plan必须同轮填写shot，原后台实际看图

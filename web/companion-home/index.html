@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>伙伴的小屋</title>
+  </head>
+  <body>
+    <main>
+      <header class="page-header">
+        <div class="title-line">
+          <span class="home-mark" aria-hidden="true">⌂</span>
+          <h1 id="title">伙伴的小屋</h1>
+          <span id="preview-badge" hidden>预览</span>
+        </div>
+        <div class="header-actions">
+          <time id="updated">正在读取状态</time
+          ><button id="reference" hidden>三视图</button>
+        </div>
+      </header>
+      <section class="home-card" aria-label="伙伴的小屋">
+        <nav class="view-tabs" aria-label="角色视角">
+          <button data-view="home" aria-pressed="true">小屋</button>
+          <button data-view="front" aria-pressed="false">正面</button>
+          <button data-view="side" aria-pressed="false">侧面</button>
+          <button data-view="back" aria-pressed="false">背面</button>
+        </nav>
+        <div id="model-comparison">
+          <div id="room" role="img" aria-label="3D 卡通小屋"></div>
+          <figure id="view-reference" hidden>
+            <img id="view-reference-image" alt="" />
+            <figcaption id="view-reference-label"></figcaption>
+          </figure>
+        </div>
+        <button id="away-note" data-detail="life" hidden>
+          <span aria-hidden="true">⌁</span>
+          <strong id="away-title"></strong>
+          <span id="away-location"></span>
+        </button>
+        <p id="model-status" role="status">正在载入小屋</p>
+        <footer class="room-footer">
+          <div class="presence">
+            <span class="presence-dot"></span
+            ><button id="presence" data-detail="life">当前活动未记录</button
+            ><span id="mood-label"></span>
+          </div>
+          <div class="camera-controls" aria-label="小屋镜头">
+            <button id="turn-left" aria-label="向左旋转">↶</button
+            ><button id="turn-right" aria-label="向右旋转">↷</button>
+            <span class="divider"></span
+            ><button id="zoom-in" aria-label="放大">＋</button
+            ><button id="zoom-out" aria-label="缩小">−</button>
+            <button id="reset" aria-label="镜头回正">⌂</button>
+          </div>
+        </footer>
+      </section>
+      <section id="preview-controls" hidden aria-label="合成状态预览">
+        <label
+          >动作<select id="preview-action">
+            <option value="休息发呆">发呆</option>
+            <option value="阅读">阅读</option>
+            <option value="刷手机">刷手机</option>
+            <option value="午睡">午睡</option>
+            <option value="做饭吃饭">吃饭</option>
+            <option value="散步">外出散步</option>
+            <option value="跑步">外出跑步</option>
+            <option value="整理房间">整理小屋</option>
+            <option value="照顾小植物">照顾植物</option>
+          </select></label
+        >
+        <label
+          >心情<select id="preview-mood">
+            <option>平静</option>
+            <option>愉快</option>
+            <option>委屈</option>
+            <option>生气</option>
+            <option>好奇</option>
+            <option>害羞</option>
+          </select></label
+        >
+        <label
+          >精力<input
+            id="preview-energy"
+            type="range"
+            min="0"
+            max="100"
+            value="65"
+        /></label>
+        <span>合成状态</span>
+      </section>
+      <section id="cards" class="cards" aria-label="状态概览"></section>
+      <footer class="page-footer">
+        <span id="connection" role="status"></span
+        ><button data-detail="about">关于</button>
+      </footer>
+    </main>
+    <dialog id="details" aria-labelledby="detail-title">
+      <header>
+        <h2 id="detail-title"></h2>
+        <button id="close-detail" aria-label="关闭详情">×</button>
+      </header>
+      <div id="detail-body"></div>
+    </dialog>
+    <script type="module" src="/src/main.mjs"></script>
+  </body>
+</html>

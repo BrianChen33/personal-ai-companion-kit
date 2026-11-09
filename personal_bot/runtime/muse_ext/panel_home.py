@@ -65,7 +65,7 @@ def artwork(root):
     return result
 
 
-def enrich(b, snapshot):
+def enrich(b, snapshot, include_art=True):
     """Project existing state only; never capture events, draw stickers, or appraise."""
     from muse_ext.plugins import panel
     snapshot['plugins'] = panel(b)
@@ -104,7 +104,8 @@ def enrich(b, snapshot):
     snapshot['mood']['labels'] = sorted(
         [{'label': label, 'intensity': values.get(label)} for label in LABELS],
         key=lambda item: -(item['intensity'] if item['intensity'] is not None else -1))
-    snapshot['panel_art'] = artwork(b.root)
+    if include_art:
+        snapshot['panel_art'] = artwork(b.root)
     snapshot['preview'] = False
     snapshot['panel_schedule'] = read_json(b.root / 'state' / 'panel-update.json')
     schedule = snapshot['panel_schedule']

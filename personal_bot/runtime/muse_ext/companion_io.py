@@ -288,7 +288,7 @@ def delivery(b,q):
         return dict(ok=True,settled=bool(count),status=state if count else row['status'])
 
 
-def panel(b,q):
+def panel_snapshot(b, include_art=True):
     from muse_ext.humor import settings
     from muse_ext.meme_store import status as meme_status
     snapshot=dict(version=VERSION,generated_at=stamp(),timezone='Asia/Shanghai',
@@ -304,7 +304,12 @@ def panel(b,q):
                   tasks=_get(b,'task_bindings',{}),
                   disclaimer='本地管理快照；数值为虚拟角色状态/模型推断，不代表真实心理测量；关系等级不授予权限。')
     from muse_ext.panel_home import enrich
-    enrich(b,snapshot)
+    enrich(b,snapshot,include_art=include_art)
+    return snapshot
+
+
+def panel(b,q):
+    snapshot=panel_snapshot(b)
     template=(Path(__file__).parent/'companion_panel.html').read_text(encoding='utf-8')
     # </script>, markup and Unicode separators cannot escape the JSON script block.
     payload=dump(snapshot).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026').replace('\u2028','\\u2028').replace('\u2029','\\u2029')

@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from muse_ext.emotion_catalog import LABELS, HALF, CATALOG_VERSION, normalize, reaction, schema as emotion_schema
 
-VERSION = '2.10.0'
+VERSION = '2.11.0'
 TZ = timezone(timedelta(hours=8))
 RNG = random.SystemRandom()
 
@@ -784,3 +784,5 @@ def install(Brain):
     events.capture_event=capture
     emotion.submit_assessment=lambda b,e,a:assess(b,e,a,old_submit) if b.config().get('companion_v2') is True else old_submit(b,e,a)
     Brain._companion_v2=True
+    from muse_ext.home_space import install as install_home_space
+    install_home_space(Brain)
