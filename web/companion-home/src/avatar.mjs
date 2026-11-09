@@ -171,7 +171,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
     }
     const positions = geometry.getAttribute('position');
     const handWeights = new Float32Array(positions.count);
-    const deltas = Array.from({ length: 5 }, () => new Float32Array(positions.count * 3));
+    const deltas = Array.from({ length: 6 }, () => new Float32Array(positions.count * 3));
     for (let i = 0; i < positions.count; i++) {
       point.fromBufferAttribute(positions, i);
       const x = point.x / scale, y = point.y / scale, z = point.z / scale;
@@ -180,6 +180,13 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
       const hipY = point.y - 1.0;
       deltas[3].set([0, hipY * Math.cos(perchAngle) - point.z * Math.sin(perchAngle) - hipY,
         hipY * Math.sin(perchAngle) + point.z * Math.cos(perchAngle) - point.z], i * 3);
+      // Rotate the visible lower legs forward around the knee, without shrinking
+      // the torso, skirt or leg length. Rear hair and tail stay outside this mask.
+      const kneeAngle = -0.9 * (1 - smooth(0.52, 0.78, point.y)) *
+        smooth(0.15, 0.28, point.z) * (1 - smooth(0.38, 0.52, Math.abs(point.x)));
+      const kneeY = point.y - 0.7, kneeZ = point.z - 0.4;
+      deltas[5].set([0, kneeY * Math.cos(kneeAngle) - kneeZ * Math.sin(kneeAngle) - kneeY,
+        kneeY * Math.sin(kneeAngle) + kneeZ * Math.cos(kneeAngle) - kneeZ], i * 3);
       const tailTop = T.MathUtils.lerp(rig.tail.top[0], rig.tail.top[1], smooth(rig.tail.start, rig.tail.full, x));
       const tailWeight = mesh.name === rig.mesh ? smooth(rig.tail.start, rig.tail.full, x) *
         (1 - smooth(tailTop - 0.025, tailTop, y)) * (1 - smooth(rig.tail.rear, rig.tail.rear + 0.04, z)) : 0;
@@ -303,6 +310,7 @@ reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpe
         mesh.morphTargetInfluences[2] = grip;
         mesh.morphTargetInfluences[3] = atDesk || SOFA_ACTIONS.includes(state.action) ? 1 : 0;
         mesh.morphTargetInfluences[4] = atDesk ? 1 : 0;
+        mesh.morphTargetInfluences[5] = SOFA_ACTIONS.includes(state.action) ? 1 : 0;
       }
       if (texture?.image) {
         const expression = state.action === 'sleeping' ? 'sleeping' : state.expression;

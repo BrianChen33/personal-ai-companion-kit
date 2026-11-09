@@ -26,3 +26,10 @@ mixed-expression blending and native Space state transport are deployment work.
 The initial transfer target is 3 MB. Active animation is capped at 30 fps and
 hidden tabs pause GPU work. Reduced-motion mode still displays current state.
 Synthetic controls appear only with `preview=true` and remain in browser memory.
+
+
+Frontend0.2.7 adds a three-tab reading detail and a deeper open-ended sofa.
+Sofa actions rotate the lower legs using opt-in private rig geometry without torso
+compression. Keep the existing binary loader, private model and state bindings.
+The host ports reading.mjs into its real UI and installs social-reading0.4.1 for
+actual-time continuation expiry. Read HOME_SPACE and READING_QUEUE for deployment.

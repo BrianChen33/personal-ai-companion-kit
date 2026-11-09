@@ -7,6 +7,74 @@ from muse_ext.emotion_full48 import template
 
 
 class ReadingQueue(fixture.SocialReading):
+    def partial(self):
+        sid, rid, work, event = self.queued()
+        self.stage(sid, rid, work, coverage=dict(pages_seen=[1], total_pages=5,
+            ended=False, all_visible_floors=True, next_url='https://tieba.baidu.com/p/801?pn=2'))
+        did = self.call('queue_ingest', request_id=rid)['document_id']
+        self.finalize(did)
+        self.call('queue_finish', request_id=rid, continue_reading=True)
+        return sid, rid, did
+
+    def test_queue_stale_cursor_is_discarded_despite_fresh_bookkeeping(self):
+        sid, rid, did = self.partial()
+        old = time.time()-86401
+        self.b.db.execute('UPDATE sr_document SET last_seen=? WHERE id=?', (old, did))
+        self.b.db.execute('UPDATE sr_read_queue SET document=NULL,observed_at=NULL,updated=? WHERE id=?', (time.time(), rid))
+        self.b.db.commit()
+        self.assertEqual(self.call('status')['continuations'], [])
+        self.assertEqual(self.call('expire_continuations')['cleared'], 1)
+        row = self.call('queue_status')['requests'][0]
+        self.assertEqual((row['status'], row['cursor'], row['problem']), ('cancelled', {}, 'continuation_expired'))
+        self.assertEqual(self.call('expire_continuations')['cleared'], 0)
+        self.assertEqual(self.b.db.execute('SELECT count(*) FROM sr_reflection').fetchone()[0], 1)
+        event = self.owner('重新读这篇合成帖子')
+        new = self.call('queue_enqueue', manual=True, owner_event=event, authorized=True,
+            source_id=sid, target_url='https://tieba.baidu.com/p/801')['request']
+        self.assertEqual(new['cursor'], {})
+
+    def test_queue_continuation_exact_boundary_and_real_progress(self):
+        from muse_ext.plugins import load
+        module = load(self.b, 'social-reading').continuations
+        sid, rid, did = self.partial()
+        at = self.b.db.execute('SELECT last_seen FROM sr_document WHERE id=?', (did,)).fetchone()[0]
+        self.assertEqual(len(module.current(self.b, now=at+86400)), 1)
+        self.assertEqual(module.expire(self.b, now=at+86400)['cleared'], 0)
+        self.assertEqual(module.expire(self.b, now=at+86400.01)['cleared'], 1)
+
+    def test_queue_staged_old_result_keeps_actual_read_time_and_does_not_resume(self):
+        sid, rid, work, _ = self.queued()
+        old = time.time()-90000
+        self.b.db.execute('UPDATE sr_lease SET created=?,deadline=? WHERE id=?', (old-10, old+20, work['lease_id']))
+        self.b.db.commit()
+        self.call('queue_stage', request_id=rid, lease_id=work['lease_id'], browser_task_id='fixture:browser',
+            completed_at=old, observation=self.packet(sid,801,coverage=dict(pages_seen=[1], total_pages=5,
+                ended=False, all_visible_floors=True, next_url='https://tieba.baidu.com/p/801?pn=2')))
+        self.call('expire_continuations')
+        self.assertEqual(self.call('queue_status')['requests'][0]['status'], 'staged')
+        did = self.call('queue_ingest', request_id=rid)['document_id']
+        self.assertEqual(self.b.db.execute('SELECT last_seen FROM sr_document WHERE id=?', (did,)).fetchone()[0], old)
+        self.finalize(did)
+        row = self.call('queue_finish', request_id=rid, continue_reading=True)['request']
+        self.assertEqual((row['status'], row['cursor']), ('done', {}))
+
+    def test_queue_projection_merges_batches_and_completion_suppresses_partial(self):
+        sid, rid, did = self.partial()
+        result, _, _ = self.observe(sid, 801, coverage=dict(pages_seen=[2], total_pages=5,
+            ended=False, all_visible_floors=True, next_url='https://tieba.baidu.com/p/801?pn=3'))
+        posts = self.call('status')['continuations']
+        self.assertEqual(len(posts), 1)
+        self.assertEqual(posts[0]['id'], result['document_id'])
+        self.observe(sid, 801)
+        self.assertEqual(self.call('status')['continuations'], [])
+
+    def test_queue_expiry_preserves_bound_native_browser(self):
+        _, rid, work, _ = self.queued()
+        self.b.db.execute('UPDATE sr_read_queue SET created=?,updated=? WHERE id=?', (time.time()-90000, time.time()-90000, rid))
+        self.b.db.commit()
+        self.call('expire_continuations')
+        self.assertEqual(self.call('queue_status')['requests'][0]['status'], 'browsing')
+
     def queued(self, sid=None, tid=801):
         sid=sid or self.allow()
         event=self.owner('合成请求：阅读这篇帖子')

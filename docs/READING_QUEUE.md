@@ -39,3 +39,19 @@ staged/finalize工作也只处理同源缺项。没有新结果就安静，不�
 升级时先查询旧浏览器/租约。已有真实结果先依旧协议登记完成；仍在跑则等或确切停止，不能
 直接释放后启动新的队列浏览。原SQLite sr_read_queue随私库快照保存；新宿主导入后默认不启动
 旧browser_task/schedule/lease，须重新核对来源、当前权限与待办，历史结果不重复加情绪或发送。
+
+
+## 0.4.1 续读有效期
+
+固定24小时，以最后实际浏览完成时间为准。认领、重试、延迟入库和任务更新时间
+不续期。queue_enqueue/work、旧plan和resume入口执行轻量本地清理，panel只读过滤。
+超过24小时的partial归档标abandoned，待续读请求取消且cursor清空。调试部署后可
+用plugin_call social-reading action=expire_continuations执行一次现有数据清理。
+
+已绑定浏览器和staged/ingesting/observed真实结果继续原交接流程，不悄悄杀任务。
+迟到结果保留真实阅读/情绪/学习证据，但到完成阶段不再排过期续读。重新明确要求
+读取该帖可新建请求，从新读取开始。已学口头禅与引用仍保留原来源证据。
+
+只读continuations字段最多24条，按来源+规范帖子URL合并，最新完成记录覆盖旧partial。
+recent_readings兼容字段返回同一有效列表。继承时按新宿主当前时间清理旧续读，不
+因导入/重试刷新last_seen，也不将历史队列自动激活。

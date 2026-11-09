@@ -839,5 +839,25 @@
       "frontend_cases": 15,
       "native": "same-space host integration pending; original desktop error is Failed to fetch"
     }
+  },
+  "home_reading_sofa_update": {
+    "date": "2026-11-09",
+    "release": "0.14.4",
+    "home_frontend": "0.2.7",
+    "social_reading_version": "0.4.1",
+    "base_architecture": "869ce9ce6e50dcbe4c54615baf3e8f107af59927",
+    "changes": [
+      "actual-observation-time 24h continuation expiry with preserved source learning",
+      "bounded per-thread continuation projection and functional reading tabs",
+      "open-ended sofa with knee rotation and unchanged upper-body proportions"
+    ],
+    "validation": {
+      "native": "same-space host merge pending",
+      "desktop_loading": "owner confirmed normal display before this update",
+      "frontend_cases": 16,
+      "frontend_build": "passed",
+      "reading_ui": "desktop and 375px preview passed",
+      "installed_wheel": "accepted outside checkout"
+    }
   }
 }

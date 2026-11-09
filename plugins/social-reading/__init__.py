@@ -3,10 +3,10 @@ import json
 import hashlib
 import math
 import time
-from . import reader, sources, store, growth, voice, habit_growth, reading_queue
+from . import reader, sources, store, growth, voice, habit_growth, reading_queue, continuations
 
 API = 1
-VERSION = '0.4.0'
+VERSION = '0.4.1'
 
 
 def initialize(b):
@@ -15,10 +15,11 @@ def initialize(b):
 
 def panel(b):
     rows = [dict(r) for r in b.db.execute('SELECT id,provider,name,url,active,status,verified_at,last_read,proof FROM sr_source ORDER BY created')]
-    recent = [dict(r) for r in b.db.execute('SELECT id,url,title,status,created FROM sr_document ORDER BY created DESC LIMIT 8')]
+    recent = continuations.current(b)
     active = [r for r in rows if r['active']]
     state = 'awaiting_sources' if not active else 'ready' if any(r['status'] == 'verified' for r in active) else 'awaiting_verification'
     return dict(status=state, settings=store.settings(b), sources=rows, recent_readings=recent,
+                continuations=recent, continuation_ttl_seconds=continuations.TTL_SECONDS,
                 habits=store.habit_rows(b), personality_growth=growth.rows(b), providers=sources.PROVIDERS,
                 habit_personality=habit_growth.rows(b),
                 reading_queue=reading_queue.status(b),
@@ -137,6 +138,8 @@ def _dispatch(b, q):
         return dict(ok=True, **schema())
     if action == 'status':
         return dict(ok=True, **panel(b))
+    if action == 'expire_continuations':
+        return continuations.expire(b)
     if action == 'pending':
         from muse_ext.emotion_full48 import template
         rows = b.db.execute('''SELECT d.id document_id,d.event source_event,d.title,d.url,d.quote

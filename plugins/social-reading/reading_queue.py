@@ -6,7 +6,7 @@ import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
 
-from . import sources, store
+from . import sources, store, continuations
 
 
 @contextmanager
@@ -92,6 +92,7 @@ def view(row):
 
 def enqueue(b, q):
     enabled(b)
+    continuations.expire(b)
     from . import reader
     intent, manual = q.get('life_intent'), q.get('manual') is True
     if intent and manual:
@@ -135,7 +136,7 @@ def enqueue(b, q):
         life_routine.require(b, intent)
     now = time.time()
     cursor = {}
-    archived = (b.db.execute("SELECT * FROM sr_document WHERE source=? AND url=? ORDER BY created DESC LIMIT 1",
+    archived = (b.db.execute("SELECT * FROM sr_document WHERE source=? AND url=? ORDER BY coalesce(last_seen,created) DESC,created DESC LIMIT 1",
                 (selected['id'], reader.thread_url(target))).fetchone() if target else None)
     if archived and archived['status'] == 'partial':
         data = json.loads(archived['payload'])
@@ -159,6 +160,7 @@ def status(b):
 
 def work(b, q):
     enabled(b)
+    continuations.expire(b)
     from . import reader
     worker = sources.text(q.get('worker_id'), 200, True)
     now = time.time()
@@ -331,11 +333,14 @@ def finish(b, q):
     data = json.loads(doc['payload'])
     cursor = dict(url=doc['url'], document_id=doc['id'], coverage=data.get('coverage', {}))
     continuing = q.get('continue_reading') is True
+    if (doc['last_seen'] or doc['created']) < time.time()-continuations.TTL_SECONDS:
+        continuing, cursor = False, {}
     if continuing and not (doc['status'] == 'partial' and cursor['coverage'].get('next_url')):
         raise ValueError('observed_continuation_cursor_required')
     with b.db:
         b.db.execute('UPDATE sr_read_queue SET status=?,cursor=?,next_at=?,updated=?,worker_until=0 WHERE id=?',
             ('queued' if continuing else 'done', dump(cursor), time.time()+30, time.time(), row['id']))
+    continuations.expire(b)
     return dict(ok=True, request=view(b.db.execute('SELECT * FROM sr_read_queue WHERE id=?', (row['id'],)).fetchone()))
 
 
@@ -374,6 +379,7 @@ def cancel(b, q):
 
 def resume(b, q):
     owner = sources.owner_event(b, q)
+    continuations.expire(b)
     row = get(b, q)
     enabled(b)
     sources.active(b, row['source'])

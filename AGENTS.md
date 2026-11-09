@@ -1,3 +1,11 @@
+0.14.4/frontend0.2.7/social-reading0.4.1 splits reading detail into vocabulary,
+live continuations and source settings. Continuations expire after 24 actual hours
+without reading. Install the pinned optional plugin and call expire_continuations
+once after upgrade. Keep staged observations and bound native browsers intact.
+Default indoor activities sit on an open-ended sofa with lower-leg rotation,
+preserving the torso, head and tail. Existing binary loading and state relay stay.
+Read docs/HOME_SPACE.md and docs/READING_QUEUE.md before the same-space host merge.
+
 0.14.1/runtime2.11.1 supports optional programmatic private state delivery.
 Use muse_ext.home_relay with the host existing ioredis/TLS credentials. The local
 hook publishes only changed state and always stays silent. Read docs/HOME_SPACE.md.

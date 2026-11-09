@@ -1,0 +1,227 @@
+{
+  "release": "0.14.4",
+  "runtime": "2.11.1",
+  "home_frontend": "0.2.7",
+  "life_camera_version": "0.3.0",
+  "social_reading_version": "0.4.1",
+  "mi_fitness_version": "0.1.0",
+  "base_architecture": "869ce9ce6e50dcbe4c54615baf3e8f107af59927",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "c6eacba175fd5b132b90b0d8bd270e84a35b15bfab295f37e1dbc12efd781ad0"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "2a0c294ed31203737b7b3b8c40dfd27fbfd4c61a418f4cd40792ec34b1888960"
+    },
+    {
+      "path": "README.md",
+      "sha256": "bedf935138cf86cfccef23a460d16c67b4d04983281a64219376ac8b143ae6f6"
+    },
+    {
+      "path": "docs/HOME_SPACE.md",
+      "sha256": "4c96bb283bd807cd45c036f347ce5787c19f6fae96387931ca0adc0631bac074"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "b853f4fa85585cd9196456749ae8080f06476201fbc86bc221c0453e1bdff97f"
+    },
+    {
+      "path": "docs/READING_QUEUE.md",
+      "sha256": "23911324a390101b61f456409288bff68bdbaf25a69c1f5e9ff2b28f05ed063f"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "eee543e9da74a9b65d6c44d27050b489ebe3c93204d049d37684d74536da93f3"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "46d333b67091ebc91c8f8dd7f4fc9b110b52d17ad334e4a8ff3b1f6ae2833470"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion.py",
+      "sha256": "4c2c1d73d1bd611ab08387c9c42e5fe86cb05a0263d46418fa6147d9493f0d7b"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion_io.py",
+      "sha256": "3e25ba4f69193783f8aac349baa9629bccb228e4c4d23b44b7e4f21c435870c5"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/home_relay.py",
+      "sha256": "ba258598ca9385cfb668ab599879c2d1aec1c4166c15f5252f20e732ce68b3ab"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/home_space.py",
+      "sha256": "b533f99f0ce9026dc63135d14fcada01af2eb38fec6b01f9ffe9d0a41278718b"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/panel_home.py",
+      "sha256": "a4309081b65d2da2b9f93e8a53fe8cddf7f40b41337664cd412110b32865c2f6"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "1e44d1ee417e33dec5559b8ba8a170821e47f7b7c82cbd34e340ff6b69e92cdc"
+    },
+    {
+      "path": "plugins/social-reading/CONTRACT.json",
+      "sha256": "e6e95760e3642c5321a1ab190e34e25cdd5006eee8d861ee5f80c34834a8c798"
+    },
+    {
+      "path": "plugins/social-reading/FUTURE_VIDEO.md",
+      "sha256": "1df1c49c77cdb71488203c5b2de2cdceab67b3d137ccec8421b25f014b327131"
+    },
+    {
+      "path": "plugins/social-reading/PROTOCOL.md",
+      "sha256": "f30a7c2447f8988ced900f13065033ac6637751528a618536ad13a1c33ef7155"
+    },
+    {
+      "path": "plugins/social-reading/README.md",
+      "sha256": "1e6c12faad935cf2d2fd1124ed4f6f5efe7b11407007d3fee60469fcedc3495a"
+    },
+    {
+      "path": "plugins/social-reading/THIRD_PARTY_LICENSE.txt",
+      "sha256": "83f6753ca30d2d34c777bc7c69ddee6c051e9f80181d73e74bd2b670ee99899b"
+    },
+    {
+      "path": "plugins/social-reading/__init__.py",
+      "sha256": "f589327a50b8fae9179b32edac5106e1076d52dd9f7ac245630c55f0b1592e39"
+    },
+    {
+      "path": "plugins/social-reading/continuations.py",
+      "sha256": "26db075da686361498a52096ddffecd44c1d310d6b2827a0b943a72ad0e0bf0e"
+    },
+    {
+      "path": "plugins/social-reading/growth.py",
+      "sha256": "676726728607f41de39d56bc5271572caca09256d31f26705bdec3345ee05ffd"
+    },
+    {
+      "path": "plugins/social-reading/habit_growth.py",
+      "sha256": "f8337bf3328ccf3b7c978afacba34231cd8618a79415be7dd1bd1c2cd210bad2"
+    },
+    {
+      "path": "plugins/social-reading/manifest.json",
+      "sha256": "8ef5955098b79774c9e401c55cf11a6692f26834ed900dbed8896da4546a7039"
+    },
+    {
+      "path": "plugins/social-reading/reader.py",
+      "sha256": "049c9e17925867f2431f47807acd3f367aa9b00f714bb37872a5d9093b3a5fba"
+    },
+    {
+      "path": "plugins/social-reading/reading_queue.py",
+      "sha256": "42d209c7a8c25c9ffa33a2018d51290c4fffe9b6aa49ecd6d4bbca0d6a93a9ab"
+    },
+    {
+      "path": "plugins/social-reading/sources.py",
+      "sha256": "3568b3cb574d180c13eb89dbb734ac825e6544edf40923aed7d001d915e57542"
+    },
+    {
+      "path": "plugins/social-reading/store.py",
+      "sha256": "7ca5b5dbeddcace4b35bff53aca371a65307f1dc2240f588ace514151ef006c7"
+    },
+    {
+      "path": "plugins/social-reading/voice.py",
+      "sha256": "1f15e95c1641772492b7bb61f9aa4049c2a3e16315c06b32396348253608cfc8"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "e4d69a3f5c3d533d356195e1fbade3ff708879eca8540758005a2ebef63fadc1"
+    },
+    {
+      "path": "tests/test_reading_queue.py",
+      "sha256": "fa5b7e7e97bf5776867ff4ec9f668d6852c55dcfafac73d4f2ce68351c8d42aa"
+    },
+    {
+      "path": "tools/build_plugin_manifest.py",
+      "sha256": "3ac99f8536c7a9f02d2281a9986fdfa4e00f085b435974454830bc5fed39fd86"
+    },
+    {
+      "path": "web/companion-home/.gitignore",
+      "sha256": "f99ead27b34cbc6756d707e7e7ee7340eb9a71e02dfec2b40d5fb848dd3f4d4f"
+    },
+    {
+      "path": "web/companion-home/README.md",
+      "sha256": "a9bc256020d01586262f4b455335737cc17cc919e02e3ee3c66795e521d28a6e"
+    },
+    {
+      "path": "web/companion-home/index.html",
+      "sha256": "2a9e5849b603d91e65cf8c9d77f91655a22ca6ba48fa15e764d5de1a0ab97824"
+    },
+    {
+      "path": "web/companion-home/package-lock.json",
+      "sha256": "92f30d892682354482652a6c48697366a8cdc27fe6a60730714de7451ec82848"
+    },
+    {
+      "path": "web/companion-home/package.json",
+      "sha256": "1780bf25cfeb8ee6417b70be82d4479d7bac97d4a80a28ed5a445a29ddbc950c"
+    },
+    {
+      "path": "web/companion-home/public/garden-view.webp",
+      "sha256": "3f37a6a6a3e2e52e8bb8d486361170456199f6a2919ad7cea99b16a9d00031f7"
+    },
+    {
+      "path": "web/companion-home/src/avatar.mjs",
+      "sha256": "20fac1deb1a6c46eefa6379ce0d9d37844f137e4710a2a39434a77105be4fe45"
+    },
+    {
+      "path": "web/companion-home/src/character.mjs",
+      "sha256": "05bcc98c8c6e548800e279b951df18b60aa75b6b906842f26477f67bce654304"
+    },
+    {
+      "path": "web/companion-home/src/layout.mjs",
+      "sha256": "80106b064526472714e9a7da19326963b5614d2e2cee5029cd388ff361fde61f"
+    },
+    {
+      "path": "web/companion-home/src/main.mjs",
+      "sha256": "5ac1ba59491ac559f62c17043452d0a569113faea454aa77594aac2939861ffe"
+    },
+    {
+      "path": "web/companion-home/src/reading.mjs",
+      "sha256": "0e7fc3a79a04b1c4202431465ac0708747670fdec48b8a55f10342fe7745513c"
+    },
+    {
+      "path": "web/companion-home/src/room.mjs",
+      "sha256": "44dcdc2b000d7ae77432c85bb4daa9323ddbf6001d20cd4af588545480d3c315"
+    },
+    {
+      "path": "web/companion-home/src/state.mjs",
+      "sha256": "9f260a6b1f975c1ed295214b8b182d8930bcc89d017c51ad5819802e0fa8836f"
+    },
+    {
+      "path": "web/companion-home/src/style.css",
+      "sha256": "ad074cf61f1f815a2c699f49bd1ad067568d61078412f7cac333005e7861228c"
+    },
+    {
+      "path": "web/companion-home/test/avatar.test.mjs",
+      "sha256": "df1bacb76d2e473765a7f0a9a3629f79fd2501fe9f946b7cc9320e3b9e467723"
+    },
+    {
+      "path": "web/companion-home/test/character.test.mjs",
+      "sha256": "d9290530d683b85921203546d08a77f790c9f20d0f6c9539819f6df3dbb87076"
+    },
+    {
+      "path": "web/companion-home/test/reading.test.mjs",
+      "sha256": "a3f6efee339233634ab8d26248f0ee1314029f7484cb6d41207fe81b740c62b8"
+    },
+    {
+      "path": "web/companion-home/test/state.test.mjs",
+      "sha256": "732ba1ad1e826eff1663f8efdb0aefd1690b396b9ae330d16d0739f044819544"
+    },
+    {
+      "path": "web/companion-home/tools/export-preview.mjs",
+      "sha256": "1c563f483c1c6c3ed285c91b5c2e95bfae5d63eddb3c9d05ae0b4f3a2852c045"
+    },
+    {
+      "path": "web/companion-home/tools/home-redis-send.mjs",
+      "sha256": "2f55bf9144fdae2a5ccc6b7233cd0b79bd182efc5dbd5487cc8d01b5e63c8177"
+    },
+    {
+      "path": "web/companion-home/tools/home-space-hook.sh",
+      "sha256": "2b5664ea0ef41f9967400f48e79bba01987db42771e7762b7df95884d040f502"
+    },
+    {
+      "path": "web/companion-home/tools/home-state-relay-hook.sh",
+      "sha256": "86dbb7325e13723a5b5f557d83f8ee6e48d710948faf6145eb4d3b1b8d3d7ea5"
+    }
+  ]
+}

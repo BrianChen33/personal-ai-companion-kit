@@ -21,6 +21,8 @@ def initialize(b):
     CREATE TABLE IF NOT EXISTS sr_document(id TEXT PRIMARY KEY,source TEXT,url TEXT,title TEXT,
       fingerprint TEXT,payload TEXT,quote TEXT,event INTEGER,quote_id INTEGER,created REAL,last_seen REAL,status TEXT);
     CREATE INDEX IF NOT EXISTS sr_document_url ON sr_document(url,created);
+    CREATE INDEX IF NOT EXISTS sr_document_recency ON sr_document(coalesce(last_seen,created) DESC);
+    CREATE INDEX IF NOT EXISTS sr_document_expiry ON sr_document(status,coalesce(last_seen,created));
     CREATE TABLE IF NOT EXISTS sr_reflection(document TEXT PRIMARY KEY,summary TEXT,note INTEGER,created REAL);
     CREATE TABLE IF NOT EXISTS sr_habit(id TEXT PRIMARY KEY,pattern TEXT,mechanism TEXT,example TEXT,
       status TEXT,positive INTEGER DEFAULT 0,negative INTEGER DEFAULT 0,updated REAL);

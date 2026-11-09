@@ -5,7 +5,7 @@ import math
 import re
 import time
 import uuid
-from . import sources, store
+from . import sources, store, continuations
 
 
 def plan(b, q):
@@ -23,6 +23,7 @@ def plan(b, q):
 
 
 def _plan(b, q):
+    continuations.expire(b)
     p = store.settings(b)
     manual = q.get('manual') is True
     if not b.available('input') or not b.available('memory') or not b.feature('reading'):
@@ -66,11 +67,10 @@ def _plan(b, q):
             from muse_ext.companion import _set
             phone_request.update(status='claimed', provider='tieba', lease_id=lease)
             _set(b, 'phone_intent', phone_request)
-    previous = b.db.execute('SELECT url,payload,status FROM sr_document WHERE source=? ORDER BY created DESC LIMIT 1', (selected['id'],)).fetchone()
+    previous = next(iter(continuations.current(b, source_id=selected['id'])), None)
     resume = None
-    if previous and previous['status'] == 'partial':
-        saved = json.loads(previous['payload'])
-        resume = dict(url=previous['url'], coverage=saved.get('coverage', {}), receipt=saved.get('receipt'))
+    if previous:
+        resume = dict(url=previous['url'], document_id=previous['id'], coverage=previous['coverage'])
     return dict(ok=True, action='browse', lease_id=lease, source_id=selected['id'], url=selected['url'], resume=resume,
                 provider='tieba', budget=p, quiet_hours=quiet_now, browser='host_native_browser_only',
                 instruction='Read permitted visible content only. Stop at login/CAPTCHA. Return actual task receipt, '
@@ -271,13 +271,14 @@ def persist_observation(b, row, source, value, observed_at=None):
     fingerprint = content_fingerprint(value)
     did = hashlib.sha256((source['id'] + ':' + fingerprint).encode()).hexdigest()
     previous = b.db.execute('SELECT * FROM sr_document WHERE id=?', (did,)).fetchone()
+    happened = time.time() if observed_at is None else observed_at
     if previous:
         status = 'complete' if previous['status'] == 'complete' else value['status']
         with b.db:
             b.db.execute('UPDATE sr_lease SET status=? WHERE id=?', ('done:' + did, row['id']))
             if previous['status'] != 'complete' or value['status'] == 'complete':
                 b.db.execute('UPDATE sr_document SET payload=?,status=?,last_seen=? WHERE id=?',
-                             (json.dumps(value, ensure_ascii=False), status, time.time(), did))
+                             (json.dumps(value, ensure_ascii=False), status, max(previous['last_seen'] or 0, happened), did))
             b.db.execute('UPDATE sr_source SET last_read=? WHERE id=?', (time.time(), source['id']))
         return dict(ok=True, replayed=True, document_id=did, source_event=previous['event'], status=status,
                     observed=ensure_observed(b, previous['event']))
@@ -296,7 +297,7 @@ def persist_observation(b, row, source, value, observed_at=None):
     with b.db:
         b.db.execute('INSERT INTO sr_document VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
                      (did, source['id'], value['url'], value['title'], fingerprint,
-                      json.dumps(value, ensure_ascii=False), quote, event, mid, now, now, value['status']))
+                      json.dumps(value, ensure_ascii=False), quote, event, mid, now, happened, value['status']))
         b.db.execute('UPDATE sr_lease SET status=? WHERE id=?', ('done:' + did, row['id']))
         b.db.execute('UPDATE sr_source SET last_read=? WHERE id=?', (now, source['id']))
         # Keep at most50 full packets. Compact evidence/quotes remain traceable.

@@ -14,7 +14,7 @@ export const ZONES = {
   table: [0, 0, 0.5],
   hammock: [0.55, 0, 1.5],
 };
-const sofaPerch = [-3.9, 0.13, -0.6, Math.PI / 4];
+const sofaPerch = [-4.15, 0.02, -2.05, Math.PI / 2];
 export const POSES = {
   idle: sofaPerch,
   reading: [1.95, 0.36, -2.2, Math.PI],
@@ -29,7 +29,7 @@ export const POSES = {
 // x/z bounds, including the space under desks and between hammock ropes.
 export const OBSTACLES = [
   [-5.65, -3.25, -4.8, -3.5], // shelf
-  [-5.3, -3.65, -2.1, 0.95], // sofa
+  [-5.8, -3.5, -2.5, 1.4], // open-ended sofa
   [0.6, 3.4, -4.2, -2.95], // desk
   [1.45, 2.45, -2.7, -1.7], // desk stool
   [-5.5, -4.4, 2.3, 3.4], // plant

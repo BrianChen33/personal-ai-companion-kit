@@ -72,9 +72,9 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
   const model = new T.Group();
   const geometry = new T.BufferGeometry();
   geometry.setAttribute('position', new T.Float32BufferAttribute([
-    0, 0, 0, 0, 2.7, 0, 1.1, 0.25, -0.3, 0.15, 1, 0.5,
+    0, 0, 0, 0, 2.7, 0, 1.1, 0.25, -0.3, 0.15, 1, 0.5, 0.1, 0.3, 0.5,
   ], 3));
-  geometry.setAttribute('normal', new T.Float32BufferAttribute([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1], 3));
+  geometry.setAttribute('normal', new T.Float32BufferAttribute([0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1], 3));
   const mesh = new T.Mesh(geometry, new T.MeshStandardMaterial());
   mesh.name = 'SyntheticMesh'; model.add(mesh);
   model.userData.companionRig = { version: 1, mesh: mesh.name,
@@ -113,5 +113,13 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
   avatar.setState({ action: 'resting' }, POSES.resting, []);
   avatar.update(0.1, 1, true);
   assert.equal(shader.uniforms.avatarHandPose.value, 0);
+  assert.equal(mesh.morphTargetInfluences[5], 1);
+  const legs = mesh.geometry.morphAttributes.position[5];
+  assert.ok(legs.getZ(4) > 0.2);
+  assert.equal(legs.getY(1), 0); // Head and torso do not shrink to fit the sofa.
+  assert.ok(Math.abs(Math.hypot(0.3 + legs.getY(4) - 0.7, 0.5 + legs.getZ(4) - 0.4) - Math.hypot(-0.4, 0.1)) < 0.00001);
+  avatar.setState({ action: 'phone' }, POSES.phone, []);
+  avatar.update(0.1, 1, true);
+  assert.equal(mesh.morphTargetInfluences[5], 0);
   avatar.dispose();
 });

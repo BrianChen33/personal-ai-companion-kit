@@ -1,6 +1,7 @@
 import "./style.css";
 import { createRoom } from "./room.mjs";
 import { derivePresentation } from "./state.mjs";
+import { renderReading } from "./reading.mjs";
 
 const $ = (id) => document.getElementById(id);
 let snapshot, presentation, config, room, activeRequest, timer;
@@ -163,40 +164,8 @@ function detail(key) {
       for (const item of camera.recent || []) row(item.caption || "生活照片", item.status);
     }
   } else if (key === "reading") {
-    for (const item of snapshot.plugins?.items || [])
-      row(item.name || item.id, item.status);
     const reading = (snapshot.plugins?.items || []).find(item => item.id === "social-reading");
-    if (reading) {
-      row("自动阅读", reading.settings?.auto_browse === true ? "开启" : "关闭");
-      row("语言学习", reading.settings?.language_learning === true ? "开启" : "关闭");
-      row("分享兴趣阈值", value(reading.settings?.share_threshold));
-      for (const source of reading.sources || []) row(source.name, source.status);
-      for (const item of reading.recent_readings || []) row(item.title, item.status);
-    }
-    const entries = reading?.habits || snapshot.reading_growth?.terms || [];
-    const groups = node("select"), search = node("input"), chips = node("div", undefined, "chips");
-    groups.setAttribute("aria-label", "口头禅阶段");
-    search.setAttribute("aria-label", "搜索口头禅");
-    search.placeholder = "搜索口头禅";
-    for (const [value, label] of [["trial", "试用中"], ["mature", "已用熟"], ["reference", "仅理解"], ["candidate", "待理解"], ["rejected", "已停用"], ["", "全部"]]) {
-      const option = node("option", label); option.value = value; groups.append(option);
-    }
-    let page = 0;
-    const more = node("button", "下一页");
-    function showTerms() {
-      const filtered = entries.filter(entry => (!groups.value || entry.status === groups.value) &&
-        String(entry.form || entry.pattern || entry.keyword || entry.term || "").includes(search.value));
-      chips.replaceChildren(...filtered.slice(page * 24, (page + 1) * 24).map(entry =>
-        node("span", entry.form || entry.pattern || entry.keyword || entry.term, "chip")));
-      more.hidden = filtered.length <= 24;
-      more.textContent = `${page + 1} / ${Math.max(1, Math.ceil(filtered.length / 24))} · 下一页`;
-      more.onclick = () => { page = (page + 1) % Math.ceil(filtered.length / 24); showTerms(); };
-    }
-    for (const control of [groups, search]) control.oninput = () => { page = 0; showTerms(); };
-    $("detail-body").append(groups, search, chips, more);
-    showTerms();
-    for (const item of [...(reading?.habit_personality || []), ...(reading?.personality_growth || [])])
-      row(item.trait, item.interpretation || item.status);
+    renderReading($("detail-body"), reading, snapshot.reading_growth?.terms || [], snapshot.timezone || "Asia/Shanghai");
   } else {
     row("状态时间", time(snapshot.generated_at));
     row("展示模式", snapshot.preview ? "角色与合成状态预览" : "私有状态");

@@ -1,5 +1,5 @@
 import * as T from "three";
-import { ROOM, ZONES, POSES, OBSTACLES, CAMERA_ELEVATION, PHONE_POSITION, WORKTOP_HEIGHT } from "./layout.mjs";
+import { ROOM, ZONES, POSES, OBSTACLES, CAMERA_ELEVATION, PHONE_POSITION, WORKTOP_HEIGHT, SOFA_ACTIONS } from "./layout.mjs";
 import { prepareAvatar } from "./avatar.mjs";
 import { loadCharacter } from "./character.mjs";
 
@@ -204,16 +204,15 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   cylinder(house, [3.22, WORKTOP_HEIGHT + 0.21, -2], 0.12, 0.27, "white");
 
   zone("sofa");
-  // Sofa, cushions and a folded throw.
-  box(house, [-2.8, 0.55, 0.05], [1.6, 0.6, 2.7], "green", "energy");
-  box(house, [-3.4, 1.03, 0.05], [0.35, 1.25, 2.72], "green", "energy");
-  box(house, [-2.75, 0.93, -1.23], [1.66, 0.6, 0.25], "green");
-  box(house, [-2.75, 0.93, 1.34], [1.66, 0.6, 0.25], "green");
-  for (const z of [-0.57, 0.61])
-    box(house, [-2.61, 0.91, z], [1.21, 0.18, 1.12], "sage");
-  const cushion = box(house, [-2.8, 1.13, -0.77], [0.24, 0.68, 0.65], "cream");
+  // The open left end leaves room for hair and a hanging tail beside the seat.
+  box(house, [-2.95, 0.42, 0.05], [2.1, 0.64, 3.7], "green", "energy");
+  box(house, [-3.95, 1.16, 0.05], [0.28, 1.7, 3.72], "green", "energy");
+  box(house, [-2.9, 0.89, 1.83], [2.1, 0.28, 0.2], "green");
+  for (const z of [-0.86, 0.86])
+    box(house, [-2.8, 0.82, z], [1.76, 0.18, 1.7], "sage");
+  const cushion = box(house, [-3.3, 1.13, 0.86], [0.24, 0.68, 0.65], "cream");
   cushion.rotation.z = -0.22;
-  box(house, [-2.62, 1.02, 0.86], [1.18, 0.06, 0.6], "pink");
+  box(house, [-2.8, 0.94, 0.85], [1.7, 0.05, 0.6], "pink");
 
   zone("shelf");
   // Bookshelf, planter and diary, each with a clear detail destination.
@@ -442,6 +441,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       "phone",
       "resting",
       "eating",
+      ...SOFA_ACTIONS,
     ].includes(presentation.action);
     for (const name of ["LeftLeg", "RightLeg"]) {
       const leg = character.getObjectByName(name);
