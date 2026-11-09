@@ -728,11 +728,17 @@
       "separate storage, rendering and real-model acceptance evidence"
     ],
     "validation": "native host reports minimal uploader repair deployed; actual owner GLB upload pending",
-    "sha256_compatibility": {
-      "implementation": "bundled trusted pure JavaScript SHA-256 for hosts without crypto.subtle",
-      "verified_package": "@noble/hashes@2.4.0",
-      "validation": "without WebCrypto: known vectors, padding boundaries and actual private GLB match independent Node SHA-256",
-      "scope": "public host protocol; native deployment acceptance recorded separately"
+    "model_import_mode": {
+      "selected_by": "owner",
+      "mode": "simplified personal model upload",
+      "checks": [
+        "GLB header",
+        "size budget",
+        "all chunks present",
+        "declared byte count"
+      ],
+      "sha256": "optional legacy metadata; omitted by new client; no browser digest gate",
+      "acceptance": "actual owner import and display; native deployment pending"
     }
   }
 }
