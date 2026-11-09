@@ -4,29 +4,66 @@ import { tailClearance } from './layout.mjs';
 const smooth = (a, b, value) => T.MathUtils.smoothstep(value, a, b);
 const FACE_TILES = { happy: 0, sad: 1, angry: 2, worried: 3, surprised: 3, curious: 4, affection: 5, smug: 6, sleeping: 7 };
 
-export function smoothFace(geometry, face, scale = 1) {
+function faceVisibility(geometry, texture, face, scale) {
+  if (!texture?.image || typeof document === 'undefined') return null;
+  const uv = geometry.getAttribute('uv');
+  if (!uv) return null;
+  try {
+    // Inspect the asset's own colors once. Hair remains the original foreground mesh.
+    const canvas = document.createElement('canvas');
+    canvas.width = texture.image.width; canvas.height = texture.image.height;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    context.drawImage(texture.image, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const positions = geometry.getAttribute('position');
+    const visible = new Float32Array(positions.count);
+    const sample = new T.Vector2();
+    texture.updateMatrix();
+    for (let i = 0; i < positions.count; i++) {
+      const x = positions.getX(i) / scale, y = positions.getY(i) / scale, z = positions.getZ(i) / scale;
+      if (Math.abs(x) > face.width * 0.54 || y < face.bottom - face.height * 0.27 || y > face.bottom + face.height) continue;
+      sample.set(uv.getX(i), uv.getY(i)); texture.transformUv(sample);
+      const px = Math.max(0, Math.min(canvas.width - 1, Math.floor(sample.x * canvas.width)));
+      const py = Math.max(0, Math.min(canvas.height - 1, Math.floor(sample.y * canvas.height)));
+      const offset = (py * canvas.width + px) * 4;
+      const [r, g, b] = pixels.subarray(offset, offset + 3);
+      const skin = r > 145 && g > 120 && b > 90 && r > g + 3 && g > b + 3 && r - b < 100;
+      const hair = !skin && (y > face.bottom + face.height * 0.68 ||
+        y < face.bottom + face.height * 0.12 || Math.abs(x) > face.width * 0.39 ||
+        z > face.front + 0.065);
+      visible[i] = hair ? 0 : 1;
+    }
+    return visible;
+  } catch {
+    // An unreadable external color map retains the original surface and face.
+    return new Float32Array(geometry.getAttribute('position').count);
+  }
+}
+
+export function smoothFace(geometry, face, scale = 1, visibility = null) {
   const positions = geometry.getAttribute('position'), normals = geometry.getAttribute('normal');
   const weights = new Float32Array(positions.count);
   const normal = new T.Vector3();
   const surfaceNormal = new T.Vector3();
-  const radiusX = face.width * 0.58, radiusY = face.height * 0.9;
-  const depthX = face.width * 0.42, depthY = face.height * 0.30;
+  const radiusX = face.width * 0.58, radiusY = face.height * 0.75;
+  const depthX = face.width * 0.24, depthY = face.height * 0.80;
   const centerY = face.bottom + face.height * 0.46;
   for (let i = 0; i < positions.count; i++) {
     const x = positions.getX(i) / scale, y = positions.getY(i) / scale, z = positions.getZ(i) / scale;
     // A continuous convex cheek surface fills old facial relief, retaining the fringe.
     const top = face.bottom + face.height * (0.58 + 0.35 * smooth(face.width * 0.05, face.width * 0.22, Math.abs(x)));
-    const weight = smooth(face.front - 0.04, face.front + 0.015, z) *
+    const weight = smooth(face.front - 0.08, face.front + 0.015, z) *
       (1 - smooth(face.width * 0.41, face.width * 0.53, Math.abs(x))) *
-      smooth(face.bottom, face.bottom + face.height * 0.08, y) *
-      (1 - smooth(top - face.height * 0.10, top, y));
+      smooth(face.bottom - face.height * 0.26, face.bottom + face.height * 0.08, y) *
+      (1 - smooth(top - face.height * 0.10, top, y)) * (visibility ? visibility[i] : 1);
     weights[i] = weight;
-    const surfaceZ = (face.surface_depth ?? face.plane ?? face.front + 0.095) -
-      depthX * Math.pow(x / radiusX, 2) - depthY * Math.pow((y - centerY) / radiusY, 2);
+    const chinCurve = Math.sqrt(Math.max(0.015, 1 - Math.pow((y - centerY) / radiusY, 2)));
+    const surfaceZ = (face.surface_depth ?? face.plane ?? face.front + 0.075) -
+      depthX * Math.pow(x / radiusX, 2) - depthY * (1 - chinCurve);
     positions.setZ(i, T.MathUtils.lerp(z, surfaceZ, weight) * scale);
     if (normals && weight > 0) {
       surfaceNormal.set(2 * depthX * x / (radiusX * radiusX),
-        2 * depthY * (y - centerY) / (radiusY * radiusY), 1).normalize();
+        depthY * (y - centerY) / (radiusY * radiusY * chinCurve), 1).normalize();
       normal.fromBufferAttribute(normals, i).lerp(surfaceNormal, weight).normalize();
       normals.setXYZ(i, normal.x, normal.y, normal.z);
     }
@@ -84,7 +121,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
     mesh.rotation.set(0, 0, 0);
     mesh.scale.set(1, 1, 1);
     mesh.geometry = geometry;
-    if (mesh.name === rig.mesh) smoothFace(geometry, rig.face, scale);
+    if (mesh.name === rig.mesh) smoothFace(geometry, rig.face, scale, faceVisibility(geometry, mesh.material.map, rig.face, scale));
     const positions = geometry.getAttribute('position');
     const deltas = Array.from({ length: 3 }, () => new Float32Array(positions.count * 3));
     for (let i = 0; i < positions.count; i++) {
@@ -128,12 +165,7 @@ uniform vec4 avatarFaceBounds;
 ` + shader.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
 vec2 faceUV = vec2(avatarPosition.x / avatarFaceBounds.x + 0.5,
   (avatarPosition.y - avatarFaceBounds.y) / avatarFaceBounds.z);
-vec2 eyeLeft = (faceUV - vec2(0.28, 0.44)) / vec2(0.19, 0.30);
-vec2 eyeRight = (faceUV - vec2(0.72, 0.44)) / vec2(0.19, 0.30);
-vec2 mouth = (faceUV - vec2(0.5, 0.22)) / vec2(0.18, 0.20);
-float faceMask = 1.0 - smoothstep(0.75, 1.0, min(min(length(eyeLeft), length(eyeRight)), length(mouth)));
-faceMask *= smoothstep(avatarFaceBounds.w, avatarFaceBounds.w + 0.03, avatarPosition.z);
-faceMask = max(faceMask, avatarSmoothFace);
+float faceMask = avatarSmoothFace;
 vec2 atlasUV = (clamp(faceUV, 0.001, 0.999) + vec2(mod(avatarTile, 4.0), 1.0 - floor(avatarTile / 4.0))) / vec2(4.0, 2.0);
 atlasUV.y = 1.0 - atlasUV.y;
 vec4 expressionColor = sRGBTransferEOTF(texture2D(avatarFace, atlasUV));

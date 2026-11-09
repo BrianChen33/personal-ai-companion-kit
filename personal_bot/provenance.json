@@ -705,10 +705,15 @@
       "existing private GLB remains unchanged"
     ],
     "validation": {
-      "frontend_cases": 8,
+      "frontend_cases": 9,
       "build": "passed",
-      "ui": "actual Chrome oblique view checked",
+      "ui": "Chrome actual asset oblique view and original hair occlusion checked",
       "scope": "frontend surface correction only; core runtime2.11.0 unchanged"
-    }
+    },
+    "refinements": [
+      "shared asset-color/depth visibility protects foreground hair in geometry and atlas",
+      "lower face follows an elliptical chin arc with a wider blend into the original head",
+      "central surface remains behind the original fringe"
+    ]
   }
 }

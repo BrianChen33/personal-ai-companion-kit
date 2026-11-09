@@ -13,11 +13,21 @@ test('old facial relief becomes a convex cheek surface with curved normals and a
   smoothFace(geometry, { width: 1, bottom: 1.7, height: 0.6, front: 0.3 });
   const positions = geometry.getAttribute('position');
   assert.ok(Math.abs(positions.getZ(0) - positions.getZ(1)) < 0.00001);
-  assert.ok(positions.getZ(2) > positions.getZ(0) + 0.02);
+  assert.ok(positions.getZ(2) > positions.getZ(0) + 0.01);
   assert.ok(geometry.getAttribute('normal').getX(0) < -0.1);
   assert.ok(geometry.getAttribute('normal').getX(1) > 0.1);
   assert.ok(Math.abs(positions.getZ(3) - 0.8) < 0.00001);
   assert.equal(geometry.getAttribute('avatarFaceWeight').getX(0), 1);
+});
+
+test('hair visibility leaves foreground hair geometry and its expression weight untouched', () => {
+  const geometry = new T.BufferGeometry();
+  geometry.setAttribute('position', new T.Float32BufferAttribute([0, 1.94, 0.8, 0.1, 1.94, 0.7], 3));
+  geometry.setAttribute('normal', new T.Float32BufferAttribute([0, 0, 1, 0, 0, 1], 3));
+  smoothFace(geometry, { width: 1, bottom: 1.7, height: 0.6, front: 0.3 }, 1, new Float32Array([1, 0]));
+  assert.ok(geometry.getAttribute('position').getZ(0) < 0.5);
+  assert.ok(Math.abs(geometry.getAttribute('position').getZ(1) - 0.7) < 0.00001);
+  assert.equal(geometry.getAttribute('avatarFaceWeight').getX(1), 0);
 });
 
 test('the plant pose and open hammock zone have separate floor envelopes', () => {

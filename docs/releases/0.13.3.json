@@ -5,7 +5,7 @@
   "life_camera_version": "0.3.0",
   "social_reading_version": "0.4.0",
   "mi_fitness_version": "0.1.0",
-  "base_architecture": "b925e50379ae603672b2af42e5b8f4e8a1971add",
+  "base_architecture": "6fc8cb117c00b5f8590cfeba1a9d8a98b975b26e",
   "files": [
     {
       "path": "AGENTS.md",
@@ -25,7 +25,7 @@
     },
     {
       "path": "docs/HOME_SPACE.md",
-      "sha256": "aae43d9b4b9abc2512b34de74990d1f83a9853c2c8bb5552b356a56badfdff75"
+      "sha256": "f0220a49132aeb3eede2458ac34a8e56d3cb8c4c660666e74ebf1f28c7663958"
     },
     {
       "path": "personal_bot/__init__.py",
@@ -33,7 +33,7 @@
     },
     {
       "path": "personal_bot/provenance.json",
-      "sha256": "337c75794b8a5a24690c62f36a94ff0eff73b8bc975147435374fd0b8a7f599f"
+      "sha256": "73374ccca1b774ffcf7468e7f59026d261b9aad0e2968d0f0850019744c404bc"
     },
     {
       "path": "personal_bot/vault.py",
@@ -85,7 +85,7 @@
     },
     {
       "path": "web/companion-home/src/avatar.mjs",
-      "sha256": "9b556af644dbd92390f2cea0f83a3afd7f1bc5b511c4b6a2d64300b1aa6e5a97"
+      "sha256": "607bca4097cc95d5e991952e6b8c2358fb22a94997bfa5686e4a337d2776d711"
     },
     {
       "path": "web/companion-home/src/layout.mjs",
@@ -109,7 +109,7 @@
     },
     {
       "path": "web/companion-home/test/avatar.test.mjs",
-      "sha256": "f06c827376df4dafaceff00a106bc316c6314d6878972329fd797ba2f4471ba4"
+      "sha256": "3ccb1d5cdcc93ee188a422d97ff2e084cdd63d0698a450c8a54964b1fd0371b4"
     },
     {
       "path": "web/companion-home/test/state.test.mjs",
