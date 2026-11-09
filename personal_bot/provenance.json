@@ -674,5 +674,23 @@
       "review": "one narrow review; embedded ImageBitmap orientation, optional texture fallback and disposal fixed",
       "ui": "local desktop checks; final mobile and native host acceptance pending"
     }
+  },
+  "flat_face_update": {
+    "date": "2026-11-09",
+    "release": "0.13.2",
+    "frontend": "0.2.1",
+    "base_architecture": "e58faa136fa39ea8f9c8540b534cbc38fadef251",
+    "changes": [
+      "flatten measured face geometry beneath reference-derived atlas",
+      "preserve fringe and head outline",
+      "suppress old normal-map and ambient-occlusion facial relief",
+      "reuse existing private GLB and embedded atlas"
+    ],
+    "validation": {
+      "frontend_cases": 8,
+      "build": "passed; actual Chrome closed-eye/closed-mouth appearance checked",
+      "python": "same523-case acceptance as0.13.1; version metadata checked separately",
+      "scope": "frontend geometry and shader only; core runtime2.11.0 unchanged"
+    }
   }
 }

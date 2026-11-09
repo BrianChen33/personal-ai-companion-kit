@@ -1,3 +1,6 @@
+0.13.2/frontend0.2.1 flattens calibrated face geometry and suppresses old normal/AO
+relief beneath the expression atlas. Private0.13.1 GLB remains compatible.
+
 0.13.1 adds a spacious home layout, reference-derived private face atlas, hand-held phone
 and bounded tail morphs. Private calibrated companionRig data and embedded expression
 texture stay inside the owner GLB. Generic garden texture is public. Ordinary replies

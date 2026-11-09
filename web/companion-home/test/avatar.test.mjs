@@ -1,8 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from 'three';
-import { prepareAvatar } from '../src/avatar.mjs';
+import { prepareAvatar, flattenFace } from '../src/avatar.mjs';
 import { POSES, OBSTACLES, tailClearance } from '../src/layout.mjs';
+
+test('eye sockets and mouth relief flatten to one surface while the fringe stays intact', () => {
+  const geometry = new T.BufferGeometry();
+  geometry.setAttribute('position', new T.Float32BufferAttribute([
+    -0.15, 1.94, 0.8, 0.15, 1.94, 0.5, 0, 1.84, 0.55, 0, 2.2, 0.8,
+  ], 3));
+  geometry.setAttribute('normal', new T.Float32BufferAttribute([0.2, 0, 0.98, 0, -0.3, 0.95, 0, 0.2, 0.98, 0, 0, 1], 3));
+  flattenFace(geometry, { width: 1, bottom: 1.7, height: 0.6, front: 0.3 });
+  const positions = geometry.getAttribute('position');
+  for (const i of [0, 1, 2]) assert.ok(Math.abs(positions.getZ(i) - 0.38) < 0.00001);
+  assert.ok(Math.abs(positions.getZ(3) - 0.8) < 0.00001);
+  assert.equal(geometry.getAttribute('avatarFaceWeight').getX(0), 1);
+});
 
 test('the plant pose and open hammock zone have separate floor envelopes', () => {
   const [x, , z] = POSES.tending;

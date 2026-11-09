@@ -156,3 +156,8 @@ textures索引。渲染器通过GLTFParser读取该纹理，无需额外私人�
 上传分块只写staging，以upload_id隔离会话，完整校验后原子切换当前模型。
 旧模型不得在begin_upload时提前删除。正式状态动作接受snapshot和sha256，
 以十进制字符串revision比较并提供同revision同digest幂等回执。
+
+0.13.2/frontend0.2.1在同一标定里先将面部前侧网格压至平面，再贴完整表情，
+保留刘海边界与头部轮廓。可选face.plane指定原模型坐标的面部深度，未指定
+时兼容face.front+0.08。局部顶点法线朝前，并屏蔽该区域原normal/AO残留。
+私人GLB无需重传或重生。该改动只发生在3D资产准备阶段，不参与对话判断。
