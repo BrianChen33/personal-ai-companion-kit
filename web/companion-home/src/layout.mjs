@@ -1,5 +1,9 @@
 // One shared floor plan for placement, clearances and the tail's swept envelope.
 export const ROOM = { width: 12.8, depth: 10.2 };
+export const CAMERA_ELEVATION = [Math.PI / 6, Math.PI * 7 / 18];
+export const PHONE_POSITION = [0, 1.58, 1.10];
+export const WORKTOP_HEIGHT = 1.38;
+export const SOFA_ACTIONS = ['idle', 'resting', 'cleaning'];
 export const ZONES = {
   window: [-0.3, 0, -1.5],
   entry: [1.75, 0, -1.5],
@@ -10,16 +14,17 @@ export const ZONES = {
   table: [0, 0, 0.5],
   hammock: [0.55, 0, 1.5],
 };
+const sofaPerch = [-3.9, 0.13, -0.6, Math.PI / 4];
 export const POSES = {
-  idle: [-0.6, 0.13, 0, 0],
+  idle: sofaPerch,
   reading: [1.95, 0.36, -2.2, Math.PI],
   writing: [1.95, 0.36, -2.2, Math.PI],
   phone: [3.2, 1.15, 3.9, 0],
-  resting: [-2.4, 0.13, 0, 0],
+  resting: sofaPerch,
   sleeping: [3.2, 1.15, 3.9, 0],
   eating: [-1.65, 0.36, 1.5, 0],
-  tending: [-2.75, 0.13, 2.85, -Math.PI / 2],
-  cleaning: [-0.6, 0.13, 0, 0],
+  tending: [-3.55, 0.13, 2.65, -Math.PI / 2],
+  cleaning: sofaPerch,
 };
 // x/z bounds, including the space under desks and between hammock ropes.
 export const OBSTACLES = [
@@ -35,5 +40,5 @@ export const OBSTACLES = [
 export function tailClearance(action) {
   // Reclining tails stay almost still beside fabric. Standing poses have clear aisles.
   return ['sleeping', 'phone'].includes(action) ? 0.012 :
-    ['reading', 'writing', 'eating'].includes(action) ? 0.02 : action === 'tending' ? 0.045 : 0.12;
+    ['reading', 'writing', 'eating', ...SOFA_ACTIONS].includes(action) ? 0.02 : action === 'tending' ? 0.045 : 0.12;
 }

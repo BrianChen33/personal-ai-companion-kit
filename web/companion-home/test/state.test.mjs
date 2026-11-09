@@ -99,3 +99,13 @@ test('released meal completion clears a matching stale activity but cannot end a
   snapshot.daily_scene.scene.activity = '阅读';
   assert.equal(derivePresentation(snapshot, 1010).action, 'eating');
 });
+
+test('an unlisted activity uses the default pose only when its released location confirms home', () => {
+  const snapshot = { generated_at: 1000, daily_scene: { scene: {
+    activity: '摆弄小玩意', stage: 'started', occurred: 900, fields: { location: '小屋' },
+  } } };
+  assert.equal(derivePresentation(snapshot, 1010).action, 'idle');
+  assert.equal(derivePresentation(snapshot, 1010).presence, 'home');
+  snapshot.daily_scene.scene.fields.location = '公园';
+  assert.equal(derivePresentation(snapshot, 1010).presence, 'unknown');
+});

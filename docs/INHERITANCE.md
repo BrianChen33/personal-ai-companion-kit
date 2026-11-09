@@ -1,7 +1,8 @@
-0.14.2/frontend0.2.5 preserves body proportions in desk/dining perches and only
-shows food for an actual active meal at home. Retain the private calibrated GLB,
-rounded face, skin-matched expression atlas and existing cache/state relay bindings.
-Read docs/HOME_SPACE.md before porting the frontend.
+0.14.3/frontend0.2.6 accepts direct binary model data with stage-aware errors.
+Preserve host cache and private state relay, transfer existing Blob/ArrayBuffer to
+createRoom.characterData, and retain URL loading for other callers. Sofa defaults,
+lower worktops, phone clearance, atlas-outline removal and 30-70 degree elevation
+are defined in docs/HOME_SPACE.md. Keep the private calibrated GLB.
 
 0.13.1 adds a spacious home layout, reference-derived private face atlas, hand-held phone
 and bounded tail morphs. Private calibrated companionRig data and embedded expression

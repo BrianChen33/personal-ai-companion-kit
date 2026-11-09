@@ -1,8 +1,7 @@
 import * as T from "three";
-import { ROOM, ZONES, POSES, OBSTACLES } from "./layout.mjs";
+import { ROOM, ZONES, POSES, OBSTACLES, CAMERA_ELEVATION, PHONE_POSITION, WORKTOP_HEIGHT } from "./layout.mjs";
 import { prepareAvatar } from "./avatar.mjs";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+import { loadCharacter } from "./character.mjs";
 
 const COLORS = {
   wood: 0xc39872,
@@ -17,7 +16,7 @@ const COLORS = {
   pink: 0xcaa8a0,
 };
 
-export function createRoom(element, { onSelect, onStatus, onCharacterError, characterUrl, expressionAtlasUrl, gardenUrl = "./garden-view.webp" }) {
+export function createRoom(element, { onSelect, onStatus, onCharacterError, characterUrl, characterData, expressionAtlasUrl, gardenUrl = "./garden-view.webp" }) {
   const scene = new T.Scene();
   const renderer = new T.WebGLRenderer({
     antialias: true,
@@ -185,24 +184,24 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
 
   zone("desk");
   // Higher worktop and a perch stool keep the unrigged body's proportions.
-  box(house, [2.35, 1.94, -1.95], [2.8, 0.15, 1.15], "paleWood", "reading");
+  box(house, [2.35, WORKTOP_HEIGHT, -1.95], [2.8, 0.15, 1.15], "paleWood", "reading");
   for (const x of [1.15, 3.55])
     for (const z of [-2.4, -1.5])
-      box(house, [x, 0.94, z], [0.12, 1.85, 0.12], "wood");
+      box(house, [x, (WORKTOP_HEIGHT - 0.075) / 2, z], [0.12, WORKTOP_HEIGHT - 0.075, 0.12], "wood");
   cylinder(house, [2.3, 1.19, -0.6], 0.45, 0.14, "green");
   for (const x of [2.02, 2.58])
     for (const z of [-0.88, -0.32])
       cylinder(house, [x, 0.58, z], 0.045, 1.16, "wood");
   const book = box(
     house,
-    [2.25, 2.06, -1.8],
+    [2.25, WORKTOP_HEIGHT + 0.12, -1.8],
     [0.75, 0.08, 0.5],
     "cream",
     "reading",
   );
   book.rotation.y = -0.15;
-  box(house, [2.25, 2.11, -1.8], [0.018, 0.018, 0.47], "wood");
-  cylinder(house, [3.22, 2.15, -2], 0.12, 0.27, "white");
+  box(house, [2.25, WORKTOP_HEIGHT + 0.17, -1.8], [0.018, 0.018, 0.47], "wood");
+  cylinder(house, [3.22, WORKTOP_HEIGHT + 0.21, -2], 0.12, 0.27, "white");
 
   zone("sofa");
   // Sofa, cushions and a folded throw.
@@ -251,14 +250,14 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
     leaf.rotation.z = Math.cos(a) * -0.5;
   }
   zone("table");
-  const table = cylinder(house, [-1.65, 1.94, 2.75], 0.9, 0.14, "paleWood");
-  cylinder(house, [-1.65, 0.95, 2.75], 0.11, 1.88, "wood");
+  const table = cylinder(house, [-1.65, WORKTOP_HEIGHT, 2.75], 0.9, 0.14, "paleWood");
+  cylinder(house, [-1.65, (WORKTOP_HEIGHT - 0.07) / 2, 2.75], 0.11, WORKTOP_HEIGHT - 0.07, "wood");
   cylinder(house, [-1.65, 0.10, 2.75], 0.55, 0.12, "wood");
   cylinder(house, [-1.65, 1.19, 1.0], 0.45, 0.14, "green");
   for (const x of [-1.93, -1.37])
     for (const z of [0.72, 1.28]) cylinder(house, [x, 0.58, z], 0.045, 1.16, "wood");
   const meal = new T.Group();
-  meal.position.set(-1.65, 2.02, 2.9);
+  meal.position.set(-1.65, WORKTOP_HEIGHT + 0.08, 2.9);
   currentZone.add(meal);
   meal.visible = false;
   const bowlProfile = [[0, 0], [0.10, 0], [0.15, 0.03], [0.23, 0.14],
@@ -336,7 +335,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
     heldPhone,
     avatar;
   let azimuth = 0.42,
-    elevation = 0.56,
+    elevation = Math.PI / 4,
     distance = 21.2,
     studioDistance = 6.5,
     studio = false;
@@ -516,9 +515,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
     avatar?.setState(value, pose, OBSTACLES);
   }
 
-  const load = characterUrl
-    ? new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(characterUrl)
-    : Promise.reject(new Error("character_unconfigured"));
+  const load = loadCharacter({ characterUrl, characterData });
   load
     .then(async (gltf) => {
       if (disposed) return;
@@ -556,7 +553,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       heldBook.visible = false;
       heldPhone = new T.Group();
       characterStage.add(heldPhone);
-      heldPhone.position.set(-0.04, 1.2, 0.72);
+      heldPhone.position.set(...PHONE_POSITION);
       box(heldPhone, [0, 0, 0], [0.44, 0.62, 0.065], "dark");
       box(heldPhone, [0, 0, -0.038], [0.37, 0.52, 0.015], "blue");
       sphere(heldPhone, [0.12, 0.22, 0.041], [0.035, 0.035, 0.012], "dark");
@@ -619,7 +616,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
     if (Math.hypot(dx, dy) > 8) {
       pointer.moved = true;
       azimuth = pointer.angle - dx * 0.006;
-      elevation = T.MathUtils.clamp(pointer.elevation + dy * 0.004, 0.18, 1.1);
+      elevation = T.MathUtils.clamp(pointer.elevation + dy * 0.004, ...CAMERA_ELEVATION);
       needsRender = true;
     }
   });
@@ -674,7 +671,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       azimuth =
         { front: 0, side: Math.PI / 2, back: Math.PI, home: 0.42 }[view] ??
         0.42;
-      elevation = studio ? 0.02 : 0.56;
+      elevation = studio ? 0.02 : Math.PI / 4;
       if (studio) {
         characterStage.position.set(0, 0, 0);
         characterStage.rotation.set(0, 0, 0);
@@ -702,7 +699,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       house.visible = true;
       characterStage.visible = presentation?.presence === "home";
       azimuth = 0.42;
-      elevation = 0.56;
+      elevation = Math.PI / 4;
       distance = 21.2;
     },
     rotate(delta) {

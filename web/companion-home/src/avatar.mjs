@@ -1,5 +1,5 @@
 import * as T from 'three';
-import { tailClearance } from './layout.mjs';
+import { tailClearance, PHONE_POSITION, WORKTOP_HEIGHT, SOFA_ACTIONS } from './layout.mjs';
 
 const smooth = (a, b, value) => T.MathUtils.smoothstep(value, a, b);
 const soft = (a, b, value) => T.MathUtils.smootherstep(value, a, b);
@@ -146,8 +146,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
   let tailCount = 0;
   const pivot = new T.Vector3(...rig.tail.pivot).multiplyScalar(scale);
   const point = new T.Vector3();
-  const hands = rig.hands.map(hand => ({ ...hand, centerPoint: new T.Vector3(...hand.center).multiplyScalar(scale),
-    gripDelta: new T.Vector3(...hand.grip).sub(new T.Vector3(...hand.center)).multiplyScalar(scale) }));
+  const hands = rig.hands.map(hand => ({ ...hand, centerPoint: new T.Vector3(...hand.center).multiplyScalar(scale) }));
   for (const mesh of meshes) {
     const matrix = mesh.matrixWorld.clone();
     const geometry = mesh.geometry.clone();
@@ -195,8 +194,10 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
         (mesh.name === rig.mesh && point.distanceTo(item.centerPoint) < item.radius * scale));
       if (hand) {
         const weight = mesh.name === hand.mesh ? 1 : 1 - smooth(hand.radius * scale * 0.5, hand.radius * scale, point.distanceTo(hand.centerPoint));
-        deltas[2].set([hand.gripDelta.x * weight, hand.gripDelta.y * weight, hand.gripDelta.z * weight], i * 3);
-        const deskHand = new T.Vector3(Math.sign(hand.centerPoint.x) * 0.26, 1.66, 0.91);
+        const phoneHand = new T.Vector3(Math.sign(hand.centerPoint.x) * 0.24, PHONE_POSITION[1] - 0.12, PHONE_POSITION[2]);
+        deltas[2].set([(phoneHand.x - hand.centerPoint.x) * weight,
+          (phoneHand.y - hand.centerPoint.y) * weight, (phoneHand.z - hand.centerPoint.z) * weight], i * 3);
+        const deskHand = new T.Vector3(Math.sign(hand.centerPoint.x) * 0.26, WORKTOP_HEIGHT - 0.28, 0.91);
         deltas[4].set([(deskHand.x - hand.centerPoint.x) * weight,
           (deskHand.y - hand.centerPoint.y) * weight,
           (deskHand.z - hand.centerPoint.z) * weight], i * 3);
@@ -230,7 +231,9 @@ vec4 expressionColor = sRGBTransferEOTF(texture2D(avatarFace, atlasUV));
 vec2 skinUV = (vec2(0.5, 0.75) + vec2(mod(avatarTile, 4.0), 1.0 - floor(avatarTile / 4.0))) / vec2(4.0, 2.0);
 skinUV.y = 1.0 - skinUV.y;
 vec3 atlasSkin = sRGBTransferEOTF(texture2D(avatarFace, skinUV)).rgb;
-float featureMask = expressionColor.a * (1.0 - smoothstep(0.40, 0.48, length(faceUV - 0.5)));
+// Reference tiles contain a dark circular outline near radius 0.44. Only facial
+// features inside that outline are projected onto the continuous skin surface.
+float featureMask = expressionColor.a * (1.0 - smoothstep(0.385, 0.42, length(faceUV - 0.5)));
 vec3 faceColor = avatarSkin * mix(vec3(1.0), expressionColor.rgb / max(atlasSkin, vec3(0.01)), featureMask);
 diffuseColor.rgb = mix(diffuseColor.rgb, faceColor, faceMask * avatarFaceEnabled);
 `);
@@ -244,7 +247,7 @@ vec3 avatarSpecularBeforeAO = reflectedLight.indirectSpecular;
 reflectedLight.indirectDiffuse = mix(reflectedLight.indirectDiffuse, avatarBeforeAO, avatarSmoothFace);
 reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpecularBeforeAO, avatarSmoothFace);`);
       };
-      mesh.material.customProgramCacheKey = () => 'companion-rounded-face-atlas-v4';
+      mesh.material.customProgramCacheKey = () => 'companion-rounded-face-atlas-v5';
     }
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
@@ -288,7 +291,7 @@ reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpe
         mesh.morphTargetInfluences[1] = Math.max(0, -wave);
         mesh.morphTargetInfluences[2] = grip;
         const atDesk = ['reading', 'writing', 'eating'].includes(state.action);
-        mesh.morphTargetInfluences[3] = atDesk ? 1 : 0;
+        mesh.morphTargetInfluences[3] = atDesk || SOFA_ACTIONS.includes(state.action) ? 1 : 0;
         mesh.morphTargetInfluences[4] = atDesk ? 1 : 0;
       }
       if (texture?.image) {

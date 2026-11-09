@@ -819,5 +819,23 @@
       "installed_wheel": "accepted outside checkout",
       "related_vault_cases": 14
     }
+  },
+  "home_clearance_binary_update": {
+    "date": "2026-11-09",
+    "release": "0.14.3",
+    "home_frontend": "0.2.6",
+    "base_architecture": "fa78a0d0d3c2c2cb1002c6576b97d80af15f3d4e",
+    "changes": [
+      "direct Blob/ArrayBuffer parse entry with stage-aware failures and URL compatibility",
+      "lower worktops and matched tabletop hand positions",
+      "phone hand and screen clearance from face",
+      "sofa-edge default perches and plant/table clearance",
+      "30-70 degree elevation with full horizontal orbit",
+      "exclude reference atlas circular outline from expression projection"
+    ],
+    "validation": {
+      "frontend_cases": 15,
+      "native": "same-space host integration pending; original desktop error is Failed to fetch"
+    }
   }
 }

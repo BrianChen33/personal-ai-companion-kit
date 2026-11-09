@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from 'three';
 import { prepareAvatar, smoothFace } from '../src/avatar.mjs';
-import { POSES, OBSTACLES, tailClearance } from '../src/layout.mjs';
+import { POSES, OBSTACLES, tailClearance, CAMERA_ELEVATION, PHONE_POSITION } from '../src/layout.mjs';
 
 test('old facial relief becomes a convex cheek surface with curved normals and an intact fringe', () => {
   const geometry = new T.BufferGeometry();
@@ -51,11 +51,21 @@ test('face normals follow the final cheek-to-jaw transition instead of a separat
 test('the plant pose and open hammock zone have separate floor envelopes', () => {
   const [x, , z] = POSES.tending;
   const plant = OBSTACLES[4];
-  assert.ok(x > plant[1] + 1.2);
+  assert.ok(x > plant[1] + 0.6);
+  assert.ok(x < OBSTACLES[5][0] - 0.8);
   assert.ok(z > plant[2] && z < plant[3]);
   assert.deepEqual(POSES.phone, POSES.sleeping);
   assert.ok(POSES.phone[0] - 0.9 > OBSTACLES[5][1]);
   assert.ok(tailClearance('sleeping') < tailClearance('tending'));
+});
+
+test('default poses share the sofa perch and the camera stays between 30 and 70 degrees', () => {
+  assert.deepEqual(POSES.idle, POSES.resting);
+  assert.deepEqual(POSES.cleaning, POSES.resting);
+  assert.ok(POSES.resting[0] < -3.5);
+  assert.ok(Math.abs(CAMERA_ELEVATION[0] - Math.PI / 6) < 0.00001);
+  assert.ok(Math.abs(CAMERA_ELEVATION[1] - Math.PI * 7 / 18) < 0.00001);
+  assert.ok(PHONE_POSITION[1] > 1.5 && PHONE_POSITION[2] > 1.0);
 });
 
 test('an opt-in single mesh gets actual tail morphs and a hand grip without a model call', () => {

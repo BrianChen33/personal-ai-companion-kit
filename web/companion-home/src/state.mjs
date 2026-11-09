@@ -103,7 +103,7 @@ export function derivePresentation(snapshot, now = Date.now() / 1000) {
   const locationUnconfirmed = Boolean(location) && !homeLocations.includes(location);
   const presence = explicitPresence ? locationType :
     action === "outside" ? completed ? "unknown" : "away" :
-      action !== "idle" && !locationUnconfirmed ? "home" : "unknown";
+      (action !== "idle" || homeLocations.includes(location)) && !locationUnconfirmed ? "home" : "unknown";
   const presenceText = presence === "away"
     ? activityName === "散步" ? "出去散步了" : activityName === "跑步" ? "出去跑步了" : "外出了"
     : presence === "unknown" ? completed ? `${activityName}结束，位置待确认` : "位置待同步"

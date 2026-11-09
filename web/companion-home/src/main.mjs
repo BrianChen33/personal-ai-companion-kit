@@ -342,6 +342,7 @@ async function start() {
   try {
     room = createRoom($("room"), {
       characterUrl: config.characterUrl,
+      characterData: config.characterData,
       expressionAtlasUrl: config.expressionAtlasUrl,
       gardenUrl: config.gardenUrl,
       onSelect: detail,

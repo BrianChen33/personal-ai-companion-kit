@@ -338,3 +338,35 @@ body。这样空闲打开页面只读小索引。两个键须在同一Redis原�
 目标宿主将avatar/layout/room/state的真实差异移植到既有空间代码，保留模型缓存、
 载入错误回调和已授权的服务端状态绑定。已导入的私人GLB继续复用。验收覆盖
 吃饭与写日记侧视比例、餐具与面部距离、非用餐桌面、表情切换及375px布局。
+
+
+## 0.14.3 载入交接与空间净空
+
+`createRoom`接受`characterData`，类型为Blob、ArrayBuffer或带正确offset/length的
+TypedArray/DataView。已有宿主保留6路分块取回与IndexedDB Blob缓存，直接把完整
+二进制传给渲染器。`src/character.mjs`读取Blob后用GLTFLoader.parseAsync，避免
+GLTFLoader.loadAsync再次fetch模型object URL。二进制解析使用register插件，在
+加载纹理前选择Three自带TextureLoader的HTML图片解码，避免ImageBitmapLoader
+再次fetch内嵌图片blob URL。sampler/颜色空间/贴图索引仍由GLTF解析器处理。
+已有characterUrl调用继续兼容。
+错误保留原name/cause/message，附model_bytes、model_request或glb_parse阶段；
+资源失败只标scheme，不输出私有URL。解析错误与分块获取错误分开处理。
+
+原始Failed to fetch不能单独证明压缩扩展不支持。宿主需要区分主模型请求和内嵌
+贴图解码，检查对象URL创建上下文与撤销时机。此轮同时覆盖主模型二进制直传与
+内嵌图片解码，两处都减少对fetch(blob:)的依赖。保留原至多一次清缓存重取，
+状态轮询不得重建模型。实际电脑端成功显示后才记录该设备加载故障已解决。
+
+两张桌面由WORKTOP_HEIGHT统一设置为1.38，书本、杯子、饭碗及桌边双手位置
+随之下移。阅读/写字/吃饭沿原高凳轻坐比例，桌面位于下巴以下。手机与双手共享
+PHONE_POSITION，躺卧时屏幕上移并与面部留空。植物站位移近花盆、远离餐桌。
+idle/resting/cleaning与未列出的已确认室内活动使用沙发前缘轻坐，morph3只有轻微
+前倾、无腿长压缩。未确认的地点继续显示未知，真实外出不会因默认姿态返回。
+
+普通小屋镜头默认45度俯视，拖动垂直限制30至70度，水平完整360度。隐藏的角色
+审查setView接口继续兼容。表情shader只投影半径0.42以内的五官区域，避开原参考
+图集约0.44半径的深色圆形轮廓。原始曲面、肤色匹配、刘海保护与表情切换保留。
+
+宿主移植本轮character/avatar/layout/room/state/main的实际差异，同时更新App与
+HomeView二进制prop交接，不能只更新公开加载器而继续传blob URL。组装后用同一
+私有GLB核桌面载入、沙发比例、握手机、桌面/头部间隙、植物姿态和手机布局。
