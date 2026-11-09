@@ -832,7 +832,8 @@
       "sofa-edge default perches and plant/table clearance",
       "30-70 degree elevation with full horizontal orbit",
       "exclude reference atlas circular outline from expression projection",
-      "skin-matched extended forearms only during desk/phone hand poses"
+      "skin-matched extended forearms only during desk/phone hand poses",
+      "subtle light detail-dialog scrollbar with transparent track"
     ],
     "validation": {
       "frontend_cases": 15,

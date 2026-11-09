@@ -25,7 +25,7 @@
     },
     {
       "path": "docs/HOME_SPACE.md",
-      "sha256": "4ca6499b199066f7c12daba486be03e263bba408f8b63e174019f039c0f40488"
+      "sha256": "41bed49a18b698a3f820a785f37c9af48f82e7cb2675269621b19172076a4ea3"
     },
     {
       "path": "personal_bot/__init__.py",
@@ -33,7 +33,7 @@
     },
     {
       "path": "personal_bot/provenance.json",
-      "sha256": "7031ed55e27cba2b3f51f8eb872c4e64954462180199369c488e64bc83323820"
+      "sha256": "5acf3b20f09016b8a3d5063f4f4a38c744a6d67d8be07ae378e951f1584a0a68"
     },
     {
       "path": "personal_bot/vault.py",
@@ -105,7 +105,7 @@
     },
     {
       "path": "web/companion-home/src/style.css",
-      "sha256": "ab98b6952b644ca3f59875397b3c2944112093da12b1a365d156fa8b34783bf2"
+      "sha256": "fe03303230b0e2764aad731afdb548ec80f7457b3009bfa99c08070129144f17"
     },
     {
       "path": "web/companion-home/test/avatar.test.mjs",

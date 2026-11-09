@@ -348,6 +348,10 @@ dialog {
   margin: auto;
   overflow: auto;
   overscroll-behavior: contain;
+  color-scheme: light;
+  scrollbar-width: thin;
+  scrollbar-color: #aab7a2 transparent;
+  scrollbar-gutter: stable;
   border: 1px solid #e3e8de;
   border-radius: 20px;
   padding: 26px;
@@ -357,6 +361,29 @@ dialog {
   color: #394237;
   box-shadow: 0 24px 80px #1c281b20;
   background: #fff;
+}
+dialog::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+dialog::-webkit-scrollbar-track {
+  background: transparent;
+  margin-block: 16px;
+}
+dialog::-webkit-scrollbar-thumb {
+  background: #aab7a2;
+  border-radius: 10px;
+}
+dialog::-webkit-scrollbar-thumb:hover {
+  background: #8a9b80;
+}
+dialog::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+dialog::-webkit-scrollbar-corner {
+  background: transparent;
 }
 dialog::backdrop {
   background: #202c2440;
