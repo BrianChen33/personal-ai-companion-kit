@@ -125,7 +125,7 @@
     },
     {
       "path": "pyproject.toml",
-      "sha256": "e4d69a3f5c3d533d356195e1fbade3ff708879eca8540758005a2ebef63fadc1"
+      "sha256": "68581db1516c64490b8aa5d43dba5cc931212830f512398a3af94f58963515a4"
     },
     {
       "path": "tests/test_reading_queue.py",
