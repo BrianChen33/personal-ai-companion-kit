@@ -19,6 +19,20 @@ from muse_ext import companion as c
 
 
 class CompanionV04(unittest.TestCase):
+    def test_vault_allows_article_slugs_and_still_refuses_real_key_boundaries(self):
+        with tempfile.TemporaryDirectory() as folder:
+            source = Path(folder) / 'fixture.bin'
+            slug = b'https://example.com/task-' + b'a' * 40
+            source.write_bytes(slug)
+            vault.scan_file(source)
+            # Place the substring sk- at the first byte of the scanner overlap.
+            source.write_bytes(b' ' * (1024 * 1024 - 258) + b'task-' + b'a' * 340)
+            vault.scan_file(source)
+            for prefix in (b'', b'key=', b'/'):
+                source.write_bytes(prefix + b'sk-' + b'a' * 40)
+                with self.assertRaisesRegex(ValueError, 'credential_content_refused'):
+                    vault.scan_file(source)
+
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory(prefix='companion-v04-isolated-')
         self.base=Path(self.temp.name);self.root=self.base/'state'

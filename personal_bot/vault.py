@@ -27,7 +27,7 @@ from urllib.request import Request, urlopen
 from urllib.parse import unquote, urlsplit
 
 SCHEMA='companion-memory-vault-v1'
-SECRET=re.compile(rb'-----BEGIN (?:OPENSSH |RSA |EC )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{30,}|gh[pousr]_[A-Za-z0-9_]{30,}|sk-[A-Za-z0-9_-]{30,}')
+SECRET=re.compile(rb'-----BEGIN (?:OPENSSH |RSA |EC )?PRIVATE KEY-----|github_pat_[A-Za-z0-9_]{30,}|gh[pousr]_[A-Za-z0-9_]{30,}|(?<![A-Za-z0-9_])sk-[A-Za-z0-9_-]{30,}')
 BLOCKED={'.git','.ssh','credentials','secrets','vault','node_modules','__pycache__'}
 
 
@@ -67,7 +67,9 @@ def scan_file(path):
     overlap=b''
     with path.open('rb') as f:
         for block in iter(lambda:f.read(1024*1024),b''):
-            if SECRET.search(overlap+block): raise ValueError('credential_content_refused:'+path.name)
+            # The first overlap byte has no preceding context here. Any complete
+            # signature starting there was already scanned in the previous block.
+            if SECRET.search(overlap+block, 1 if overlap else 0): raise ValueError('credential_content_refused:'+path.name)
             overlap=block[-256:]
     if path.suffix=='.json':
         try: obj=json.loads(path.read_text(encoding='utf-8'))

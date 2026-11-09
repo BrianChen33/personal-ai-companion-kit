@@ -793,5 +793,12 @@
       "desktop": "local native dialog center matches viewport center",
       "native": "host merge pending; physical pinch acceptance pending"
     }
+  },
+  "vault_boundary_fix": {
+    "date": "2026-11-09",
+    "release": "0.14.1",
+    "base_architecture": "aa31def5833774510da0f846c19f881fabf7b73a",
+    "change": "avoid matching sk- inside article words; preserve independent key detection and scanner block context",
+    "validation": "one isolated regression covers article slug, overlap boundary and key delimiters"
   }
 }

@@ -5,7 +5,7 @@
   "life_camera_version": "0.3.0",
   "social_reading_version": "0.4.0",
   "mi_fitness_version": "0.1.0",
-  "base_architecture": "c21fd5bef93f4d906c00bae2a99ad898a7659dc7",
+  "base_architecture": "aa31def5833774510da0f846c19f881fabf7b73a",
   "files": [
     {
       "path": "AGENTS.md",
@@ -25,7 +25,7 @@
     },
     {
       "path": "docs/HOME_SPACE.md",
-      "sha256": "03d90496a6e49e3ea546da202b6a3e91ccfba2bd69b7c1b481802a160bd4cc5c"
+      "sha256": "84e4380a91d1f3c110f69ef5a0c5e580e76927b23df827bf1f226afc666ad7a0"
     },
     {
       "path": "personal_bot/__init__.py",
@@ -33,11 +33,11 @@
     },
     {
       "path": "personal_bot/provenance.json",
-      "sha256": "86a2809aee1af9ac8140b6221dc9ce6bc329c0bd992d1e318fed3e8a343150c8"
+      "sha256": "5e4fa3a7ef6120bd2b69e09d2841e01edff24517485612c7871c02c3ea842425"
     },
     {
       "path": "personal_bot/vault.py",
-      "sha256": "a5bc49699c60de810e4a6119c33a14f2e9a5abac8ff680a063b2c05043ff96d7"
+      "sha256": "72dddc222bc79e83bd10acfadd849ff36d3125bb179cf499bb4d99ca709f4db2"
     },
     {
       "path": "pyproject.toml",

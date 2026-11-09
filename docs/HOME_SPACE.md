@@ -308,3 +308,7 @@ React宿主用portal到document.body的等价方式，避开卡片祖先的trans
 与本地版本相同则复用已有快照，版本变化才GET完整body。head缺失时兼容已有
 body。这样空闲打开页面只读小索引。两个键须在同一Redis原子执行范围内，
 使用Redis Cluster的新部署需为键名选择共同hash tag。
+
+宿主归档若遇到credential_content_refused，应先确认匹配来源。0.14.1修正了
+备份扫描器把task-类公开文章slug中的sk-子串误判为密钥的边界问题，同时保留
+独立密钥标记检测及跨文件读取块的识别。个人记忆与合法来源无需为该误报删除。
