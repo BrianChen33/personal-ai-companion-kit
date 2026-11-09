@@ -5,7 +5,7 @@
   "life_camera_version": "0.3.0",
   "social_reading_version": "0.4.0",
   "mi_fitness_version": "0.1.0",
-  "base_architecture": "278acd529338909e3c79bc454e449917dc64bdd7",
+  "base_architecture": "f250b6f3922889b98966147f603cc9494011fb2c",
   "files": [
     {
       "path": "AGENTS.md",
@@ -129,7 +129,7 @@
     },
     {
       "path": "web/companion-home/tools/home-redis-send.mjs",
-      "sha256": "f9b0a9f099effc5498db39ff9834070a6bd228452fbd0a1d69cba629ae476ccc"
+      "sha256": "fd7e0273bf0ef5b79084ca72128e6a7a4b3b9facc8a34d4db3c7fd9bbd6c7c75"
     },
     {
       "path": "web/companion-home/tools/home-state-relay-hook.sh",

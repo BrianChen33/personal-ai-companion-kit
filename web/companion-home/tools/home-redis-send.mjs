@@ -14,7 +14,7 @@ try {
       super(options.disconnectTimeout);
       this.options = options;
     }
-  
+
     connect() {
       this.connecting = true;
       const { host, port, proxyUrl, connectTimeout } = this.options;
@@ -56,7 +56,7 @@ try {
         request.end();
       });
     }
-  
+
     disconnect() {
       this.request?.destroy();
       super.disconnect();
