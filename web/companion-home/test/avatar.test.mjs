@@ -63,5 +63,12 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
   assert.equal(mesh.morphTargetInfluences[2], 1);
   assert.equal(mesh.morphTargetInfluences[0], 0);
   assert.ok(mesh.geometry.morphAttributes.position[2].getY(3) > 0);
+  avatar.setState({ action: 'writing' }, POSES.writing, []);
+  avatar.update(0.1, 1, true);
+  assert.equal(mesh.morphTargetInfluences[3], 1);
+  assert.equal(mesh.morphTargetInfluences[4], 1);
+  assert.ok(mesh.geometry.morphAttributes.position[3].getZ(0) > 0.4);
+  assert.ok(Math.abs(POSES.writing[0] - 1.95) < 0.01);
+  assert.equal(POSES.writing[3], Math.PI);
   avatar.dispose();
 });

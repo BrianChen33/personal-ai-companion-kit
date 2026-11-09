@@ -12,8 +12,8 @@ export const ZONES = {
 };
 export const POSES = {
   idle: [-0.6, 0.13, 0, 0],
-  reading: [0, 0.13, -2.1, 0],
-  writing: [0, 0.13, -2.1, 0],
+  reading: [1.95, -0.41, -2.44, Math.PI],
+  writing: [1.95, -0.41, -2.44, Math.PI],
   phone: [3.2, 1.15, 3.9, 0],
   resting: [-2.4, 0.13, 0, 0],
   sleeping: [3.2, 1.15, 3.9, 0],
@@ -34,5 +34,6 @@ export const OBSTACLES = [
 
 export function tailClearance(action) {
   // Reclining tails stay almost still beside fabric. Standing poses have clear aisles.
-  return ['sleeping', 'phone'].includes(action) ? 0.012 : action === 'tending' ? 0.045 : 0.12;
+  return ['sleeping', 'phone'].includes(action) ? 0.012 :
+    ['reading', 'writing'].includes(action) ? 0.02 : action === 'tending' ? 0.045 : 0.12;
 }

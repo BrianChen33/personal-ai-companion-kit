@@ -740,5 +740,22 @@
       "sha256": "optional legacy metadata; omitted by new client; no browser digest gate",
       "acceptance": "actual owner import and display; native deployment pending"
     }
+  },
+  "home_seated_loading_update": {
+    "date": "2026-11-09",
+    "release": "0.13.4",
+    "home_frontend": "0.2.3",
+    "base_architecture": "c81b4aaa2dd6eed96986df915bf255378f6399fe",
+    "changes": [
+      "desk-aligned reading and writing with seated lower-body and hand morphs",
+      "chair clearance behind long hair",
+      "raw model loading error and host retry callback",
+      "host bounded-parallel model cache and private state transport contract"
+    ],
+    "validation": {
+      "frontend_cases": 9,
+      "preview": "actual private model seated side/back local browser review",
+      "native": "host integration in progress"
+    }
   }
 }

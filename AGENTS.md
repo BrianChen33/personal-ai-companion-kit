@@ -1,3 +1,7 @@
+0.13.4/frontend0.2.3 seats reading/writing companions at the desk. Preserve
+original face/hair and host cache/error callbacks. Read docs/HOME_SPACE.md for
+model cache and private programmatic state delivery acceptance.
+
 0.13.3/frontend0.2.2 uses a smooth convex cheek surface with curved normals.
 Retain rounded head/face volume while filling old eye sockets and mouth relief.
 Expression atlas follows this curved surface; private0.13.1 GLB remains compatible.

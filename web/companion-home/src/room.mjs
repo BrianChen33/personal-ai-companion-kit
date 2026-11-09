@@ -17,7 +17,7 @@ const COLORS = {
   pink: 0xcaa8a0,
 };
 
-export function createRoom(element, { onSelect, onStatus, characterUrl, expressionAtlasUrl, gardenUrl = "./garden-view.webp" }) {
+export function createRoom(element, { onSelect, onStatus, onCharacterError, characterUrl, expressionAtlasUrl, gardenUrl = "./garden-view.webp" }) {
   const scene = new T.Scene();
   const renderer = new T.WebGLRenderer({
     antialias: true,
@@ -187,10 +187,10 @@ export function createRoom(element, { onSelect, onStatus, characterUrl, expressi
   for (const x of [1.15, 3.55])
     for (const z of [-2.4, -1.5])
       box(house, [x, 0.54, z], [0.12, 1.05, 0.12], "wood");
-  box(house, [2.3, 0.57, -0.84], [0.85, 0.14, 0.77], "green");
-  box(house, [2.3, 0.98, -0.45], [0.85, 0.72, 0.11], "green");
+  box(house, [2.3, 0.57, -0.65], [1.15, 0.14, 1.4], "green");
+  box(house, [2.3, 0.98, 0.10], [1.15, 0.72, 0.11], "green");
   for (const x of [2, 2.6])
-    for (const z of [-1.1, -0.57])
+    for (const z of [-1.1, -0.02])
       box(house, [x, 0.27, z], [0.08, 0.54, 0.08], "wood");
   const book = box(
     house,
@@ -545,7 +545,12 @@ export function createRoom(element, { onSelect, onStatus, characterUrl, expressi
       needsRender = true;
       onStatus?.(atlasFailed ? "表情暂未载入，显示原表情" : "ready");
     })
-    .catch(() => onStatus?.("角色资源暂未载入"));
+    .catch((error) => {
+      if (disposed) return;
+      console.error('[companion-home] Character loading failed', error);
+      onStatus?.('角色载入失败：' + String(error?.message || error).slice(0, 180));
+      onCharacterError?.(error);
+    });
 
   renderer.domElement.addEventListener("pointerdown", (event) => {
     pointer = {

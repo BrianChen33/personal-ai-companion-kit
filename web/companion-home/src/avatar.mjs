@@ -123,10 +123,16 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
     mesh.geometry = geometry;
     if (mesh.name === rig.mesh) smoothFace(geometry, rig.face, scale, faceVisibility(geometry, mesh.material.map, rig.face, scale));
     const positions = geometry.getAttribute('position');
-    const deltas = Array.from({ length: 3 }, () => new Float32Array(positions.count * 3));
+    const deltas = Array.from({ length: 5 }, () => new Float32Array(positions.count * 3));
     for (let i = 0; i < positions.count; i++) {
       point.fromBufferAttribute(positions, i);
       const x = point.x / scale, y = point.y / scale, z = point.z / scale;
+      // Fold the lower body into a seated lap with feet below the knees.
+      // Coordinates are normalized to the same 2.7m character as the furniture.
+      const belowHip = Math.max(0, 1.05 - point.y);
+      const thigh = Math.min(belowHip, 0.45);
+      const seatWeight = 1 - smooth(0.95, 1.18, point.y);
+      deltas[3].set([0, thigh * 0.75 * seatWeight, thigh * 0.95 * seatWeight], i * 3);
       const tailTop = T.MathUtils.lerp(rig.tail.top[0], rig.tail.top[1], smooth(rig.tail.start, rig.tail.full, x));
       const tailWeight = mesh.name === rig.mesh ? smooth(rig.tail.start, rig.tail.full, x) *
         (1 - smooth(tailTop - 0.025, tailTop, y)) * (1 - smooth(rig.tail.rear, rig.tail.rear + 0.04, z)) : 0;
@@ -144,6 +150,10 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
       if (hand) {
         const weight = mesh.name === hand.mesh ? 1 : 1 - smooth(hand.radius * scale * 0.5, hand.radius * scale, point.distanceTo(hand.centerPoint));
         deltas[2].set([hand.gripDelta.x * weight, hand.gripDelta.y * weight, hand.gripDelta.z * weight], i * 3);
+        const deskHand = new T.Vector3(Math.sign(hand.centerPoint.x) * 0.26, 1.66, 0.91);
+        deltas[4].set([(deskHand.x - hand.centerPoint.x) * weight,
+          (deskHand.y - hand.centerPoint.y) * weight,
+          (deskHand.z - hand.centerPoint.z) * weight], i * 3);
       }
     }
     geometry.morphTargetsRelative = true;
@@ -222,6 +232,9 @@ reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpe
         mesh.morphTargetInfluences[0] = Math.max(0, wave);
         mesh.morphTargetInfluences[1] = Math.max(0, -wave);
         mesh.morphTargetInfluences[2] = grip;
+        const atDesk = ['reading', 'writing'].includes(state.action);
+        mesh.morphTargetInfluences[3] = atDesk ? 1 : 0;
+        mesh.morphTargetInfluences[4] = atDesk ? 1 : 0;
       }
       if (texture?.image) {
         const expression = state.action === 'sleeping' ? 'sleeping' : state.expression;

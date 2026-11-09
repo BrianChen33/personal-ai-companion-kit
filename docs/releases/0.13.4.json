@@ -1,0 +1,127 @@
+{
+  "release": "0.13.4",
+  "runtime": "2.11.0",
+  "home_frontend": "0.2.3",
+  "life_camera_version": "0.3.0",
+  "social_reading_version": "0.4.0",
+  "mi_fitness_version": "0.1.0",
+  "base_architecture": "c81b4aaa2dd6eed96986df915bf255378f6399fe",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "4229c4dedf0bb69d00a48e14d1d6729984168011eda2ffb49c906155ecfa6ca7"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "5c0db29a5c496e13fcef6339053b2602368e7613232ff59693b5b00c544527f1"
+    },
+    {
+      "path": "README.md",
+      "sha256": "77c15a07f56fcf1dc1c4b29a3b1ae64113c1ea668bcb2cd2ae7b54f0a4adaaae"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "613c276fa9b026ae5772132353ca4608789027f1cafbd701ff3980cb775bbf65"
+    },
+    {
+      "path": "docs/HOME_SPACE.md",
+      "sha256": "02a779c3291d7eda88b7a981f6a998d8c066fe5c07a6eefdcbdda8b00f1de85c"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "cc4728fc90d812dc7c58f3a6eb50e874985909ca3f1645f1c70316a9c44634b8"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "ec7393c673928742ec139080be23bb044a8b79fb8b85a8d5609175c50da67a4c"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "639de85bec04925b3db8ec59d5236aa97919e27eac660080ec988288d67c7557"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "be079d4a0d04911baf85ffde2a5e002b19965316d6a10b54db15a5521e0fa14b"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion.py",
+      "sha256": "457d8aba26350aec93500adee16a566536215a515e3c93d036bad001795f8cd8"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion_io.py",
+      "sha256": "3e25ba4f69193783f8aac349baa9629bccb228e4c4d23b44b7e4f21c435870c5"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/panel_home.py",
+      "sha256": "a4309081b65d2da2b9f93e8a53fe8cddf7f40b41337664cd412110b32865c2f6"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/home_space.py",
+      "sha256": "b533f99f0ce9026dc63135d14fcada01af2eb38fec6b01f9ffe9d0a41278718b"
+    },
+    {
+      "path": "web/companion-home/.gitignore",
+      "sha256": "f99ead27b34cbc6756d707e7e7ee7340eb9a71e02dfec2b40d5fb848dd3f4d4f"
+    },
+    {
+      "path": "web/companion-home/index.html",
+      "sha256": "6661e5bc23e3e632c78c2b429878e8dc3443a7806a5de95747c0827a4d6b0ad7"
+    },
+    {
+      "path": "web/companion-home/package-lock.json",
+      "sha256": "1977a18debb6eaf659c3a6a407ec1584b74f82b2c1aba2b94ced267db09d133e"
+    },
+    {
+      "path": "web/companion-home/package.json",
+      "sha256": "cb5539e10c223d57cbc490eeb43c777d0f910112bd008108a3c7eeabc0bfd163"
+    },
+    {
+      "path": "web/companion-home/README.md",
+      "sha256": "9f61069eb857892d596db3dfb4f23ffddd07501c5ef0f2784d158b5a97c2747b"
+    },
+    {
+      "path": "web/companion-home/public/garden-view.webp",
+      "sha256": "3f37a6a6a3e2e52e8bb8d486361170456199f6a2919ad7cea99b16a9d00031f7"
+    },
+    {
+      "path": "web/companion-home/src/avatar.mjs",
+      "sha256": "466ce6c5e92a92ad783b623fa7a0be4eaa504cb46fb0a4f1971bf5ff7d7d42a7"
+    },
+    {
+      "path": "web/companion-home/src/layout.mjs",
+      "sha256": "4bbddd27d0199da1ff42c59c89274319f8ee5ce898c3a75f00c73b3386cf1322"
+    },
+    {
+      "path": "web/companion-home/src/main.mjs",
+      "sha256": "9f0243fe3c39a40ccddde204fdaeed4a0e8c3c7066c2d0d3dc4901898cdac2d8"
+    },
+    {
+      "path": "web/companion-home/src/room.mjs",
+      "sha256": "46423bfd44401408461794833dcdada795b732c64c350720ef8995d7152a820d"
+    },
+    {
+      "path": "web/companion-home/src/state.mjs",
+      "sha256": "affff773794a2d72dc5a24aa4db616cdfd05e2bdc49f072321b1612844096be0"
+    },
+    {
+      "path": "web/companion-home/src/style.css",
+      "sha256": "bdbcbda14e082751243dbd0a1fb573d1fbc3c95adea46ca91d0583456893e03a"
+    },
+    {
+      "path": "web/companion-home/test/avatar.test.mjs",
+      "sha256": "2d9ed0f53500cc21ac5a5368b5d3f0103832f189ba0a948841a1a9f91a0301dc"
+    },
+    {
+      "path": "web/companion-home/test/state.test.mjs",
+      "sha256": "f9a31d18f84132ec1dcee8ebffa5724201912392ea4e0479979c4788dcce18c5"
+    },
+    {
+      "path": "web/companion-home/tools/export-preview.mjs",
+      "sha256": "1c563f483c1c6c3ed285c91b5c2e95bfae5d63eddb3c9d05ae0b4f3a2852c045"
+    },
+    {
+      "path": "web/companion-home/tools/home-space-hook.sh",
+      "sha256": "2b5664ea0ef41f9967400f48e79bba01987db42771e7762b7df95884d040f502"
+    }
+  ]
+}
