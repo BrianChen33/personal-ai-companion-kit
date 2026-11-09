@@ -768,11 +768,12 @@
       "silent local change-driven private state relay reuses existing ioredis/TLS",
       "bounded gzip snapshot in one owner-private key",
       "atomic revision guard and existing receipt/lease recovery",
-      "server-only readonly configuration contract"
+      "server-only readonly configuration contract",
+      "existing host HTTP CONNECT proxy support with TLS certificate validation"
     ],
     "validation": {
       "synthetic_cases": 3,
-      "native": "actual publication and host readback pending"
+      "native": "host reports actual Redis publication and get_state matching revision; generic proxy transport synchronized"
     }
   },
   "home_interaction_update": {

@@ -5,7 +5,7 @@
   "life_camera_version": "0.3.0",
   "social_reading_version": "0.4.0",
   "mi_fitness_version": "0.1.0",
-  "base_architecture": "7aa88b8a9147cddf5303f0ad77ab10496dc51387",
+  "base_architecture": "278acd529338909e3c79bc454e449917dc64bdd7",
   "files": [
     {
       "path": "AGENTS.md",
@@ -25,7 +25,7 @@
     },
     {
       "path": "docs/HOME_SPACE.md",
-      "sha256": "09577b941f906e1a7baae148dbf461b0a833222dd6c8f27fc3f741bd7fcf23c6"
+      "sha256": "5a77be06d6efdd9a0a91fdec3e756fb36ac72b38baae5307b0658aec73021212"
     },
     {
       "path": "personal_bot/__init__.py",
@@ -33,7 +33,7 @@
     },
     {
       "path": "personal_bot/provenance.json",
-      "sha256": "f449561201ba0339ef1c76162b66605f2596d8d03419b6f153e068e6b594e0b6"
+      "sha256": "6a3ee41feb011475976d8505ace6d1da574dca30247f1602bc0ac47aa21698ad"
     },
     {
       "path": "personal_bot/vault.py",
@@ -129,7 +129,7 @@
     },
     {
       "path": "web/companion-home/tools/home-redis-send.mjs",
-      "sha256": "938c43ae331f21d704c72e71584f28b1b99404750bd049b50839c3e9ee433805"
+      "sha256": "f9b0a9f099effc5498db39ff9834070a6bd228452fbd0a1d69cba629ae476ccc"
     },
     {
       "path": "web/companion-home/tools/home-state-relay-hook.sh",

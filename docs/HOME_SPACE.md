@@ -298,3 +298,7 @@ encoding=gzip-base64和data。data解压后是原companion-home-v1快照。空�
 详情窗口使用原生dialog顶层、固定定位、inset:0及margin:auto，以视口居中。
 React宿主用portal到document.body的等价方式，避开卡片祖先的transform/定位。
 详情过高时内部滚动。移动端、页面已滚动时仍按可见视口居中。
+
+发布器读取宿主既有HTTPS_PROXY/https_proxy/HTTP_PROXY/http_proxy环境变量。
+有代理时复用已验证的HTTP CONNECT隧道，再对Redis建立正常TLS；证书验证
+始终开启。无代理时直接TLS。原始代理凭据与Redis凭据均不进入日志或参数。
