@@ -692,5 +692,23 @@
       "python": "same523-case acceptance as0.13.1; version metadata checked separately",
       "scope": "frontend geometry and shader only; core runtime2.11.0 unchanged"
     }
+  },
+  "rounded_face_update": {
+    "date": "2026-11-09",
+    "release": "0.13.3",
+    "frontend": "0.2.2",
+    "base_architecture": "b925e50379ae603672b2af42e5b8f4e8a1971add",
+    "changes": [
+      "smooth convex face geometry preserves rounded cheek volume",
+      "curved analytic normals retain natural lighting",
+      "old eye/mouth relief and normal/AO texture relief suppressed beneath the atlas",
+      "existing private GLB remains unchanged"
+    ],
+    "validation": {
+      "frontend_cases": 8,
+      "build": "passed",
+      "ui": "actual Chrome oblique view checked",
+      "scope": "frontend surface correction only; core runtime2.11.0 unchanged"
+    }
   }
 }

@@ -4,27 +4,38 @@ import { tailClearance } from './layout.mjs';
 const smooth = (a, b, value) => T.MathUtils.smoothstep(value, a, b);
 const FACE_TILES = { happy: 0, sad: 1, angry: 2, worried: 3, surprised: 3, curious: 4, affection: 5, smug: 6, sleeping: 7 };
 
-export function flattenFace(geometry, face, scale = 1) {
+export function smoothFace(geometry, face, scale = 1) {
   const positions = geometry.getAttribute('position'), normals = geometry.getAttribute('normal');
   const weights = new Float32Array(positions.count);
   const normal = new T.Vector3();
+  const surfaceNormal = new T.Vector3();
+  const radiusX = face.width * 0.58, radiusY = face.height * 0.9;
+  const depthX = face.width * 0.42, depthY = face.height * 0.30;
+  const centerY = face.bottom + face.height * 0.46;
   for (let i = 0; i < positions.count; i++) {
     const x = positions.getX(i) / scale, y = positions.getY(i) / scale, z = positions.getZ(i) / scale;
-    // A notched hairline retains the fringe while flattening eye sockets and the mouth.
+    // A continuous convex cheek surface fills old facial relief, retaining the fringe.
     const top = face.bottom + face.height * (0.58 + 0.35 * smooth(face.width * 0.05, face.width * 0.22, Math.abs(x)));
     const weight = smooth(face.front - 0.04, face.front + 0.015, z) *
       (1 - smooth(face.width * 0.41, face.width * 0.53, Math.abs(x))) *
       smooth(face.bottom, face.bottom + face.height * 0.08, y) *
       (1 - smooth(top - face.height * 0.10, top, y));
     weights[i] = weight;
-    positions.setZ(i, T.MathUtils.lerp(z, face.plane ?? face.front + 0.08, weight) * scale);
+    const surfaceZ = (face.surface_depth ?? face.plane ?? face.front + 0.095) -
+      depthX * Math.pow(x / radiusX, 2) - depthY * Math.pow((y - centerY) / radiusY, 2);
+    positions.setZ(i, T.MathUtils.lerp(z, surfaceZ, weight) * scale);
     if (normals && weight > 0) {
-      normal.fromBufferAttribute(normals, i).lerp(new T.Vector3(0, 0, 1), weight).normalize();
+      surfaceNormal.set(2 * depthX * x / (radiusX * radiusX),
+        2 * depthY * (y - centerY) / (radiusY * radiusY), 1).normalize();
+      normal.fromBufferAttribute(normals, i).lerp(surfaceNormal, weight).normalize();
       normals.setXYZ(i, normal.x, normal.y, normal.z);
     }
   }
   geometry.setAttribute('avatarFaceWeight', new T.Float32BufferAttribute(weights, 1));
 }
+
+// Retain the earlier exported name, using the same rounded surface implementation.
+export const flattenFace = smoothFace;
 
 // Assets opt into these deformations using private, measured companionRig metadata.
 // No character-specific coordinates or reference artwork are embedded in public code.
@@ -73,7 +84,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
     mesh.rotation.set(0, 0, 0);
     mesh.scale.set(1, 1, 1);
     mesh.geometry = geometry;
-    if (mesh.name === rig.mesh) flattenFace(geometry, rig.face, scale);
+    if (mesh.name === rig.mesh) smoothFace(geometry, rig.face, scale);
     const positions = geometry.getAttribute('position');
     const deltas = Array.from({ length: 3 }, () => new Float32Array(positions.count * 3));
     for (let i = 0; i < positions.count; i++) {
@@ -106,10 +117,10 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
       mesh.material = mesh.material.clone();
       mesh.material.onBeforeCompile = shader => {
         Object.assign(shader.uniforms, uniforms);
-        shader.vertexShader = 'attribute float avatarFaceWeight;\nvarying float avatarPlanarFace;\nvarying vec3 avatarPosition;\n' + shader.vertexShader.replace(
-          '#include <begin_vertex>', '#include <begin_vertex>\navatarPosition = position;\navatarPlanarFace = avatarFaceWeight;');
+        shader.vertexShader = 'attribute float avatarFaceWeight;\nvarying float avatarSmoothFace;\nvarying vec3 avatarPosition;\n' + shader.vertexShader.replace(
+          '#include <begin_vertex>', '#include <begin_vertex>\navatarPosition = position;\navatarSmoothFace = avatarFaceWeight;');
         shader.fragmentShader = `varying vec3 avatarPosition;
-varying float avatarPlanarFace;
+varying float avatarSmoothFace;
 uniform sampler2D avatarFace;
 uniform float avatarTile;
 uniform float avatarFaceEnabled;
@@ -122,21 +133,21 @@ vec2 eyeRight = (faceUV - vec2(0.72, 0.44)) / vec2(0.19, 0.30);
 vec2 mouth = (faceUV - vec2(0.5, 0.22)) / vec2(0.18, 0.20);
 float faceMask = 1.0 - smoothstep(0.75, 1.0, min(min(length(eyeLeft), length(eyeRight)), length(mouth)));
 faceMask *= smoothstep(avatarFaceBounds.w, avatarFaceBounds.w + 0.03, avatarPosition.z);
-faceMask = max(faceMask, avatarPlanarFace);
+faceMask = max(faceMask, avatarSmoothFace);
 vec2 atlasUV = (clamp(faceUV, 0.001, 0.999) + vec2(mod(avatarTile, 4.0), 1.0 - floor(avatarTile / 4.0))) / vec2(4.0, 2.0);
 atlasUV.y = 1.0 - atlasUV.y;
 vec4 expressionColor = sRGBTransferEOTF(texture2D(avatarFace, atlasUV));
 diffuseColor.rgb = mix(diffuseColor.rgb, expressionColor.rgb, faceMask * expressionColor.a * avatarFaceEnabled);
 `);
         shader.fragmentShader = shader.fragmentShader
-          .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize(mix(normal, nonPerturbedNormal, avatarPlanarFace));')
+          .replace('#include <normal_fragment_maps>', '#include <normal_fragment_maps>\nnormal = normalize(mix(normal, nonPerturbedNormal, avatarSmoothFace));')
           .replace('#include <aomap_fragment>', `vec3 avatarBeforeAO = reflectedLight.indirectDiffuse;
 vec3 avatarSpecularBeforeAO = reflectedLight.indirectSpecular;
 #include <aomap_fragment>
-reflectedLight.indirectDiffuse = mix(reflectedLight.indirectDiffuse, avatarBeforeAO, avatarPlanarFace);
-reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpecularBeforeAO, avatarPlanarFace);`);
+reflectedLight.indirectDiffuse = mix(reflectedLight.indirectDiffuse, avatarBeforeAO, avatarSmoothFace);
+reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpecularBeforeAO, avatarSmoothFace);`);
       };
-      mesh.material.customProgramCacheKey = () => 'companion-flat-face-atlas-v2';
+      mesh.material.customProgramCacheKey = () => 'companion-rounded-face-atlas-v3';
     }
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();

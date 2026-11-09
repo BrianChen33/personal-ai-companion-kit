@@ -157,7 +157,8 @@ textures索引。渲染器通过GLTFParser读取该纹理，无需额外私人�
 旧模型不得在begin_upload时提前删除。正式状态动作接受snapshot和sha256，
 以十进制字符串revision比较并提供同revision同digest幂等回执。
 
-0.13.2/frontend0.2.1在同一标定里先将面部前侧网格压至平面，再贴完整表情，
-保留刘海边界与头部轮廓。可选face.plane指定原模型坐标的面部深度，未指定
-时兼容face.front+0.08。局部顶点法线朝前，并屏蔽该区域原normal/AO残留。
-私人GLB无需重传或重生。该改动只发生在3D资产准备阶段，不参与对话判断。
+0.13.3/frontend0.2.2将旧眼窝与嘴洞整理成连续凸曲面，保留圆润脸颊、头部轮廓与
+刘海边界。顶点法线顺曲率变化，表情图集覆盖原五官，局部屏蔽旧normal/AO浮雕。
+face.surface_depth可指定曲面中心深度。旧face.plane参数兼容为中心深度输入。
+旧导出名flattenFace兼容调用同一smoothFace曲面函数。私人GLB继续使用原文件，
+处理仅在3D资产载入时运行，对话判断沿用已有情绪状态。
