@@ -1,9 +1,11 @@
-0.14.4/frontend0.2.7/social-reading0.4.1 splits reading detail into vocabulary,
+0.14.4/frontend0.2.8/social-reading0.4.1 splits reading detail into vocabulary,
 live continuations and source settings. Continuations expire after 24 actual hours
 without reading. Install the pinned optional plugin and call expire_continuations
 once after upgrade. Keep staged observations and bound native browsers intact.
-Default indoor activities sit on an open-ended sofa with lower-leg rotation,
-preserving the torso, head and tail. Existing binary loading and state relay stay.
+Default indoor activities perch on a lower open-ended sofa. Both stools have
+seat tops at0.72. Seat-contact morphs drape only the loose lower silhouette over
+furniture, preserving torso/head proportions. Do not restore knee-rotation morph5.
+Existing binary loading and state relay stay.
 Read docs/HOME_SPACE.md and docs/READING_QUEUE.md before the same-space host merge.
 
 0.14.1/runtime2.11.1 supports optional programmatic private state delivery.

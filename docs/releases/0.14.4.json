@@ -1,31 +1,31 @@
 {
   "release": "0.14.4",
   "runtime": "2.11.1",
-  "home_frontend": "0.2.7",
+  "home_frontend": "0.2.8",
   "life_camera_version": "0.3.0",
   "social_reading_version": "0.4.1",
   "mi_fitness_version": "0.1.0",
-  "base_architecture": "869ce9ce6e50dcbe4c54615baf3e8f107af59927",
+  "base_architecture": "2c9e459ecb1f8e4facb11b92affc03fdeb065f56",
   "files": [
     {
       "path": "AGENTS.md",
-      "sha256": "c6eacba175fd5b132b90b0d8bd270e84a35b15bfab295f37e1dbc12efd781ad0"
+      "sha256": "768a89ca3d9e8346f8e6c69a22fa1a79426d3be069e62264adefff5ff4b17419"
     },
     {
       "path": "DEPLOY_FOR_BOT.md",
-      "sha256": "2a0c294ed31203737b7b3b8c40dfd27fbfd4c61a418f4cd40792ec34b1888960"
+      "sha256": "233d6a77047b6eefd0a9457b3eb50a208d838ea20c28772ab97fd8bc895da541"
     },
     {
       "path": "README.md",
-      "sha256": "bedf935138cf86cfccef23a460d16c67b4d04983281a64219376ac8b143ae6f6"
+      "sha256": "175622e1110122a766cb644fa64886b435dbc7ba171c644da472e2b0d8250139"
     },
     {
       "path": "docs/HOME_SPACE.md",
-      "sha256": "4c96bb283bd807cd45c036f347ce5787c19f6fae96387931ca0adc0631bac074"
+      "sha256": "7bd70da516d5f497112170535d9ebfc329482bda96bb2377fac624b7b6c61048"
     },
     {
       "path": "docs/INHERITANCE.md",
-      "sha256": "b853f4fa85585cd9196456749ae8080f06476201fbc86bc221c0453e1bdff97f"
+      "sha256": "638760064793da776067dd444b5e882bd1292a72f0a3d514fad3419e59246a70"
     },
     {
       "path": "docs/READING_QUEUE.md",
@@ -37,7 +37,7 @@
     },
     {
       "path": "personal_bot/provenance.json",
-      "sha256": "46d333b67091ebc91c8f8dd7f4fc9b110b52d17ad334e4a8ff3b1f6ae2833470"
+      "sha256": "e07bc46df35118c83d2fd7634a746bf6f2943734e2f1a9e5260d7c638988af77"
     },
     {
       "path": "personal_bot/runtime/muse_ext/companion.py",
@@ -141,7 +141,7 @@
     },
     {
       "path": "web/companion-home/README.md",
-      "sha256": "a9bc256020d01586262f4b455335737cc17cc919e02e3ee3c66795e521d28a6e"
+      "sha256": "2fdd8c2b41702d2031685eba150e901bcd9c58d133def2694ff4e3506c12aa50"
     },
     {
       "path": "web/companion-home/index.html",
@@ -149,11 +149,11 @@
     },
     {
       "path": "web/companion-home/package-lock.json",
-      "sha256": "92f30d892682354482652a6c48697366a8cdc27fe6a60730714de7451ec82848"
+      "sha256": "edcf0946a2a6513cc1f161d0bbf67935674ac3c8b1af11e6bd45e36ed3fe3253"
     },
     {
       "path": "web/companion-home/package.json",
-      "sha256": "1780bf25cfeb8ee6417b70be82d4479d7bac97d4a80a28ed5a445a29ddbc950c"
+      "sha256": "62e471d6598dd2db224b79852db3696412326605535a38464e3489cd972c2f94"
     },
     {
       "path": "web/companion-home/public/garden-view.webp",
@@ -161,7 +161,7 @@
     },
     {
       "path": "web/companion-home/src/avatar.mjs",
-      "sha256": "20fac1deb1a6c46eefa6379ce0d9d37844f137e4710a2a39434a77105be4fe45"
+      "sha256": "91b491cb9f3c12b70d1549879a80ba6e2a5c1d5dd4514eb8d635776c39799e6e"
     },
     {
       "path": "web/companion-home/src/character.mjs",
@@ -169,7 +169,7 @@
     },
     {
       "path": "web/companion-home/src/layout.mjs",
-      "sha256": "80106b064526472714e9a7da19326963b5614d2e2cee5029cd388ff361fde61f"
+      "sha256": "d47062fa1b84772b33b1352b32751469fdf98ff42cf87ef495d930d106927f1b"
     },
     {
       "path": "web/companion-home/src/main.mjs",
@@ -181,7 +181,7 @@
     },
     {
       "path": "web/companion-home/src/room.mjs",
-      "sha256": "44dcdc2b000d7ae77432c85bb4daa9323ddbf6001d20cd4af588545480d3c315"
+      "sha256": "93b8b287a8262d7962d788bdf62592a3ae63d9035b48a9fff37d9648895ec9fb"
     },
     {
       "path": "web/companion-home/src/state.mjs",
@@ -193,7 +193,7 @@
     },
     {
       "path": "web/companion-home/test/avatar.test.mjs",
-      "sha256": "df1bacb76d2e473765a7f0a9a3629f79fd2501fe9f946b7cc9320e3b9e467723"
+      "sha256": "3f43fc79500782b441352c7a637be751063c510f609f4295f68f239114c09a29"
     },
     {
       "path": "web/companion-home/test/character.test.mjs",

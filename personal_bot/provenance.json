@@ -859,5 +859,26 @@
       "reading_ui": "desktop and 375px preview passed",
       "installed_wheel": "accepted outside checkout"
     }
+  },
+  "home_seat_contact_update": {
+    "date": "2026-11-09",
+    "release": "0.14.4",
+    "home_frontend": "0.2.8",
+    "base_architecture": "2c9e459ecb1f8e4facb11b92affc03fdeb065f56",
+    "changes": [
+      "lower both stool seat tops from1.26 to0.72 and shorten legs",
+      "lower sofa seat top to0.46 with matched furniture",
+      "replace skirt-distorting knee rotation with bounded lower-silhouette seat contact morphs"
+    ],
+    "validation": {
+      "frontend_cases": 17,
+      "build": "passed",
+      "private_asset_seat_vertex_intersections": {
+        "sofa": 0,
+        "writing": 0,
+        "eating": 0
+      },
+      "native": "same-space merge pending"
+    }
   }
 }

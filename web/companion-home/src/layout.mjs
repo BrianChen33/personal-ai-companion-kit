@@ -3,6 +3,7 @@ export const ROOM = { width: 12.8, depth: 10.2 };
 export const CAMERA_ELEVATION = [Math.PI / 6, Math.PI * 7 / 18];
 export const PHONE_POSITION = [0, 1.58, 1.10];
 export const WORKTOP_HEIGHT = 1.38;
+export const STOOL_SEAT_TOP = 0.72;
 export const SOFA_ACTIONS = ['idle', 'resting', 'cleaning'];
 export const ZONES = {
   window: [-0.3, 0, -1.5],
@@ -14,7 +15,7 @@ export const ZONES = {
   table: [0, 0, 0.5],
   hammock: [0.55, 0, 1.5],
 };
-const sofaPerch = [-4.15, 0.02, -2.05, Math.PI / 2];
+const sofaPerch = [-4.0, 0.06, -2.1, Math.PI / 2];
 export const POSES = {
   idle: sofaPerch,
   reading: [1.95, 0.36, -2.2, Math.PI],

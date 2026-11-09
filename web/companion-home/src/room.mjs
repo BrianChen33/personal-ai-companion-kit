@@ -1,5 +1,5 @@
 import * as T from "three";
-import { ROOM, ZONES, POSES, OBSTACLES, CAMERA_ELEVATION, PHONE_POSITION, WORKTOP_HEIGHT, SOFA_ACTIONS } from "./layout.mjs";
+import { ROOM, ZONES, POSES, OBSTACLES, CAMERA_ELEVATION, PHONE_POSITION, WORKTOP_HEIGHT, SOFA_ACTIONS, STOOL_SEAT_TOP } from "./layout.mjs";
 import { prepareAvatar } from "./avatar.mjs";
 import { loadCharacter } from "./character.mjs";
 
@@ -188,10 +188,10 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   for (const x of [1.15, 3.55])
     for (const z of [-2.4, -1.5])
       box(house, [x, (WORKTOP_HEIGHT - 0.075) / 2, z], [0.12, WORKTOP_HEIGHT - 0.075, 0.12], "wood");
-  cylinder(house, [2.3, 1.19, -0.6], 0.45, 0.14, "green");
+  cylinder(house, [2.3, STOOL_SEAT_TOP - 0.07, -0.85], 0.34, 0.14, "green");
   for (const x of [2.02, 2.58])
-    for (const z of [-0.88, -0.32])
-      cylinder(house, [x, 0.58, z], 0.045, 1.16, "wood");
+    for (const z of [-1.13, -0.57])
+      cylinder(house, [x, (STOOL_SEAT_TOP - 0.14) / 2, z], 0.045, STOOL_SEAT_TOP - 0.14, "wood");
   const book = box(
     house,
     [2.25, WORKTOP_HEIGHT + 0.12, -1.8],
@@ -205,14 +205,14 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
 
   zone("sofa");
   // The open left end leaves room for hair and a hanging tail beside the seat.
-  box(house, [-2.95, 0.42, 0.05], [2.1, 0.64, 3.7], "green", "energy");
-  box(house, [-3.95, 1.16, 0.05], [0.28, 1.7, 3.72], "green", "energy");
-  box(house, [-2.9, 0.89, 1.83], [2.1, 0.28, 0.2], "green");
+  box(house, [-2.95, 0.19, 0.05], [2.1, 0.38, 3.7], "green", "energy");
+  box(house, [-3.95, 0.99, 0.05], [0.28, 1.65, 3.72], "green", "energy");
+  box(house, [-2.9, 0.61, 1.83], [2.1, 0.2, 0.2], "green");
   for (const z of [-0.86, 0.86])
-    box(house, [-2.8, 0.82, z], [1.76, 0.18, 1.7], "sage");
-  const cushion = box(house, [-3.3, 1.13, 0.86], [0.24, 0.68, 0.65], "cream");
+    box(house, [-2.8, 0.42, z], [1.76, 0.08, 1.7], "sage");
+  const cushion = box(house, [-3.3, 0.78, 0.86], [0.24, 0.58, 0.65], "cream");
   cushion.rotation.z = -0.22;
-  box(house, [-2.8, 0.94, 0.85], [1.7, 0.05, 0.6], "pink");
+  box(house, [-2.8, 0.49, 0.85], [1.7, 0.05, 0.6], "pink");
 
   zone("shelf");
   // Bookshelf, planter and diary, each with a clear detail destination.
@@ -252,9 +252,9 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   const table = cylinder(house, [-1.65, WORKTOP_HEIGHT, 2.75], 0.9, 0.14, "paleWood");
   cylinder(house, [-1.65, (WORKTOP_HEIGHT - 0.07) / 2, 2.75], 0.11, WORKTOP_HEIGHT - 0.07, "wood");
   cylinder(house, [-1.65, 0.10, 2.75], 0.55, 0.12, "wood");
-  cylinder(house, [-1.65, 1.19, 1.0], 0.45, 0.14, "green");
+  cylinder(house, [-1.65, STOOL_SEAT_TOP - 0.07, 1.25], 0.34, 0.14, "green");
   for (const x of [-1.93, -1.37])
-    for (const z of [0.72, 1.28]) cylinder(house, [x, 0.58, z], 0.045, 1.16, "wood");
+    for (const z of [0.97, 1.53]) cylinder(house, [x, (STOOL_SEAT_TOP - 0.14) / 2, z], 0.045, STOOL_SEAT_TOP - 0.14, "wood");
   const meal = new T.Group();
   meal.position.set(-1.65, WORKTOP_HEIGHT + 0.08, 2.9);
   currentZone.add(meal);

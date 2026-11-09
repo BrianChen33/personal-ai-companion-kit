@@ -1,9 +1,20 @@
 import * as T from 'three';
-import { tailClearance, PHONE_POSITION, WORKTOP_HEIGHT, SOFA_ACTIONS } from './layout.mjs';
+import { tailClearance, PHONE_POSITION, WORKTOP_HEIGHT, SOFA_ACTIONS, POSES, STOOL_SEAT_TOP } from './layout.mjs';
 
 const smooth = (a, b, value) => T.MathUtils.smoothstep(value, a, b);
 const soft = (a, b, value) => T.MathUtils.smootherstep(value, a, b);
 const FACE_TILES = { happy: 0, sad: 1, angry: 2, worried: 3, surprised: 3, curious: 4, affection: 5, smug: 6, sleeping: 7 };
+
+export function seatContactOffset(point, sofa = false) {
+  // Contact is computed once during asset preparation. Only the loose lower
+  // silhouette resting over a seat changes, leaving the torso and head intact.
+  const top = sofa ? 0.46 - POSES.resting[1] : STOOL_SEAT_TOP - POSES.writing[1];
+  if (point.y >= top + 0.035) return 0;
+  const distance = sofa
+    ? Math.max(-3.4 - point.x, point.x - 0.3, -1.7 - point.z, point.z - 0.4, 0)
+    : Math.max(0, Math.hypot(point.x, point.z - 0.25) - 0.34);
+  return (top + 0.035 - point.y) * (1 - smooth(0, 0.12, distance));
+}
 
 function faceVisibility(geometry, texture, face, scale) {
   if (!texture?.image || typeof document === 'undefined') return null;
@@ -171,7 +182,7 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
     }
     const positions = geometry.getAttribute('position');
     const handWeights = new Float32Array(positions.count);
-    const deltas = Array.from({ length: 6 }, () => new Float32Array(positions.count * 3));
+    const deltas = Array.from({ length: 7 }, () => new Float32Array(positions.count * 3));
     for (let i = 0; i < positions.count; i++) {
       point.fromBufferAttribute(positions, i);
       const x = point.x / scale, y = point.y / scale, z = point.z / scale;
@@ -180,13 +191,8 @@ export function prepareAvatar(model, { expressionAtlasUrl, expressionTexture, on
       const hipY = point.y - 1.0;
       deltas[3].set([0, hipY * Math.cos(perchAngle) - point.z * Math.sin(perchAngle) - hipY,
         hipY * Math.sin(perchAngle) + point.z * Math.cos(perchAngle) - point.z], i * 3);
-      // Rotate the visible lower legs forward around the knee, without shrinking
-      // the torso, skirt or leg length. Rear hair and tail stay outside this mask.
-      const kneeAngle = -0.9 * (1 - smooth(0.52, 0.78, point.y)) *
-        smooth(0.15, 0.28, point.z) * (1 - smooth(0.38, 0.52, Math.abs(point.x)));
-      const kneeY = point.y - 0.7, kneeZ = point.z - 0.4;
-      deltas[5].set([0, kneeY * Math.cos(kneeAngle) - kneeZ * Math.sin(kneeAngle) - kneeY,
-        kneeY * Math.sin(kneeAngle) + kneeZ * Math.cos(kneeAngle) - kneeZ], i * 3);
+      deltas[5][i * 3 + 1] = seatContactOffset(point, true);
+      deltas[6][i * 3 + 1] = seatContactOffset(point);
       const tailTop = T.MathUtils.lerp(rig.tail.top[0], rig.tail.top[1], smooth(rig.tail.start, rig.tail.full, x));
       const tailWeight = mesh.name === rig.mesh ? smooth(rig.tail.start, rig.tail.full, x) *
         (1 - smooth(tailTop - 0.025, tailTop, y)) * (1 - smooth(rig.tail.rear, rig.tail.rear + 0.04, z)) : 0;
@@ -311,6 +317,7 @@ reflectedLight.indirectSpecular = mix(reflectedLight.indirectSpecular, avatarSpe
         mesh.morphTargetInfluences[3] = atDesk || SOFA_ACTIONS.includes(state.action) ? 1 : 0;
         mesh.morphTargetInfluences[4] = atDesk ? 1 : 0;
         mesh.morphTargetInfluences[5] = SOFA_ACTIONS.includes(state.action) ? 1 : 0;
+        mesh.morphTargetInfluences[6] = atDesk ? 1 : 0;
       }
       if (texture?.image) {
         const expression = state.action === 'sleeping' ? 'sleeping' : state.expression;

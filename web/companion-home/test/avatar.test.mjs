@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as T from 'three';
-import { prepareAvatar, smoothFace } from '../src/avatar.mjs';
-import { POSES, OBSTACLES, tailClearance, CAMERA_ELEVATION, PHONE_POSITION } from '../src/layout.mjs';
+import { prepareAvatar, smoothFace, seatContactOffset } from '../src/avatar.mjs';
+import { POSES, OBSTACLES, tailClearance, CAMERA_ELEVATION, PHONE_POSITION, STOOL_SEAT_TOP } from '../src/layout.mjs';
 
 test('old facial relief becomes a convex cheek surface with curved normals and an intact fringe', () => {
   const geometry = new T.BufferGeometry();
@@ -66,6 +66,7 @@ test('default poses share the sofa perch and the camera stays between 30 and 70 
   assert.ok(Math.abs(CAMERA_ELEVATION[0] - Math.PI / 6) < 0.00001);
   assert.ok(Math.abs(CAMERA_ELEVATION[1] - Math.PI * 7 / 18) < 0.00001);
   assert.ok(PHONE_POSITION[1] > 1.5 && PHONE_POSITION[2] > 1.0);
+  assert.equal(STOOL_SEAT_TOP, 0.72);
 });
 
 test('an opt-in single mesh gets actual tail morphs and a hand grip without a model call', () => {
@@ -113,13 +114,17 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
   avatar.setState({ action: 'resting' }, POSES.resting, []);
   avatar.update(0.1, 1, true);
   assert.equal(shader.uniforms.avatarHandPose.value, 0);
+  assert.equal(mesh.geometry.morphAttributes.position.length, 7);
+  assert.equal(mesh.geometry.morphAttributes.position[3].getY(4), 0);
   assert.equal(mesh.morphTargetInfluences[5], 1);
-  const legs = mesh.geometry.morphAttributes.position[5];
-  assert.ok(legs.getZ(4) > 0.2);
-  assert.equal(legs.getY(1), 0); // Head and torso do not shrink to fit the sofa.
-  assert.ok(Math.abs(Math.hypot(0.3 + legs.getY(4) - 0.7, 0.5 + legs.getZ(4) - 0.4) - Math.hypot(-0.4, 0.1)) < 0.00001);
-  avatar.setState({ action: 'phone' }, POSES.phone, []);
-  avatar.update(0.1, 1, true);
-  assert.equal(mesh.morphTargetInfluences[5], 0);
+  assert.equal(mesh.morphTargetInfluences[6], 0);
   avatar.dispose();
+});
+
+test('seat contact lifts only the low silhouette over furniture and preserves hanging feet', () => {
+  assert.ok(0.2 + seatContactOffset({x:0,y:0.2,z:0.25}) > STOOL_SEAT_TOP - POSES.writing[1]);
+  assert.equal(seatContactOffset({x:0,y:1,z:0.25}),0);
+  assert.equal(seatContactOffset({x:0,y:0.2,z:0.85}),0);
+  assert.ok(0.2 + seatContactOffset({x:0,y:0.2,z:0},true) > 0.46 - POSES.resting[1]);
+  assert.equal(seatContactOffset({x:0.8,y:0.2,z:0},true),0);
 });
