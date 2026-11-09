@@ -1,6 +1,7 @@
-0.14.1/frontend0.2.2 uses a smooth convex cheek surface with curved normals.
-Retain rounded head/face volume while filling old eye sockets and mouth relief.
-Expression atlas follows this curved surface; private0.13.1 GLB remains compatible.
+0.14.2/frontend0.2.5 preserves body proportions in desk/dining perches and only
+shows food for an actual active meal at home. Retain the private calibrated GLB,
+rounded face, skin-matched expression atlas and existing cache/state relay bindings.
+Read docs/HOME_SPACE.md before porting the frontend.
 
 0.13.1 adds a spacious home layout, reference-derived private face atlas, hand-held phone
 and bounded tail morphs. Private calibrated companionRig data and embedded expression

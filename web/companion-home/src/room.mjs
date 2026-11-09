@@ -184,26 +184,25 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   currentZone.add(lamp);
 
   zone("desk");
-  // Desk and chair.
-  box(house, [2.35, 1.12, -1.95], [2.8, 0.15, 1.15], "paleWood", "reading");
+  // Higher worktop and a perch stool keep the unrigged body's proportions.
+  box(house, [2.35, 1.94, -1.95], [2.8, 0.15, 1.15], "paleWood", "reading");
   for (const x of [1.15, 3.55])
     for (const z of [-2.4, -1.5])
-      box(house, [x, 0.54, z], [0.12, 1.05, 0.12], "wood");
-  box(house, [2.3, 0.57, -0.65], [1.15, 0.14, 1.4], "green");
-  box(house, [2.3, 0.98, 0.10], [1.15, 0.72, 0.11], "green");
-  for (const x of [2, 2.6])
-    for (const z of [-1.1, -0.02])
-      box(house, [x, 0.27, z], [0.08, 0.54, 0.08], "wood");
+      box(house, [x, 0.94, z], [0.12, 1.85, 0.12], "wood");
+  cylinder(house, [2.3, 1.19, -0.6], 0.45, 0.14, "green");
+  for (const x of [2.02, 2.58])
+    for (const z of [-0.88, -0.32])
+      cylinder(house, [x, 0.58, z], 0.045, 1.16, "wood");
   const book = box(
     house,
-    [2.25, 1.23, -1.8],
+    [2.25, 2.06, -1.8],
     [0.75, 0.08, 0.5],
     "cream",
     "reading",
   );
   book.rotation.y = -0.15;
-  box(house, [2.25, 1.28, -1.8], [0.018, 0.018, 0.47], "wood");
-  cylinder(house, [3.22, 1.32, -2], 0.12, 0.27, "white");
+  box(house, [2.25, 2.11, -1.8], [0.018, 0.018, 0.47], "wood");
+  cylinder(house, [3.22, 2.15, -2], 0.12, 0.27, "white");
 
   zone("sofa");
   // Sofa, cushions and a folded throw.
@@ -252,11 +251,34 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
     leaf.rotation.z = Math.cos(a) * -0.5;
   }
   zone("table");
-  const table = cylinder(house, [-0.45, 0.61, 2.45], 0.67, 0.1, "paleWood");
-  cylinder(house, [-0.45, 0.3, 2.45], 0.08, 0.6, "wood");
-  box(house, [-0.45, 0.7, 2.45], [0.58, 0.07, 0.42], "pink", "memory");
-  const bowl = cylinder(house, [0.15, 0.79, 2.39], 0.19, 0.22, "white");
-  sphere(house, [0.15, 0.93, 2.39], [0.16, 0.07, 0.16], "white");
+  const table = cylinder(house, [-1.65, 1.94, 2.75], 0.9, 0.14, "paleWood");
+  cylinder(house, [-1.65, 0.95, 2.75], 0.11, 1.88, "wood");
+  cylinder(house, [-1.65, 0.10, 2.75], 0.55, 0.12, "wood");
+  cylinder(house, [-1.65, 1.19, 1.0], 0.45, 0.14, "green");
+  for (const x of [-1.93, -1.37])
+    for (const z of [0.72, 1.28]) cylinder(house, [x, 0.58, z], 0.045, 1.16, "wood");
+  const meal = new T.Group();
+  meal.position.set(-1.65, 2.02, 2.9);
+  currentZone.add(meal);
+  meal.visible = false;
+  const bowlProfile = [[0, 0], [0.10, 0], [0.15, 0.03], [0.23, 0.14],
+    [0.285, 0.28], [0.29, 0.30], [0.275, 0.315], [0.26, 0.29],
+    [0.21, 0.16], [0.13, 0.08], [0, 0.07]].map(([r, y]) => new T.Vector2(r, y));
+  const bowl = new T.Mesh(new T.LatheGeometry(bowlProfile, 40), material("white"));
+  bowl.castShadow = bowl.receiveShadow = true;
+  meal.add(bowl);
+  const rim = new T.Mesh(new T.TorusGeometry(0.279, 0.012, 8, 40), material("blue"));
+  rim.rotation.x = Math.PI / 2;
+  rim.position.y = 0.302;
+  meal.add(rim);
+  sphere(meal, [0, 0.31, 0], [0.23, 0.23, 0.23], 0xfffdf6);
+  for (let i = 0; i < 16; i++) {
+    const angle = i * 2.4, y = 0.2 + i / 20;
+    const radius = Math.sqrt(1 - y * y) * 0.226;
+    const grain = sphere(meal, [Math.cos(angle) * radius, 0.31 + y * 0.23, Math.sin(angle) * radius],
+      [0.018, 0.012, 0.033], "white");
+    grain.rotation.y = angle;
+  }
   bowl.userData.detail = "energy";
   objects.push(bowl);
   table.receiveShadow = true;
@@ -470,6 +492,7 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   function setState(value) {
     needsRender = true;
     presentation = value;
+    meal.visible = value.presence === "home" && value.action === "eating";
 
     characterStage.visible = studio || value.presence === "home";
     const night = value.period === "night", dusk = value.period === "dusk";

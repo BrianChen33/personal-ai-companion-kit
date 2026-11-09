@@ -88,3 +88,14 @@ test("only released activity or a verified location update changes presence", ()
   snapshot.daily_scene.scene.fields.location = "小屋";
   assert.equal(derivePresentation(snapshot, 1010).presence, "home");
 });
+
+test('released meal completion clears a matching stale activity but cannot end a later meal', () => {
+  const snapshot = { generated_at: 1000, companion: {
+    activity: { name: '做饭吃饭', started_at: 800, status: 'active' },
+  }, daily_scene: { scene: { activity: '做饭吃饭', stage: 'completed', occurred: 950 } } };
+  assert.equal(derivePresentation(snapshot, 1010).action, 'idle');
+  snapshot.companion.activity.started_at = 980;
+  assert.equal(derivePresentation(snapshot, 1010).action, 'eating');
+  snapshot.daily_scene.scene.activity = '阅读';
+  assert.equal(derivePresentation(snapshot, 1010).action, 'eating');
+});

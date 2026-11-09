@@ -2,9 +2,11 @@
 Use muse_ext.home_relay with the host existing ioredis/TLS credentials. The local
 hook publishes only changed state and always stays silent. Read docs/HOME_SPACE.md.
 
-0.14.1/frontend0.2.4 seats reading/writing companions at the desk. Preserve
-original face/hair and host cache/error callbacks. Read docs/HOME_SPACE.md for
-model cache and private programmatic state delivery acceptance.
+0.14.2/frontend0.2.5 uses proportional high-stool perches for eating/reading/writing.
+Do not restore the compressed lower-body sitting morph. Food is visible only during
+an actual active meal at home; a newer matching completed scene ends stale activity.
+Face normals follow the final curved surface and atlas features use model skin tone.
+Preserve host cache/error callbacks and programmatic state relay. Read docs/HOME_SPACE.md.
 
 0.13.3/frontend0.2.2 uses a smooth convex cheek surface with curved normals.
 Retain rounded head/face volume while filling old eye sockets and mouth relief.

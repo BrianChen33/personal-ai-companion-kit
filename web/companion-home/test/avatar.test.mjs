@@ -7,7 +7,7 @@ import { POSES, OBSTACLES, tailClearance } from '../src/layout.mjs';
 test('old facial relief becomes a convex cheek surface with curved normals and an intact fringe', () => {
   const geometry = new T.BufferGeometry();
   geometry.setAttribute('position', new T.Float32BufferAttribute([
-    -0.15, 1.94, 0.8, 0.15, 1.94, 0.5, 0, 1.94, 0.55, 0, 2.2, 0.8,
+    -0.15, 1.94, 0.8, 0.15, 1.94, 0.5, 0, 1.94, 0.55, 0, 2.35, 0.8,
   ], 3));
   geometry.setAttribute('normal', new T.Float32BufferAttribute([0.2, 0, 0.98, 0, -0.3, 0.95, 0, 0.2, 0.98, 0, 0, 1], 3));
   smoothFace(geometry, { width: 1, bottom: 1.7, height: 0.6, front: 0.3 });
@@ -28,6 +28,24 @@ test('hair visibility leaves foreground hair geometry and its expression weight 
   assert.ok(geometry.getAttribute('position').getZ(0) < 0.5);
   assert.ok(Math.abs(geometry.getAttribute('position').getZ(1) - 0.7) < 0.00001);
   assert.equal(geometry.getAttribute('avatarFaceWeight').getX(1), 0);
+});
+
+test('face normals follow the final cheek-to-jaw transition instead of a separate ideal surface', () => {
+  const geometry = new T.PlaneGeometry(1.2, 0.9, 16, 16);
+  geometry.translate(0, 1.94, 0.55);
+  smoothFace(geometry, { width: 1, bottom: 1.7, height: 0.6, front: 0.3 });
+  const expected = geometry.clone();
+  expected.computeVertexNormals();
+  const weights = geometry.getAttribute('avatarFaceWeight');
+  let transitions = 0;
+  for (let i = 0; i < weights.count; i++) {
+    if (weights.getX(i) <= 0.05 || weights.getX(i) >= 0.95) continue;
+    const actualNormal = new T.Vector3().fromBufferAttribute(geometry.getAttribute('normal'), i);
+    const surfaceNormal = new T.Vector3().fromBufferAttribute(expected.getAttribute('normal'), i);
+    assert.ok(actualNormal.distanceTo(surfaceNormal) < 0.00001);
+    transitions++;
+  }
+  assert.ok(transitions > 20);
 });
 
 test('the plant pose and open hammock zone have separate floor envelopes', () => {
@@ -67,7 +85,15 @@ test('an opt-in single mesh gets actual tail morphs and a hand grip without a mo
   avatar.update(0.1, 1, true);
   assert.equal(mesh.morphTargetInfluences[3], 1);
   assert.equal(mesh.morphTargetInfluences[4], 1);
-  assert.ok(mesh.geometry.morphAttributes.position[3].getZ(0) > 0.4);
+  // A shallow perch keeps the leg length and torso height intact.
+  assert.ok(Math.abs(mesh.geometry.morphAttributes.position[3].getY(0)) < 0.02);
+  assert.ok(Math.abs(mesh.geometry.morphAttributes.position[3].getY(1)) < 0.03);
+  assert.ok(POSES.writing[1] > 0.2);
+  avatar.setState({ action: 'eating' }, POSES.eating, []);
+  avatar.update(0.1, 1, true);
+  assert.equal(mesh.morphTargetInfluences[3], 1);
+  assert.equal(mesh.morphTargetInfluences[4], 1);
+  assert.ok(POSES.eating[1] > 0.2);
   assert.ok(Math.abs(POSES.writing[0] - 1.95) < 0.01);
   assert.equal(POSES.writing[3], Math.PI);
   avatar.dispose();

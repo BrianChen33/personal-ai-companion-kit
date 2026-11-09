@@ -800,5 +800,24 @@
     "base_architecture": "aa31def5833774510da0f846c19f881fabf7b73a",
     "change": "avoid matching sk- inside article words; preserve independent key detection and scanner block context",
     "validation": "one isolated regression covers article slug, overlap boundary and key delimiters"
+  },
+  "home_perch_face_update": {
+    "date": "2026-11-09",
+    "release": "0.14.2",
+    "home_frontend": "0.2.5",
+    "base_architecture": "fc5aed9159594f9b7cd30db9a139d2f943c705df",
+    "changes": [
+      "proportional high-stool eating and desk perches with hanging feet",
+      "curved hollow bowl and spherical rice only during an actual active meal",
+      "newer matching completed scene supersedes stale activity",
+      "continuous cheek transitions with final-surface seam normals and skin-matched expression features"
+    ],
+    "validation": {
+      "frontend_cases": 11,
+      "preview": "private GLB local desktop/mobile visual review",
+      "native": "host merge pending",
+      "installed_wheel": "accepted outside checkout",
+      "related_vault_cases": 14
+    }
   }
 }

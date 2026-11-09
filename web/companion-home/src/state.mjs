@@ -98,7 +98,7 @@ export function derivePresentation(snapshot, now = Date.now() / 1000) {
     Number.isFinite(snapshot.home_state.occurred) &&
     snapshot.home_state.occurred <= snapshot.generated_at &&
     snapshot.home_state.occurred >= (validActivity ? started : scene?.occurred || 0);
-  const completed = !validActivity && validScene && scene.stage === "completed";
+  const completed = sceneMatches && scene.stage === "completed";
   const homeLocations = snapshot.home_locations || ["小屋", "云端小屋", "家里", "家中", "家"];
   const locationUnconfirmed = Boolean(location) && !homeLocations.includes(location);
   const presence = explicitPresence ? locationType :
