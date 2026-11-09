@@ -302,3 +302,9 @@ React宿主用portal到document.body的等价方式，避开卡片祖先的trans
 发布器读取宿主既有HTTPS_PROXY/https_proxy/HTTP_PROXY/http_proxy环境变量。
 有代理时复用已验证的HTTP CONNECT隧道，再对Redis建立正常TLS；证书验证
 始终开启。无代理时直接TLS。原始代理凭据与Redis凭据均不进入日志或参数。
+
+私有状态键同时维护一个`key + :head`的小版本索引。发布器在同一Lua事务中
+保存body和head，head仅含revision/sha256/generated_at。空间后端先GET head，
+与本地版本相同则复用已有快照，版本变化才GET完整body。head缺失时兼容已有
+body。这样空闲打开页面只读小索引。两个键须在同一Redis原子执行范围内，
+使用Redis Cluster的新部署需为键名选择共同hash tag。

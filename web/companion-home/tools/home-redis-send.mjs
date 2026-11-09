@@ -70,7 +70,7 @@ try {
   let input = '';
   for await (const chunk of process.stdin) input += chunk;
   const command = JSON.parse(input);
-  if (command[0] !== 'EVAL' || command[2] !== 1 || !command[3]) {
+  if (command[0] !== 'EVAL' || command[2] !== 2 || command[4] !== command[3] + ':head') {
     throw new Error('invalid_home_publish_command');
   }
   client = new Redis({

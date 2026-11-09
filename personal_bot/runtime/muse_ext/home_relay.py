@@ -21,12 +21,14 @@ if current then
     end
     if revision == ARGV[2] then
         if old.sha256 == ARGV[3] then
+            redis.call('SET', KEYS[2], ARGV[4], 'EX', 604800)
             return {'idempotent', revision, old.sha256}
         end
         return {'conflict', revision, old.sha256}
     end
 end
 redis.call('SET', KEYS[1], ARGV[1], 'EX', 604800)
+redis.call('SET', KEYS[2], ARGV[4], 'EX', 604800)
 return {'stored', ARGV[2], ARGV[3]}
 """
 
@@ -74,7 +76,9 @@ def publish(root, config_path, sender=send):
     envelope = home_space.capture(root)
     value = json.dumps(encode(envelope), ensure_ascii=False, separators=(',', ':'))
     revision, digest = envelope['snapshot']['revision'], envelope['sha256']
-    command = ['EVAL', SCRIPT, 1, key, value, revision, digest]
+    head = json.dumps({'revision': revision, 'sha256': digest,
+        'generated_at': envelope['snapshot']['generated_at']}, separators=(',', ':'))
+    command = ['EVAL', SCRIPT, 2, key, key + ':head', value, revision, digest, head]
     result = sender(config, command)
     if (not isinstance(result, list) or len(result) != 3
             or result[0] not in ('stored', 'idempotent')

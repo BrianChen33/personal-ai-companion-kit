@@ -29,7 +29,9 @@ class HomeSpace(unittest.TestCase):
             calls = []
 
             def receive(config, command):
-                value = json.loads(command[4])
+                value = json.loads(command[5])
+                self.assertEqual(command[4], command[3] + ':head')
+                self.assertEqual(json.loads(command[8])['revision'], value['revision'])
                 snapshot = json.loads(gzip.decompress(base64.b64decode(value['data'])))
                 self.assertEqual(value['revision'], snapshot['revision'])
                 self.assertEqual(value['schema'], home_relay.SCHEMA)

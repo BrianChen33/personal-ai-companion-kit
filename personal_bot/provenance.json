@@ -769,7 +769,8 @@
       "bounded gzip snapshot in one owner-private key",
       "atomic revision guard and existing receipt/lease recovery",
       "server-only readonly configuration contract",
-      "existing host HTTP CONNECT proxy support with TLS certificate validation"
+      "existing host HTTP CONNECT proxy support with TLS certificate validation",
+      "small atomic version head avoids repeatedly downloading unchanged full snapshots"
     ],
     "validation": {
       "synthetic_cases": 3,
