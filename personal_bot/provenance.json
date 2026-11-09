@@ -757,5 +757,22 @@
       "preview": "actual private model seated side/back local browser review",
       "native": "host integration in progress"
     }
+  },
+  "home_program_relay_update": {
+    "date": "2026-11-09",
+    "release": "0.14.0",
+    "runtime": "2.11.1",
+    "home_frontend": "0.2.3",
+    "base_architecture": "2b7bc67d2262846ca58cea8e2768f24c26c00cb8",
+    "changes": [
+      "silent local change-driven private state relay reuses existing ioredis/TLS",
+      "bounded gzip snapshot in one owner-private key",
+      "atomic revision guard and existing receipt/lease recovery",
+      "server-only readonly configuration contract"
+    ],
+    "validation": {
+      "synthetic_cases": 3,
+      "native": "actual publication and host readback pending"
+    }
   }
 }

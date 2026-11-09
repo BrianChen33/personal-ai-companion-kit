@@ -244,3 +244,43 @@ complete处理和重读逻辑，避免仅删前端检查后仍被必填参数挡
 已授权的服务端HTTPS能力。凭据留服务端，前台只调用空间自有动作。具体能力
 须在实际托管运行时验证，文档或源码发布不能替代已接通的证据。禁止搬运用户
 浏览器会话凭据到VM。普通回复只写既有本地marker，后台发布合并变化并有界重试。
+
+## 0.14.0 程序化私有状态投递
+
+目标宿主确认服务端HTTPS可用后，可将既有本地home-space-hook替换为
+`tools/home-state-relay-hook.sh`。它复用5秒本地检查，只在dirty改变后发布，
+每轮以silent结束。原有模型发布hook的worker入口不再启用。日常状态传输不需
+模型轮次，也不需新增cron。原15分钟情绪任务继续完成情绪与反馈功能。
+
+后台程序运行方式如下。
+
+```sh
+PYTHONPATH="$BRAIN_ROOT" python3 -m muse_ext.home_relay \
+  --root "$BRAIN_ROOT" --config "$HOME/.config/companion-home/relay.json"
+```
+
+relay.json位于脑目录与备份范围外，0600。字段为key、credentials_file、
+ioredis_module、sender_path，可选node。部署者填实际绝对路径。credentials_file
+指向已授权的Redis/TLS凭据JSON，含host/port/password；ioredis_module指向现成
+官方ioredis模块入口；sender_path指向已安装的`tools/home-redis-send.mjs`。
+源代码不携带凭据，不安装QQ插件，独立宿主需自行准备受支持的Redis连接。
+
+发布器沿home_space的capture/probe/ack，完整快照仍有240KB预算。gzip+base64
+压缩后写入一个私有键，保留7天。原子Lua比较十进制字符串revision，拒绝旧写，
+同revision同sha为幂等成功。前台回话只有既有小标记IO，TLS传输、压缩和重试
+均在后台。失败保留dirty，沿原120秒租约重试，后续新变化仍待处理。
+
+键值契约为schema=companion-home-relay-v1，含revision、sha256、generated_at、
+encoding=gzip-base64和data。data解压后是原companion-home-v1快照。空间后端
+凭服务端配置及只读token读取指定键，解压并按原revision规则更新空间缓存。
+可见页面每30秒读取，后台可短缓存15秒合并请求。前端状态刷新继续独立于模型。
+
+宿主若无专用secret客户端，可在自身私有数据库中建立仅服务端读取的配置行。
+一次性配置动作在服务端生成RSA-OAEP密钥，返回公钥和绑定id，接收用该公钥
+密封的endpoint/只读token/key，服务端解密保存；普通状态响应仅返回configured
+和同步结果。密钥/配置行绝不能进入前端、普通快照或公开仓库。具体加密参数
+以真实动作schema为准。服务端固定读取已授权端点，禁止由浏览器请求指定URL。
+
+真实接线验收为一次已有状态的程序发布、空间get_state读回相同revision，以及
+页面显示该状态。配置/公钥交换和代码发布本身不等于完成。结束时移除临时的
+公共HTTPS连通性探针，保留必要的配置与数据动作。

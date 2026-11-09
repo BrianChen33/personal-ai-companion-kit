@@ -1,4 +1,8 @@
-0.13.4/frontend0.2.3 seats reading/writing companions at the desk. Preserve
+0.14.0/runtime2.11.1 supports optional programmatic private state delivery.
+Use muse_ext.home_relay with the host existing ioredis/TLS credentials. The local
+hook publishes only changed state and always stays silent. Read docs/HOME_SPACE.md.
+
+0.14.0/frontend0.2.3 seats reading/writing companions at the desk. Preserve
 original face/hair and host cache/error callbacks. Read docs/HOME_SPACE.md for
 model cache and private programmatic state delivery acceptance.
 
@@ -11,7 +15,7 @@ and bounded tail morphs. Private calibrated companionRig data and embedded expre
 texture stay inside the owner GLB. Generic garden texture is public. Ordinary replies
 still write only the existing small marker. Native Space acceptance is required.
 
-0.13.0/runtime2.11.0 adds optional private 3D home delivery. Read docs/HOME_SPACE.md.
+0.13.0/runtime2.11.1 adds optional private 3D home delivery. Read docs/HOME_SPACE.md.
 Use actual released companion activity, never owner calendar or elapsed deadlines.
 Foreground writes only a tiny local dirty marker after success. Native hook publishes
 in an independent sidechat worker with a receipt and retry lease;15m feedback reconciles.
