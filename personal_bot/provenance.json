@@ -727,6 +727,12 @@
       "accessible file input and same-file retry",
       "separate storage, rendering and real-model acceptance evidence"
     ],
-    "validation": "native host reports minimal uploader repair deployed; actual owner GLB upload pending"
+    "validation": "native host reports minimal uploader repair deployed; actual owner GLB upload pending",
+    "sha256_compatibility": {
+      "implementation": "bundled trusted pure JavaScript SHA-256 for hosts without crypto.subtle",
+      "verified_package": "@noble/hashes@2.4.0",
+      "validation": "without WebCrypto: known vectors, padding boundaries and actual private GLB match independent Node SHA-256",
+      "scope": "public host protocol; native deployment acceptance recorded separately"
+    }
   }
 }

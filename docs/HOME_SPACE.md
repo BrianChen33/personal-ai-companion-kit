@@ -209,3 +209,27 @@ function newUploadId() {
 不能据此断言渲染正常，也不能把某个可能的前端异常写成已确认的触发原因。
 已入库但未显示时，再检查解码器、CSP、贴图和实际presence。宿主修复结果、
 公开通用协议和真实模型验收分别记录，避免把文档同步当成上线证据。
+
+### 无WebCrypto的内嵌浏览器
+
+实际宿主内嵌页可能提供`crypto.getRandomValues`，但不提供`crypto.subtle`。
+上传和模型重读的SHA-256都需要兼容这一环境。采用已有可信纯JavaScript库，
+或从npm锁定`@noble/hashes`并打包进页面。本机核对过2.4.0的`sha2.js`与
+`utils.js`入口，宿主若使用其他锁定版本，按该版本实际exports导入。
+
+```js
+import { sha256 } from "@noble/hashes/sha2.js";
+import { bytesToHex } from "@noble/hashes/utils.js";
+
+function sha256Hex(buffer) {
+  return bytesToHex(sha256(new Uint8Array(buffer)));
+}
+```
+
+可直接统一使用上述计算，也可在WebCrypto存在时保留原生路径。相同helper用于
+上传前校验与下载重组后的校验。后端继续独立计算实际字节的SHA并比较，文件大小、
+GLB魔数、分块完整性和原子切换保持原协议。仅在文件导入/重读时计算，不进入
+对话路径。不要通过扩大iframe权限或放宽CSP解决摘要算法缺失。
+
+针对性验收在无WebCrypto时比较空字节、abc、SHA填充边界及实际模型与独立
+实现的输出。仍须以主人的实际导入、后端元数据和刷新后加载确认端到端完成。
