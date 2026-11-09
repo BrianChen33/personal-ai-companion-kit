@@ -172,3 +172,40 @@ face.surface_depth可指定曲面中心深度。旧face.plane参数兼容为中�
 面部中心深度限制在原刘海后，刘海保持原网格。下部采用连续椭圆弧与加宽的
 渐变过渡，平滑连接脸颊、下巴与原头部。脸部/下巴的曲面法线随曲率连续变化。
 读取失败时保留原面部。处理发生在资产载入时，不加入日常回复路径。
+
+## 嵌入页模型导入的错误处理
+
+原生空间适配器的文件选择、暂存上传和模型载入必须分别显示状态。文件选中后
+立即显示读取阶段，将上传编号生成、文件读取、魔数、SHA、begin、分块和complete
+全部放在同一个try/catch内。异常应显示失败阶段与原因，不能只停在空台子。
+捕获日志只写阶段和错误，不打印模型base64、快照正文或凭据。
+
+部分嵌入环境没有`crypto.randomUUID`。适配器可使用以下等强度随机编号实现，
+并在上传处理器的try内调用。随机源不可用时终止并显示错误。SHA-256仍须真实
+计算并由后端验证，不能为了兼容环境跳过完整性校验。
+
+```js
+function newUploadId() {
+  const cryptoApi = globalThis.crypto;
+  if (typeof cryptoApi?.randomUUID === "function") return cryptoApi.randomUUID();
+  if (typeof cryptoApi?.getRandomValues !== "function") {
+    throw new Error("当前浏览器缺少安全随机源");
+  }
+  const bytes = cryptoApi.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] & 15) | 64;
+  bytes[8] = (bytes[8] & 63) | 128;
+  const hex = Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+  return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16),
+    hex.slice(16, 20), hex.slice(20)].join("-");
+}
+```
+
+入口使用带可访问名称的原生file input，或直接关联的label。选中后先保留File
+对象再清空input.value，允许失败后重选同一文件。阶段包括读取、SHA校验、
+上传块数、服务端完整性确认和3D载入。上传完成时读回实际字节数与SHA，再显示
+入库成功。只有真实模型刷新后可加载才算完成，空场景或最小测试GLB不能代替。
+
+定位时先查正式模型元数据与staging会话。没有新会话说明尚未成功开始上传，
+不能据此断言渲染正常，也不能把某个可能的前端异常写成已确认的触发原因。
+已入库但未显示时，再检查解码器、CSP、贴图和实际presence。宿主修复结果、
+公开通用协议和真实模型验收分别记录，避免把文档同步当成上线证据。

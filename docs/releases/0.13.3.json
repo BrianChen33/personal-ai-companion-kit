@@ -5,7 +5,7 @@
   "life_camera_version": "0.3.0",
   "social_reading_version": "0.4.0",
   "mi_fitness_version": "0.1.0",
-  "base_architecture": "6fc8cb117c00b5f8590cfeba1a9d8a98b975b26e",
+  "base_architecture": "eadd1266fa996f18f1d54597c37ca92fda7075c5",
   "files": [
     {
       "path": "AGENTS.md",
@@ -25,7 +25,7 @@
     },
     {
       "path": "docs/HOME_SPACE.md",
-      "sha256": "f0220a49132aeb3eede2458ac34a8e56d3cb8c4c660666e74ebf1f28c7663958"
+      "sha256": "43b22a22bccf0b1b51c18e920dbd7fec8326c0046d592fd5c6b79643627382a7"
     },
     {
       "path": "personal_bot/__init__.py",
@@ -33,7 +33,7 @@
     },
     {
       "path": "personal_bot/provenance.json",
-      "sha256": "73374ccca1b774ffcf7468e7f59026d261b9aad0e2968d0f0850019744c404bc"
+      "sha256": "b218223c6067afd62bd40e889819690fabfa26055fd3a3670e87c928a488ab46"
     },
     {
       "path": "personal_bot/vault.py",

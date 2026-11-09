@@ -715,5 +715,18 @@
       "lower face follows an elliptical chin arc with a wider blend into the original head",
       "central surface remains behind the original fringe"
     ]
+  },
+  "home_upload_protocol_refinement": {
+    "date": "2026-11-09",
+    "release": "0.13.3",
+    "base_architecture": "eadd1266fa996f18f1d54597c37ca92fda7075c5",
+    "scope": "portable host deployment protocol; no renderer or runtime changes",
+    "changes": [
+      "visible file selection and upload stages",
+      "catch upload ID generation errors with secure random fallback",
+      "accessible file input and same-file retry",
+      "separate storage, rendering and real-model acceptance evidence"
+    ],
+    "validation": "native host reports minimal uploader repair deployed; actual owner GLB upload pending"
   }
 }
