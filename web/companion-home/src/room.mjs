@@ -189,8 +189,8 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
     for (const z of [-2.4, -1.5])
       box(house, [x, (WORKTOP_HEIGHT - 0.075) / 2, z], [0.12, WORKTOP_HEIGHT - 0.075, 0.12], "wood");
   cylinder(house, [2.3, STOOL_SEAT_TOP - 0.07, -0.85], 0.34, 0.14, "green");
-  for (const x of [2.02, 2.58])
-    for (const z of [-1.13, -0.57])
+  for (const x of [2.09, 2.51])
+    for (const z of [-1.06, -0.64])
       cylinder(house, [x, (STOOL_SEAT_TOP - 0.14) / 2, z], 0.045, STOOL_SEAT_TOP - 0.14, "wood");
   const book = box(
     house,
@@ -253,8 +253,8 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   cylinder(house, [-1.65, (WORKTOP_HEIGHT - 0.07) / 2, 2.75], 0.11, WORKTOP_HEIGHT - 0.07, "wood");
   cylinder(house, [-1.65, 0.10, 2.75], 0.55, 0.12, "wood");
   cylinder(house, [-1.65, STOOL_SEAT_TOP - 0.07, 1.25], 0.34, 0.14, "green");
-  for (const x of [-1.93, -1.37])
-    for (const z of [0.97, 1.53]) cylinder(house, [x, (STOOL_SEAT_TOP - 0.14) / 2, z], 0.045, STOOL_SEAT_TOP - 0.14, "wood");
+  for (const x of [-1.86, -1.44])
+    for (const z of [1.04, 1.46]) cylinder(house, [x, (STOOL_SEAT_TOP - 0.14) / 2, z], 0.045, STOOL_SEAT_TOP - 0.14, "wood");
   const meal = new T.Group();
   meal.position.set(-1.65, WORKTOP_HEIGHT + 0.08, 2.9);
   currentZone.add(meal);

@@ -181,7 +181,7 @@
     },
     {
       "path": "web/companion-home/src/room.mjs",
-      "sha256": "93b8b287a8262d7962d788bdf62592a3ae63d9035b48a9fff37d9648895ec9fb"
+      "sha256": "12952ae3d1ee678d8d6eccd58bf722d7190e440ccdee04a47d443bdb29640cf4"
     },
     {
       "path": "web/companion-home/src/state.mjs",
