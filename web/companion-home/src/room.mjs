@@ -115,7 +115,9 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   box(house, [0, -0.32, 0], [ROOM.width + 0.15, 0.15, ROOM.depth + 0.15], "cream");
   for (let x = -6; x < 6.3; x += 0.58)
     box(house, [x, 0.015, 0], [0.015, 0.012, ROOM.depth - 0.2], 0xd2b493);
-  box(house, [0, 2.1, -5], [ROOM.width, 4.3, 0.16], "wall");
+  const backWall = box(house, [0, 2.1, -5], [ROOM.width, 4.3, 0.16], "wall");
+  backWall.material = material('wall').clone();
+  backWall.material.transparent = true;
   const leftWall = box(house, [-6.3, 2.1, 0], [0.16, 4.3, ROOM.depth], "wall");
   leftWall.material = material("wall").clone();
   leftWall.material.transparent = true;
@@ -322,6 +324,8 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
   let targetYaw = 0;
   const raycaster = new T.Raycaster();
   const cursor = new T.Vector2();
+  const pointers = new Map();
+  let pinch;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
   let needsRender = true,
     disposed = false,
@@ -359,7 +363,8 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       Math.cos(azimuth) * Math.cos(elevation) * radius,
     );
     camera.lookAt(focus);
-    leftWall.material.opacity = Math.max(0, Math.min(1, (azimuth + 0.4) * 2));
+    leftWall.material.opacity = T.MathUtils.clamp(Math.sin(azimuth) * 2 + 0.55, 0, 1);
+    backWall.material.opacity = T.MathUtils.clamp(Math.cos(azimuth) * 2 + 0.2, 0, 1);
   }
 
   function applyPose(dt, elapsed) {
@@ -552,31 +557,62 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       onCharacterError?.(error);
     });
 
+  function setCameraDistance(value) {
+    if (studio) studioDistance = T.MathUtils.clamp(value, 4, 10);
+    else distance = T.MathUtils.clamp(value, 11, 23);
+    needsRender = true;
+  }
+  function fingerDistance() {
+    const [first, second] = Array.from(pointers.values());
+    return Math.hypot(first.x - second.x, first.y - second.y);
+  }
   renderer.domElement.addEventListener("pointerdown", (event) => {
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    renderer.domElement.setPointerCapture(event.pointerId);
+    if (pointers.size === 2) {
+      pinch = { fingers: Math.max(1, fingerDistance()), camera: studio ? studioDistance : distance };
+      if (pointer) pointer.moved = true;
+      return;
+    }
     pointer = {
       id: event.pointerId,
       x: event.clientX,
       y: event.clientY,
       angle: azimuth,
+      elevation,
       moved: false,
     };
   });
   renderer.domElement.addEventListener("pointermove", (event) => {
+    if (!pointers.has(event.pointerId)) return;
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pinch && pointers.size === 2) {
+      setCameraDistance(pinch.camera * pinch.fingers / Math.max(1, fingerDistance()));
+      return;
+    }
     if (!pointer || pointer.id !== event.pointerId) return;
     const dx = event.clientX - pointer.x,
       dy = event.clientY - pointer.y;
-    if (Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy) * 1.1) {
+    if (Math.hypot(dx, dy) > 8) {
       pointer.moved = true;
-      const nextAngle = pointer.angle - dx * 0.006;
-      azimuth = studio ? nextAngle : Math.max(-1.35, Math.min(1.35, nextAngle));
+      azimuth = pointer.angle - dx * 0.006;
+      elevation = T.MathUtils.clamp(pointer.elevation + dy * 0.004, 0.18, 1.1);
       needsRender = true;
     }
   });
-  renderer.domElement.addEventListener("pointercancel", () => {
+  renderer.domElement.addEventListener("pointercancel", (event) => {
+    pointers.delete(event.pointerId);
+    pinch = null;
     pointer = null;
   });
   renderer.domElement.addEventListener("pointerup", (event) => {
-    if (!pointer || pointer.moved) {
+    pointers.delete(event.pointerId);
+    if (pinch) {
+      pinch = null;
+      pointer = null;
+      return;
+    }
+    if (!pointer || pointer.id !== event.pointerId || pointer.moved) {
       pointer = null;
       return;
     }
@@ -599,6 +635,10 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       tapAt = (performance.now() - started) / 1000;
     }
   });
+  renderer.domElement.addEventListener('wheel', event => {
+    event.preventDefault();
+    setCameraDistance((studio ? studioDistance : distance) + event.deltaY * 0.012);
+  }, { passive: false });
   resize();
 
   return {
@@ -643,19 +683,11 @@ export function createRoom(element, { onSelect, onStatus, onCharacterError, char
       distance = 21.2;
     },
     rotate(delta) {
-      azimuth = studio
-        ? azimuth + delta
-        : Math.max(-1.35, Math.min(1.35, azimuth + delta));
+      azimuth += delta;
       needsRender = true;
     },
     zoom(delta) {
-      if (studio)
-        studioDistance = Math.max(
-          4,
-          Math.min(10, studioDistance + delta * 0.4),
-        );
-      else distance = Math.max(11, Math.min(23, distance + delta));
-      needsRender = true;
+      setCameraDistance((studio ? studioDistance : distance) + delta);
     },
     dispose() {
       disposed = true;

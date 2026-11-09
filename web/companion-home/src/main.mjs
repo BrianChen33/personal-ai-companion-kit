@@ -226,8 +226,7 @@ function render(next) {
   document.querySelector(".home-card").dataset.presence = view.presence;
   $("away-title").textContent = view.presenceText;
   $("away-location").textContent = view.location;
-  $("away-note").hidden = view.presence === "home" ||
-    document.querySelector('[data-view="home"]').getAttribute("aria-pressed") !== "true";
+  $("away-note").hidden = view.presence === "home";
   $("mood-label").textContent = view.leadingLabel;
   $("connection").textContent = next.preview
     ? "角色初稿 · 合成状态"
@@ -340,10 +339,6 @@ async function start() {
     if (!response.ok) throw new Error("home_configuration_missing");
     config = await response.json();
   }
-  if (config.referenceUrl) {
-    $("reference").hidden = false;
-    $("reference").onclick = () => detail("reference");
-  }
   try {
     room = createRoom($("room"), {
       characterUrl: config.characterUrl,
@@ -357,31 +352,8 @@ async function start() {
   } catch {
     $("model-status").textContent = "3D 暂不可用，状态卡片可正常查看";
   }
-  for (const button of document.querySelectorAll("[data-view]"))
-    button.addEventListener("click", () => {
-      const view = button.dataset.view;
-      room?.setView(view);
-      $("away-note").hidden = view !== "home" || presentation?.presence === "home";
-      const reference = config.referenceViews?.[view];
-      $("view-reference").hidden = !reference;
-      $("model-comparison").classList.toggle("comparing", Boolean(reference));
-      if (reference) {
-        const label = { front: "正面原图", side: "侧面原图", back: "背面原图" }[view];
-        $("view-reference-image").src = reference;
-        $("view-reference-image").alt = label;
-        $("view-reference-label").textContent = label;
-      } else {
-        $("view-reference-image").removeAttribute("src");
-      }
-      for (const tab of document.querySelectorAll("[data-view]"))
-        tab.setAttribute("aria-pressed", String(tab === button));
-    });
-  $("turn-left").onclick = () => room?.rotate(-0.25);
-  $("turn-right").onclick = () => room?.rotate(0.25);
   $("zoom-in").onclick = () => room?.zoom(-1);
   $("zoom-out").onclick = () => room?.zoom(1);
-  $("reset").onclick = () =>
-    document.querySelector('[data-view="home"]').click();
   for (const id of ["preview-action", "preview-mood", "preview-energy"])
     $(id).addEventListener("input", () => {
       if (!snapshot?.preview) return;

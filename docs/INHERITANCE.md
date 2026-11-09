@@ -1,4 +1,4 @@
-0.14.0/frontend0.2.2 uses a smooth convex cheek surface with curved normals.
+0.14.1/frontend0.2.2 uses a smooth convex cheek surface with curved normals.
 Retain rounded head/face volume while filling old eye sockets and mouth relief.
 Expression atlas follows this curved surface; private0.13.1 GLB remains compatible.
 

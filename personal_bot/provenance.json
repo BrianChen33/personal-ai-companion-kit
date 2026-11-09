@@ -774,5 +774,22 @@
       "synthetic_cases": 3,
       "native": "actual publication and host readback pending"
     }
+  },
+  "home_interaction_update": {
+    "date": "2026-11-09",
+    "release": "0.14.1",
+    "home_frontend": "0.2.4",
+    "base_architecture": "7aa88b8a9147cddf5303f0ad77ab10496dc51387",
+    "changes": [
+      "home-only normal UI with zoom buttons",
+      "pointer pinch zoom and full horizontal orbit",
+      "camera-facing walls fade",
+      "viewport-centered details"
+    ],
+    "validation": {
+      "frontend_cases": 9,
+      "desktop": "local native dialog center matches viewport center",
+      "native": "host merge pending; physical pinch acceptance pending"
+    }
   }
 }

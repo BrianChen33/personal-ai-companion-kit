@@ -156,7 +156,7 @@ h1 {
   display: block;
   width: 100%;
   height: 100%;
-  touch-action: pan-y;
+  touch-action: none;
 }
 .view-tabs {
   display: flex;
@@ -343,6 +343,11 @@ input[type="range"] {
   color: #aaa996;
 }
 dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  overflow: auto;
+  overscroll-behavior: contain;
   border: 1px solid #e3e8de;
   border-radius: 20px;
   padding: 26px;
