@@ -21,6 +21,8 @@ const ACTIONS = new Map([
 ]);
 
 const EXPRESSIONS = {
+  smug: ["得意"],
+  surprised: ["惊讶", "震惊"],
   sad: [
     "难过",
     "失落",
@@ -47,8 +49,8 @@ const EXPRESSIONS = {
     "感动",
     "感激",
   ],
-  curious: ["好奇", "期待", "兴奋", "惊讶", "困惑", "纠结"],
-  happy: ["欣喜", "愉快", "满足", "自豪", "得意"],
+  curious: ["好奇", "期待", "兴奋", "困惑", "纠结"],
+  happy: ["欣喜", "愉快", "满足", "自豪"],
 };
 
 function fraction(value) {

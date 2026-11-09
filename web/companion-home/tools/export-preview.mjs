@@ -31,10 +31,12 @@ const state = JSON.parse(await readFile(stateFile, "utf8"));
 state.preview = true;
 const model = await readFile(characterFile);
 const reference = await readFile(referenceFile);
+const garden = await readFile(path.join(root, 'public/garden-view.webp'));
 const config = {
   offline: true,
   characterUrl: "data:model/gltf-binary;base64," + model.toString("base64"),
   referenceUrl: "data:image/jpeg;base64," + reference.toString("base64"),
+  gardenUrl: 'data:image/webp;base64,' + garden.toString('base64'),
 };
 function json(value) {
   return JSON.stringify(value).replaceAll("<", "\\u003c");

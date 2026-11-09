@@ -347,6 +347,8 @@ async function start() {
   try {
     room = createRoom($("room"), {
       characterUrl: config.characterUrl,
+      expressionAtlasUrl: config.expressionAtlasUrl,
+      gardenUrl: config.gardenUrl,
       onSelect: detail,
       onStatus: (status) => {
         $("model-status").textContent = status === "ready" ? "" : status;

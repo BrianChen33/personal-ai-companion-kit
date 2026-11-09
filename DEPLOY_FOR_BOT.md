@@ -1,3 +1,8 @@
+0.13.1 adds a spacious home layout, reference-derived private face atlas, hand-held phone
+and bounded tail morphs. Private calibrated companionRig data and embedded expression
+texture stay inside the owner GLB. Generic garden texture is public. Ordinary replies
+still write only the existing small marker. Native Space acceptance is required.
+
 0.13.0/runtime2.11.0 adds optional private 3D home delivery. Read docs/HOME_SPACE.md.
 Use actual released companion activity, never owner calendar or elapsed deadlines.
 Foreground writes only a tiny local dirty marker after success. Native hook publishes

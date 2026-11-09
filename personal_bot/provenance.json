@@ -645,5 +645,34 @@
       "review": "one final read-only review; coherent SQLite capture and unfamiliar-location handling fixed"
     },
     "host": "private fullstack trial in progress; no live transport binding yet"
+  },
+  "home_visual_update": {
+    "date": "2026-11-09",
+    "release": "0.13.1",
+    "runtime": "2.11.0",
+    "frontend": "0.2.0",
+    "changes": [
+      "shared spacious floor plan and separate hammock/plant activity areas",
+      "generic bundled garden view texture",
+      "private asset-authored face atlas, hand grip and bounded tail morphs",
+      "expression follows existing state with no additional appraisal",
+      "private GLB may embed the expression atlas as a standard texture dependency"
+    ],
+    "garden_texture": {
+      "sha256": "3f37a6a6a3e2e52e8bb8d486361170456199f6a2919ad7cea99b16a9d00031f7",
+      "bytes": 541592,
+      "generator": "built-in image_gen",
+      "prompt": "A softly painted detailed cottage garden path, flowers, stream, trees and distant mountains, straight-on landscape, no people, no text."
+    },
+    "validation": {
+      "python_cases": 523,
+      "platform_skips": 2,
+      "adapter_cases": 13,
+      "frontend_cases": 7,
+      "build": "passed; JS gzip180.4KB",
+      "wheel": "accepted outside checkout",
+      "review": "one narrow review; embedded ImageBitmap orientation, optional texture fallback and disposal fixed",
+      "ui": "local desktop checks; final mobile and native host acceptance pending"
+    }
   }
 }

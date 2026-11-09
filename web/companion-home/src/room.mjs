@@ -1,4 +1,6 @@
 import * as T from "three";
+import { ROOM, ZONES, POSES, OBSTACLES } from "./layout.mjs";
+import { prepareAvatar } from "./avatar.mjs";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
 
@@ -15,7 +17,7 @@ const COLORS = {
   pink: 0xcaa8a0,
 };
 
-export function createRoom(element, { onSelect, onStatus, characterUrl }) {
+export function createRoom(element, { onSelect, onStatus, characterUrl, expressionAtlasUrl, gardenUrl = "./garden-view.webp" }) {
   const scene = new T.Scene();
   const renderer = new T.WebGLRenderer({
     antialias: true,
@@ -53,6 +55,12 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
   const house = new T.Group();
   scene.add(house);
   const objects = [];
+  let currentZone = house;
+  function zone(name) {
+    currentZone = new T.Group();
+    currentZone.position.set(...ZONES[name]);
+    house.add(currentZone);
+  }
   const materials = new Map();
   function material(color) {
     const value = COLORS[color] ?? color;
@@ -71,7 +79,7 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
       mesh.userData.detail = detail;
       objects.push(mesh);
     }
-    parent.add(mesh);
+    (parent === house ? currentZone : parent).add(mesh);
     return mesh;
   }
   function sphere(parent, at, size, color) {
@@ -79,7 +87,7 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
     mesh.position.set(...at);
     mesh.scale.set(...size);
     mesh.castShadow = mesh.receiveShadow = true;
-    parent.add(mesh);
+    (parent === house ? currentZone : parent).add(mesh);
     return mesh;
   }
   function cylinder(parent, at, radius, height, color) {
@@ -89,46 +97,55 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
     );
     mesh.position.set(...at);
     mesh.castShadow = mesh.receiveShadow = true;
-    parent.add(mesh);
+    (parent === house ? currentZone : parent).add(mesh);
     return mesh;
   }
 
   // Low-cost scenery shares materials with the room and needs no image requests.
   const garden = cylinder(house, [0, -0.49, 0], 6.2, 0.16, "sage");
-  garden.scale.z = 0.78;
-  cylinder(house, [0, -0.61, 0], 5.8, 0.12, "cream").scale.z = 0.78;
-  for (const [x, z, scale] of [[-5, -2.6, 0.7], [4.9, -2.2, 0.55], [4.7, 2.9, 0.35]]) {
+  garden.scale.set(1.3, 1, 1.05);
+  cylinder(house, [0, -0.61, 0], 5.8, 0.12, "cream").scale.set(1.3, 1, 1.05);
+  for (const [x, z, scale] of [[-7, -3.9, 0.7], [6.9, -3.2, 0.55], [7, 4.7, 0.35]]) {
     cylinder(house, [x, 0.05, z], 0.08, 1.1 * scale, "wood");
     sphere(house, [x, 0.6 * scale, z], [0.7 * scale, 0.85 * scale, 0.65 * scale], "green");
   }
 
   // A small cutaway room, built once. State updates only move the character.
-  box(house, [0, -0.13, 0], [9.2, 0.28, 7.2], "paleWood");
-  box(house, [0, -0.32, 0], [9.35, 0.15, 7.35], "cream");
-  for (let x = -4.2; x < 4.5; x += 0.58)
-    box(house, [x, 0.015, 0], [0.015, 0.012, 7], 0xd2b493);
-  box(house, [0, 2.1, -3.5], [9.2, 4.3, 0.16], "wall");
-  const leftWall = box(house, [-4.5, 2.1, 0], [0.16, 4.3, 7.1], "wall");
+  box(house, [0, -0.13, 0], [ROOM.width, 0.28, ROOM.depth], "paleWood");
+  box(house, [0, -0.32, 0], [ROOM.width + 0.15, 0.15, ROOM.depth + 0.15], "cream");
+  for (let x = -6; x < 6.3; x += 0.58)
+    box(house, [x, 0.015, 0], [0.015, 0.012, ROOM.depth - 0.2], 0xd2b493);
+  box(house, [0, 2.1, -5], [ROOM.width, 4.3, 0.16], "wall");
+  const leftWall = box(house, [-6.3, 2.1, 0], [0.16, 4.3, ROOM.depth], "wall");
   leftWall.material = material("wall").clone();
   leftWall.material.transparent = true;
-  box(house, [0, 0.15, -3.37], [9, 0.16, 0.09], "white");
-  box(house, [-4.37, 0.15, 0], [0.09, 0.16, 7], "white");
+  box(house, [0, 0.15, -4.87], [ROOM.width - 0.2, 0.16, 0.09], "white");
+  box(house, [-6.17, 0.15, 0], [0.09, 0.16, ROOM.depth - 0.2], "white");
   const rug = cylinder(house, [0.2, 0.045, 0.9], 1.8, 0.04, "sage");
   rug.scale.z = 0.74;
   const rugInset = cylinder(house, [0.2, 0.071, 0.9], 1.64, 0.01, 0xc9d1be);
   rugInset.scale.z = 0.74;
 
+  zone("window");
+  currentZone.scale.set(1.25, 1.08, 1);
+  currentZone.position.x -= 0.3;
+  currentZone.position.y -= 0.212;
   // Window, ledge and a distant landscape are meshes, not externally loaded images.
   box(house, [1.2, 2.65, -3.36], [2.8, 1.8, 0.12], "white", "life");
   const windowSky = box(house, [1.2, 2.65, -3.27], [2.5, 1.53, 0.06], 0xd0e0dc, "life");
   windowSky.material = windowSky.material.clone();
-  for (const [x, y, width, height] of [
-    [0.4, 2.15, 1.1, 0.42],
-    [1.4, 2.08, 1.6, 0.58],
-    [2.2, 2.15, 0.5, 0.4],
-  ]) {
-    sphere(house, [x, y, -3.2], [width, height, 0.02], 0xb0c3b5);
-  }
+  const gardenTexture = new T.TextureLoader().load(gardenUrl, () => {
+    if (disposed) { gardenTexture.dispose(); return; }
+    needsRender = true;
+  }, undefined, () => {
+    if (disposed) return;
+    windowLandscape.visible = false;
+    needsRender = true;
+  });
+  gardenTexture.colorSpace = T.SRGBColorSpace;
+  const windowLandscape = new T.Mesh(new T.PlaneGeometry(2.5, 1.53), new T.MeshBasicMaterial({ map: gardenTexture, color: 0xffffff }));
+  windowLandscape.position.set(1.2, 2.65, -3.19);
+  currentZone.add(windowLandscape);
   box(house, [1.2, 2.65, -3.12], [0.065, 1.59, 0.075], "white");
   box(house, [1.2, 2.65, -3.12], [2.55, 0.065, 0.075], "white");
   box(house, [1.2, 1.77, -3.13], [3, 0.13, 0.4], "paleWood");
@@ -140,13 +157,16 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
   const sunOrMoon = sphere(house, [1.91, 3.09, -3.18], [0.18, 0.18, 0.025], 0xffe6af);
   sunOrMoon.material = sunOrMoon.material.clone();
 
+  zone("entry");
   // An entry, slippers and a whale wall print make this a lived-in home.
   box(house, [3.72, 1.38, -3.32], [1.08, 2.75, 0.1], "paleWood", "life");
   box(house, [3.72, 1.48, -3.24], [0.83, 2.28, 0.04], "cream", "life");
   sphere(house, [3.4, 1.3, -3.17], [0.05, 0.05, 0.05], "wood");
   box(house, [3.7, 0.045, -2.65], [1.3, 0.04, 0.65], "pink");
   for (const x of [3.48, 3.86]) sphere(house, [x, 0.1, -2.6], [0.12, 0.065, 0.24], "cream");
+  zone("window");
   box(house, [-1.35, 2.85, -3.31], [0.95, 0.77, 0.08], "paleWood");
+  zone("window");
   box(house, [-1.35, 2.85, -3.25], [0.81, 0.63, 0.035], "cream");
   sphere(house, [-1.4, 2.84, -3.21], [0.24, 0.13, 0.02], "blue");
   sphere(house, [-1.14, 2.89, -3.21], [0.1, 0.07, 0.02], "blue").rotation.z = 0.6;
@@ -156,11 +176,12 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
   cylinder(house, [-1.65, 1.12, -1.8], 0.035, 2.1, "wood");
   const shade = new T.Mesh(new T.CylinderGeometry(0.25, 0.43, 0.45, 20), material("cream").clone());
   shade.position.set(-1.65, 2.1, -1.8);
-  house.add(shade);
+  currentZone.add(shade);
   const lamp = new T.PointLight(0xffd49c, 0, 7, 1.4);
   lamp.position.set(-1.65, 1.9, -1.8);
-  house.add(lamp);
+  currentZone.add(lamp);
 
+  zone("desk");
   // Desk and chair.
   box(house, [2.35, 1.12, -1.95], [2.8, 0.15, 1.15], "paleWood", "reading");
   for (const x of [1.15, 3.55])
@@ -182,6 +203,7 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
   box(house, [2.25, 1.28, -1.8], [0.018, 0.018, 0.47], "wood");
   cylinder(house, [3.22, 1.32, -2], 0.12, 0.27, "white");
 
+  zone("sofa");
   // Sofa, cushions and a folded throw.
   box(house, [-2.8, 0.55, 0.05], [1.6, 0.6, 2.7], "green", "energy");
   box(house, [-3.4, 1.03, 0.05], [0.35, 1.25, 2.72], "green", "energy");
@@ -193,6 +215,7 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
   cushion.rotation.z = -0.22;
   box(house, [-2.62, 1.02, 0.86], [1.18, 0.06, 0.6], "pink");
 
+  zone("shelf");
   // Bookshelf, planter and diary, each with a clear detail destination.
   box(house, [-2.8, 1.35, -2.9], [2.25, 2.7, 0.55], "wood", "reading");
   box(house, [-2.8, 1.38, -2.57], [2.03, 2.4, 0.04], "cream");
@@ -210,9 +233,10 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
       );
       volume.rotation.z = i === 5 ? -0.17 : 0;
     }
+  zone("plant");
   const plant = new T.Group();
   plant.position.set(3.95, 0, -0.75);
-  house.add(plant);
+  currentZone.add(plant);
   cylinder(plant, [0, 0.29, 0], 0.3, 0.56, "cream");
   cylinder(plant, [0, 0.58, 0], 0.26, 0.04, "wood");
   for (let i = 0; i < 6; i++) {
@@ -225,6 +249,7 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
     );
     leaf.rotation.z = Math.cos(a) * -0.5;
   }
+  zone("table");
   const table = cylinder(house, [-0.45, 0.61, 2.45], 0.67, 0.1, "paleWood");
   cylinder(house, [-0.45, 0.3, 2.45], 0.08, 0.6, "wood");
   box(house, [-0.45, 0.7, 2.45], [0.58, 0.07, 0.42], "pink", "memory");
@@ -234,10 +259,11 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
   objects.push(bowl);
   table.receiveShadow = true;
 
+  zone("hammock");
   // A sagging fabric hammock. Phone time and sleep share this resting place.
   const hammock = new T.Group();
   hammock.position.set(2.65, 0, 1.05);
-  house.add(hammock);
+  currentZone.add(hammock);
   for (const z of [-1.85, 1.85]) {
     cylinder(hammock, [0, 1.05, z], 0.065, 2.1, "wood");
     box(hammock, [0, 0.1, z], [1.5, 0.16, 0.36], "paleWood");
@@ -267,20 +293,13 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
     }
   }
   sphere(hammock, [0, 1.23, -0.95], [0.58, 0.13, 0.29], "pink");
-  // A visible phone holder works with an unrigged character without inventing arm motion.
-  const hammockPhone = new T.Group();
-  hammock.add(hammockPhone);
-  cylinder(hammockPhone, [0.82, 1.1, -0.55], 0.023, 1.5, "dark");
-  box(hammockPhone, [0.42, 1.84, -0.55], [0.8, 0.035, 0.035], "dark");
-  box(hammockPhone, [0.02, 1.83, -0.55], [0.3, 0.035, 0.5], "dark");
-  box(hammockPhone, [0.02, 1.807, -0.55], [0.25, 0.012, 0.43], "blue");
-  hammockPhone.visible = false;
+  zone("window");
   const clock = cylinder(house, [-0.55, 3.2, -3.31], 0.32, 0.1, "white");
   clock.rotation.x = Math.PI / 2;
   const hourHand = new T.Group(), minuteHand = new T.Group();
   hourHand.position.set(-0.55, 3.2, -3.21);
   minuteHand.position.copy(hourHand.position);
-  house.add(hourHand, minuteHand);
+  currentZone.add(hourHand, minuteHand);
   box(hourHand, [0, 0.075, 0], [0.026, 0.15, 0.025], "dark");
   box(minuteHand, [0, 0.11, 0.012], [0.018, 0.22, 0.025], "dark");
 
@@ -290,15 +309,16 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
     activeAction,
     presentation,
     heldBook,
-    heldPhone;
+    heldPhone,
+    avatar;
   let azimuth = 0.42,
     elevation = 0.56,
-    distance = 16.7,
+    distance = 21.2,
     studioDistance = 6.5,
     studio = false;
   const characterStage = new T.Group();
   scene.add(characterStage);
-  const targetPosition = new T.Vector3(0.15, 0.13, 0.6);
+  const targetPosition = new T.Vector3(...POSES.idle.slice(0, 3));
   let targetYaw = 0;
   const raycaster = new T.Raycaster();
   const cursor = new T.Vector2();
@@ -403,7 +423,8 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
     }
     if (heldBook)
       heldBook.visible = Boolean(character.getObjectByName("LeftArm")) && ["reading", "writing"].includes(presentation.action);
-    if (heldPhone) heldPhone.visible = Boolean(character.getObjectByName("RightArm")) && presentation.action === "phone";
+    if (heldPhone) heldPhone.visible = (Boolean(avatar) || Boolean(character.getObjectByName("RightArm"))) && presentation.action === "phone";
+    avatar?.update(dt, elapsed, reducedMotion.matches);
     if (activeAction !== "walking") {
       if (left)
         left.rotation.x = ["reading", "writing"].includes(presentation.action)
@@ -444,7 +465,7 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
   function setState(value) {
     needsRender = true;
     presentation = value;
-    hammockPhone.visible = value.action === "phone";
+
     characterStage.visible = studio || value.presence === "home";
     const night = value.period === "night", dusk = value.period === "dusk";
     ambient.intensity = night ? 1.15 : 1.8;
@@ -454,32 +475,37 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
     shade.material.emissive.setHex(night || dusk ? 0x674326 : 0x000000);
     windowSky.material.color.setHex(night ? 0x526b8f : dusk ? 0xecc7aa : 0xd0e0dc);
     sunOrMoon.material.color.setHex(night ? 0xfff5d6 : 0xffe6af);
+    windowLandscape.material.color.setHex(night ? 0x52678e : dusk ? 0xe6b799 : 0xffffff);
     hourHand.rotation.z = -value.hour * Math.PI / 6;
     minuteHand.rotation.z = -(value.minute || 0) * Math.PI / 30;
-    const poses = {
-      reading: [1.3, 0.13, -0.4, 0.35],
-      writing: [1.3, 0.13, -0.4, 0.35],
-      phone: [2.65, 1.15, 2.4, 0],
-      resting: [-1.5, 0.13, 0.35, 0.35],
-      sleeping: [2.65, 1.15, 2.4, 0],
-      eating: [-0.4, 0.13, 1.1, 0.2],
-      tending: [2.8, 0.13, 2, 1.1],
-      cleaning: [0.2, 0.13, 0.2, -0.3],
-    };
-    const pose = poses[value.action] || [0.15, 0.13, 0.6, 0];
+    const pose = POSES[value.action] || POSES.idle;
     targetPosition.set(...pose.slice(0, 3));
     targetYaw = pose[3];
+    if (!studio) {
+      characterStage.position.copy(targetPosition);
+      characterStage.rotation.set(["sleeping", "phone"].includes(value.action) ? -Math.PI / 2 : 0, targetYaw, 0);
+    }
+    avatar?.setState(value, pose, OBSTACLES);
   }
 
   const load = characterUrl
     ? new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(characterUrl)
     : Promise.reject(new Error("character_unconfigured"));
   load
-    .then((gltf) => {
+    .then(async (gltf) => {
       if (disposed) return;
       character = gltf.scene;
       const bounds = new T.Box3().setFromObject(character);
-      character.scale.setScalar(2.7 / (bounds.max.y - bounds.min.y));
+      const atlasIndex = character.userData.companionRig?.face?.atlas_texture;
+      let expressionTexture = null, atlasFailed = false;
+      if (Number.isInteger(atlasIndex)) {
+        try { expressionTexture = await gltf.parser.getDependency('texture', atlasIndex); }
+        catch { atlasFailed = true; }
+      }
+      if (disposed) { expressionTexture?.dispose(); return; }
+      avatar = prepareAvatar(character, { expressionAtlasUrl, expressionTexture,
+        onInvalidate: () => { needsRender = true; } });
+      if (!avatar) character.scale.setScalar(2.7 / (bounds.max.y - bounds.min.y));
       character.traverse((node) => {
         if (node.isMesh) {
           node.castShadow = true;
@@ -502,8 +528,10 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
       heldBook.visible = false;
       heldPhone = new T.Group();
       characterStage.add(heldPhone);
-      box(heldPhone, [0.18, -0.55, 0.15], [0.23, 0.36, 0.04], "dark");
-      box(heldPhone, [0.18, -0.55, 0.178], [0.18, 0.29, 0.012], "blue");
+      heldPhone.position.set(-0.04, 1.2, 0.72);
+      box(heldPhone, [0, 0, 0], [0.44, 0.62, 0.065], "dark");
+      box(heldPhone, [0, 0, -0.038], [0.37, 0.52, 0.015], "blue");
+      sphere(heldPhone, [0.12, 0.22, 0.041], [0.035, 0.035, 0.012], "dark");
       heldPhone.visible = false;
       if (!studio) characterStage.position.copy(targetPosition);
       characterStage.visible = studio || presentation?.presence === "home";
@@ -513,8 +541,9 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
       );
       actions.idle?.play();
       activeAction = "idle";
+      if (presentation) setState(presentation);
       needsRender = true;
-      onStatus?.("ready");
+      onStatus?.(atlasFailed ? "表情暂未载入，显示原表情" : "ready");
     })
     .catch(() => onStatus?.("角色资源暂未载入"));
 
@@ -606,7 +635,7 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
       characterStage.visible = presentation?.presence === "home";
       azimuth = 0.42;
       elevation = 0.56;
-      distance = 16.7;
+      distance = 21.2;
     },
     rotate(delta) {
       azimuth = studio
@@ -636,6 +665,8 @@ export function createRoom(element, { onSelect, onStatus, characterUrl }) {
             mat.dispose();
         }
       });
+      avatar?.dispose();
+      gardenTexture.dispose();
       renderer.dispose();
       renderer.domElement.remove();
     },
