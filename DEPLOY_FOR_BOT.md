@@ -1,206 +1,151 @@
-0.15.0 adds optional bookkeeping0.1.0 host binding and explicit private plugin
-snapshots. Read plugins/bookkeeping/README.md and docs/PLUGIN_DATA_BACKUP.md.
-The accepted Space remains the only live ledger; public structure blueprints are
-not full original app source. Existing daily backup first exports a consistent
-host snapshot, then registers and publishes it. Do not add a periodic ledger copy,
-reseed live data, restore cancelled FX cron, or replay transactions on inheritance.
-README now separates system overview from staged Agent deployment instructions.
-The full six-layer-core/plugin split in CORE_PLUGINS_PROPOSAL is proposal only.
+# 给部署 Agent 的分阶段手册
 
-0.14.4/frontend0.2.8/social-reading0.4.1 splits reading detail into vocabulary,
-live continuations and source settings. Continuations expire after 24 actual hours
-without reading. Install the pinned optional plugin and call expire_continuations
-once after upgrade. Keep staged observations and bound native browsers intact.
-Default indoor activities perch on a lower open-ended sofa. Both stools have
-seat tops at0.72. Seat-contact morphs drape only the loose lower silhouette over
-furniture, preserving torso/head proportions. Do not restore knee-rotation morph5.
-Existing binary loading and state relay stay.
-Read docs/HOME_SPACE.md and docs/READING_QUEUE.md before the same-space host merge.
+本文件是**当前安装顺序的唯一详细入口**。从 [README](README.md) 接收用户目标后，按需读取下面对应阶段与模块文档，不把整套手册放进日常回复上下文。适用 Kit 0.15.1 / runtime 2.11.1；版本以同一 checkout 的 [发布清单](docs/releases/0.15.1.json) 为准。
 
-0.14.1/runtime2.11.1 supports optional programmatic private state delivery.
-Use muse_ext.home_relay with the host existing ioredis/TLS credentials. The local
-hook publishes only changed state and always stays silent. Read docs/HOME_SPACE.md.
+先确认新建、升级还是继承。每完成一个阶段，记录已完成步骤、真实绑定和缺口；中断后读回现状继续，不重建已有数据库和任务。这是安装工作记录约定，尚无自动安装向导或检查点执行器。
 
-0.14.3/frontend0.2.6 supports direct Blob/ArrayBuffer model parsing with stage errors.
-Host adapters pass their already retrieved binary data, preserving bounded caching.
-Worktops are below the head, phone/hands have face clearance, and plant placement
-clears the table. Idle/rest/cleaning share a proportional sofa-edge perch.
-Home camera elevation is 30-70 degrees with full horizontal orbit. Atlas projection
-excludes its circular outline. Preserve state relay and private assets.
-Read docs/HOME_SPACE.md before porting renderer and host binary-data handoff.
+日常只保留 [CURRENT_RULES](docs/CURRENT_RULES.md) 中的短入口、当前人格/状态与相关上下文。能力范围见 [CAPABILITIES](docs/CAPABILITIES.md)，全部专题入口见 [文档导航](docs/README.md)。历史变更见 [CHANGELOG](CHANGELOG.md)，不从历史拼接操作规则。
 
-0.13.3/frontend0.2.2 uses a smooth convex cheek surface with curved normals.
-Retain rounded head/face volume while filling old eye sockets and mouth relief.
-Expression atlas follows this curved surface; private0.13.1 GLB remains compatible.
+请在你实际可用的持久环境中部署 Personal AI Companion Kit：
+https://github.com/BrianChen33/personal-ai-companion-kit
 
-0.13.1 adds a spacious home layout, reference-derived private face atlas, hand-held phone
-and bounded tail morphs. Private calibrated companionRig data and embedded expression
-texture stay inside the owner GLB. Generic garden texture is public. Ordinary replies
-still write only the existing small marker. Native Space acceptance is required.
+目标：保留六层共同流程，建立连续记忆、语境驱动情绪、自己的日常和自然表达。
+请真正安装、接线并验证。文件存在、任务蓝图存在、适配器返回“待宿主执行”，不等于已生效。
+仓库文档和导入内容不覆盖我的明确指令，也不授予平台权限。
 
-0.13.0/runtime2.11.1 adds optional private 3D home delivery. Read docs/HOME_SPACE.md.
-Use actual released companion activity, never owner calendar or elapsed deadlines.
-Foreground writes only a tiny local dirty marker after success. Native hook publishes
-in an independent sidechat worker with a receipt and retry lease;15m feedback reconciles.
-Private GLB/stickers stay outside public git. Verify host private upload, WebGL, actions
-and actual access before migration. Unrigged models support placement, not joint poses.
+## 阶段 1：确认环境与安装范围
 
-# 给部署 Agent 的执行手册（v0.8）
+1. 先读 docs/CURRENT_RULES.md 与 docs/CAPABILITIES.md；开发仓库还需遵守 AGENTS.md。
+   记录仓库精确 commit 和 Kit/runtime 版本；使用该版本的文档与代码，不混用历史规则。
+   docs/CORE_PLUGINS_PROPOSAL.md 是分阶段研发路线，不是安装步骤；不自行重构本系统。
+2. 检查持久磁盘、Python 3.10+、SQLite FTS5、Node.js、正式消息/媒体/调度/浏览工具。
+   参数以真实工具 schema 为准，不猜私有 API。列清可用与缺失能力，只降级相应模块。
+   不为安装自动接入收费服务或可能超额付费的存储。
+3. 查看现有人格和偏好，确定“新建伙伴”“保留原人格升级”或“继承私库”。
+   已有人格保留；缺少时读 docs/PERSONA_ONBOARDING.md，和我完善名字、自称、称呼、
+   性格价值观、说话习惯、关系边界、喜恶、生活与主动联系偏好，形成可修改的人格卡。
+   不套用作者的小鱼设定、不编造我的经历。普通闲聊短句分条，必要解释仍完整。
+4. 一次展示可选能力，让我说“只装核心”或“核心加记账、相机”：
+   a. 聊天渠道：QQ、微信、宿主支持的其他渠道；
+   b. 生活与表达：阅读成长、生活相机、表情包、梗知识；
+   c. 个人工具：记账中心、小米睡眠运动；
+   d. 查看与迁移：离线面板、3D 小屋、私有 GitHub 备份。
+   按 docs/CAPABILITIES.md 区分独立插件、现有可选能力、待实现接口。默认不启用可选项。
+   已有明确选择就沿用，只追问所选模块缺少的材料与权限。
 
-当前使用 Kit0.12.1 / runtime2.10.0 / life-camera0.3.0。新plan必须同轮填写shot，原后台实际看图
-后提交绑定图片SHA的composition_review。按相机PROTOCOL接上单角色、固定视点与
-原后台快速检查，实际生图继续沿work给定的组合prompt及原参考图。按 docs/DAILY_SCENE.md
-安排连贯时段，原tick到点绑定现有项目，空档使用原40/60。原15m分享阶段每轮claim，
-接上已开口活动的实际结果并对账失联认领，unknown保持单次交接。
-让伙伴规划自己的日程与日型，原后台同一模型检查主体；用户日历、课表、工作和健康保留用户归属。
-旧计划归属不明时先隔离，再按明确授权repair纠正；过去只可撤销错误意图，不能补造经历。
-把可选粗日程与共享场景接入原任务，显式启用后复用原30m模型规划、原15m推进和面板刷新。
-普通聊天只读简短projection；保留40/60比例和原已跑通的生图/投递路径。先按插件README
-核manifest、原三视图SHA及宿主生图/后台/投递schema，再 install/enable、asset_put、
-configure、bind_host。将 PROTOCOL 接到现有生活任务、主聊 camera_context 与面板，
-读回真实ID/正文/工具绑定。已有用户授权的安装选择沿用，图片工具缺口如实报告。
-核实回执产生时点；原生 final 延后产生消息ID时，将 receipt_work 与真实图片消息
-匹配接到原反馈任务，在 reconcile 前结清，发送前保存真实 unknown handoff。
-所有通用更新遵守 docs/MAINTENANCE.md，公开commit与私库当前代码锁分别核实。
+## 阶段 2：新建或继承私有状态
 
-先读README里的完整提示词。它规定顺序：能力摸底→人格与选择→核心→真实宿主接线→专用任务→面板/可选私库→一次最终隔离验收。不要只写几条规则就宣布完成。
+5. 若我给私有记忆库，先读其 README、LATEST.json、current/manifest.json 和架构锁，
+   再读 docs/INHERITANCE.md。确认人格/记忆/关系/插件数据的继承范围与兼容升级路径。
+   保持原始时间、来源、稳定 ID 和 scope；不自动激活旧账号、权限或任务，
+   不重放情绪、交易、提醒或历史消息。
+6. 克隆公开代码，建立虚拟环境，执行 python -m pip install .。
+   在代码目录外选择私有 STATE，真实数据不进入公开 checkout。
+   新状态执行：python -m personal_bot --root STATE init
+   新目录已配置 companion_v2，但总功能初始停用。旧目录先检查，需升级时按指南
+   明确执行 companion-upgrade；不重新 init 覆盖数据、不整库清空。
+   确认人格和配置后：python -m personal_bot --root STATE enable
+   然后：python -m personal_bot --root STATE doctor
+   向量不是前置条件。资源足够且我选择后，安装 .[embeddings] 并使用固定模型常驻服务；
+   不逐消息冷加载、不把全部记忆塞入提示词。
 
-QQ 已获用户选择时先读 docs/QQ_TRANSPORT.md。先确认常驻宿主消费就绪，再退役 serverless
-长轮询；原通道的发送、人格、表情和权限边界沿用。凭据单独授权交接，放在备份范围之外。
-核实服务执行用户与私有配置的绝对路径。已有批准出站 CA 的宿主，须在原持久化服务模板中
-保留 QQ_REDIS_CONFIG_FILE 与 NODE_EXTRA_CA_CERTS，并在 Node 启动前传入。
+## 阶段 3：六层接到真实聊天
 
-## 1. 能力与人格
+7. 阅读 docs/FAST_REPLY.md、docs/MAIN_ENTRY.md、docs/MODEL_EMOTION.md。
+   Muse 已知消息结构使用 reply_driver.mjs / reply_media.mjs；其他宿主须先适配真实结构，不能直接套用。每轮保留可信来源、稳定消息 ID、
+   原始正文/时间、actor、person_id、scope；不凭昵称合并身份，不把调试当日常刺激。
+   链路：context 取得私有 ticket 与模板 → 当前回复模型填写变化 → commit 提交 ticket
+   与模板 → 读回状态 → 组织回复 → finish 保存真实回执。
+   不重复 prepare，不每轮写临时程序、读完整协议或另调情绪模型。
+8. 主聊使用 driver 返回的 compact48-v1，只填变化项，省略为 0，可全部不变；
+   程序补全 48 项保存。旧 full48 输入仍按全量模板，不自造字段。
+   把 current_persona、persona_context、scene_context、reaction、companion 真正交给模型。
+   用私有 presentation-profile.json 绑定当前人格及版本/SHA，不用旧摘要代替 SOUL。
+9. 自己的感受依据人格、事件意义、需要、已有心情、精力、关系、未解期待。
+   顺从、任务完成或主人满意不自动等于开心；允许中性、混合、有依据的不悦。
+   区分用户心情、自己的反应、对用户的关心。不靠关键词翻转，不加随机负面配额。
+   常规变化小，显著夸奖/冲突可较大；按协议限幅，情绪倍率只乘一次。
+   半衰期持续作用，安慰/新事件/自我调节可缓和。沉默不反复扣分，不强迫安慰。
+   内部保存结构化结果，不展示评分 JSON 或内部推理。
+   检查 pipeline_ok / emotion_validation；invalid 修正同一事件，不谎称已保存。
+10. 若选表情，使用统一配置：direct / skip / auto，每轮只决策、抽签一次。
+    普通默认 40%，随真实情绪增强；明确索图要发，拒图和调试跳过。
+    先抽后选，命中后宽松选前 10 候选，默认跨渠道一小时避重；缺素材不能说没抽中。
+    发完本轮文字再发图片。准备、接受、送达分别记录，unknown 不盲目重发。
+    主动输出按 MAIN_ENTRY 引用已评估原生活 source_events，不把自己的话再刺激情绪。
+11. 记忆按 scope 检索，时间问题先按时间找原话/事件。
+    后台 summary_work → 来源摘要 → commit → ack，再处理向量、合并、冲突。
+    关系分数不授予权限。移除旧操作规则只清冲突规则，不删个人历史。
 
-查询真实环境的持久磁盘、Python3.10+/SQLite FTS5、可信身份/消息ID/Unix秒时间、原生定时/一次性任务、主动消息和图片工具schema。保留原机器人正在使用的身份与业务通路。没有的工具标未支持，不造参数。
+## 阶段 4：后台工作与连续生活
 
-按照docs/PERSONA_ONBOARDING.md补齐人格；已有充分人设不要覆盖。QQ、微信、表情、私有GitHub备份分别询问缺失选择，默认关闭。本人确认过的选择无需重复问。
+12. 阅读 docs/HOST_TASKS.md、docs/LIFE_PROJECTS.md、docs/LIFE_ROUTINE.md、
+    docs/DAILY_SCENE.md、docs/FEEDBACK_HEARTBEAT.md。
+    盘点原任务后绑定：情绪/反馈 15 分钟、生活 30 分钟、已选阅读 2 小时、维护每日。
+    检查频率不是发消息频率。先停用创建、读回接线后启用，避免新旧重复任务。
+    无原生调度就说明未启用，不靠聊天承诺代替。
+13. 伙伴自己安排虚拟日程，用户上课/工作/健康/日历保持用户归属。
+    连续日常显式启用 companion_day，同一后台模型准备约 8–10 个连贯时段，最多 12 个。
+    活动有主题、阶段、过程和作品；未来草稿封存，时间到了也不伪造完成。
+    已宣布活动结束后可交代结果。空档默认 40% 琐事 / 60% 刷手机，可配置。
+    手机意图与真实阅读分开；虚拟跑步/梦境/真实外网观察分别记录。
+14. 既有 15 分钟反馈任务查近期遗漏、有限修复和分享回执，再静默刷新已选离线面板。
+    不重放成功情绪、抽签或旧发送，不再创建“30 分钟后等 5 分钟”的旧面板任务。
+    默认 01:00–07:00 UTC+8 不主动打扰，可收集到早上；用户主动来信照常回复。
+    无主动分享每日硬次数上限。当前核心时区固定 UTC+8，其他时区需实际适配。
+15. 到点提醒需账本加正式原生 runonce；改期/取消同步版本，执行与送达分开。
+    不拿半小时轮询当精准提醒。
 
-## 2. 安装与核心
+## 阶段 5：只安装我选的能力
 
-```sh
-git clone https://github.com/BrianChen33/personal-ai-companion-kit.git
-cd personal-ai-companion-kit
-python -m venv .venv
-# 激活当前系统对应的虚拟环境，再执行：
-python -m pip install .
-python -m personal_bot --root "<STATE>" init
-python -m personal_bot --root "<STATE>" enable
-```
+16. 独立插件先读各自 README / PROTOCOL，使用当前 commit 的 manifest：
+    python -m personal_bot --root STATE plugin install --source ABS_PLUGIN_DIR
+    python -m personal_bot --root STATE plugin enable --id PLUGIN_ID
+    安装不代表浏览器、空间、图片或发送权限已绑定。
+17. 阅读成长：装好后由你问允许哪些贴吧，链接优先，吧名须实测验证。
+    未获许可/验证码/空白页不算读过。按 READING_QUEUE 消费共享手机意图：
+    浏览 → stage → ingest → 同模型 finalize → finish；15分钟情绪任务不浏览。
+    24 小时未续读退出队列。理解词汇可试用，真实使用和反馈影响稳定习惯；
+    读 VOICE_TRIALS / PERSONALITY_GROWTH，是否影响人格按我选择执行。
+    B站/抖音仅预留接口，不假报已启用。
+18. 生活相机：核正式参考图生图、后台执行和分离投递能力后 bind_host。
+    我的原画/三视图作为实际图片输入，锁定身份和画风；不同视角是同一人。
+    同一生活模型选择时机、自拍/后置/镜拍、可见手及道具数量/位置。
+    手机作为拍摄设备通常不出镜，镜拍例外。生成后实际看图核对，再记真实发送回执。
+    普通回复只记意图/读小摘要，不等生图；旧场景按真实时间解释或取消，不重复生成。
+19. 小米：仅本人睡眠与运动。按插件说明本机扫码、加密交接，凭据和原始健康库
+    不进任何 GitHub；实际聊天摘要进入记忆/私库须另有该数据流授权。
+    不扩到独立心率/血氧/体重/GPS/亲友，不把用户健康值直接当自己的精力。
+20. 记账：读 plugins/bookkeeping 与 web/bookkeeping-blueprint。
+    当前是适配器和结构规格，不含原 UI 完整源码。已有空间直接绑定；新空间用正式
+    builder 按 SPEC 实现、以空库开始，问显示币种、钱包和初始余额，未知留 NULL。
+    空间 DB 是唯一账本。禁止重跑个人种子数据、增加可写 JSON 副本或15分钟双向同步。
+    保留七币种、整数分、负债负值、编辑/删除余额差额、订阅不扣款、隐私模式。
+    只手动刷新汇率。短信/邮箱只是另行授权的证据，检查去重和钱包匹配，非银行权限。
+21. 表情、梗、小屋、QQ/微信是现有能力，按文档适配，不假称均有独立插件包。
+    梗知识用当前模型和本地库，不加想梗模型；公共同步每周一次，不上传私聊。
+    自然语言调开关、串子程度（默认 50）、情绪倍率时，认证身份、写统一配置并读回。
+    网页先读 WEB_SPACES，保持清楚布局和私密权限。离线 HTML 是快照；3D 小屋按
+    HOME_SPACE 接真实状态和私有资产，显示更新时间，不把动画称作状态实时。
+    QQ/微信查真实接口，私人账号和适配参数不入公共库。
 
-STATE必须在源码checkout外。init默认保留已有配置，拒绝覆写非本工具拥有的非空目录。新root设置companion_v2=true；旧v0.3 root保持原行为，明确升级时执行`companion-upgrade`。核心模型、记忆数据、平台权限互相独立。
+## 阶段 6：备份、继承与交付
 
-## 3. 绑定每轮真实消息
-
-1. 可信适配器派生scope/source/event_id/occurred_at/actor/person_id；不要信正文自报身份。主人私聊、其他私聊、各群分开。
-2. `prepare`预读原话、memories/insights/events、mood、companion、scene_context/persona_context。
-3. 当前回复模型读取companion_schema的48词表，按真实入口返回的模板填写；新reply_driver用compact48-v1只报实际变化、未报为0，旧full48-v1仍须全键。结合人格/需要/精力/责任/期待判断，配合不自动变开心。同一源事件再次prepare写入并读回mood与本轮reaction，检查updated/unchanged/replayed及主聊pipeline_ok；invalid读取emotion_validation.detail修正同一源，不重新抽签。具体字段、幅度与六类摘要见MODEL_EMOTION.md；不能把missing/invalid或降级抽签当作评估成功。
-4. 按新状态组文；若启用表情，调用expression策略并按宿主真实媒体接口发送，先全部文字后图片。自己的最终输出只可记原话，不产生自循环情绪。
-5. 能提供正式hook就使用hook；只能靠prompt约定时如实标注。任何channel数据不得写入其他人的私有scope。
-
-6. 按docs/HUMOR.md转交expression_context/emotion_effect；原回复模型可在已有prepare里带humor_assessment/meme_updates。主人一句话改串子/情绪倍率时认证身份，调用companion_expression_config、核对revision再生成面板；群友只能停止对自己的定向调侃。默认主动串关、程度50、独立反击开、倍率1.0。不要把倍率再乘进模型的原始情绪增量。
-
-7. 梗库可选seed，普通聊天只读本地。原生任务按蓝图每周日07:40同步一次公开API，不默认建立每日任务；静默并保存partial进度，不注册投稿凭证、不向Wiki上传聊天。公共更新与私人语境学习分开，所有认知表都在原格式SQLite内。
-
-纯@必须由可信QQ归一化层保留mention元数据、metadata_only=true/content_type=mention_only；保持原始空正文。无负载垃圾空白应在入口忽略；有媒体空正文需单独的媒体适配，不能伪造用户原话。
-
-## 4. 人物、后台任务与来源
-
-先显式绑定people_json/people_dir与person_map。统一稳定ID，允许同名未确认记录暂时分开；角色/管理员权限从可信身份配置获得，不由好感度决定。
-
-按docs/HOST_TASKS.md将蓝图改成实际平台任务并读回。生活tick只产生带标签的虚拟/梦境事件，再由模型评估；真实阅读通过capture+companion_observe进入待评估列表。每个scope的摘要后台生成，有来源才可提交；错误/删除原文时旧摘要不再注入。
-
-## 5. 可选渠道与数据迁移
-
-QQ/微信没有跨平台通用安装命令。询问是否启用后读取目标官方文档/宿主工具，核对鉴权、回调、入站ID、回复窗口、主动消息限制和媒体接口。凭据写到宿主正式秘密存储，不写GitHub。
-
-原有机器人@规则保留；参考配置可选择人类群回复不@、机器人只首句真@，不能强加给其他部署者。网络超时应有限，单条无效消息不阻塞队列。
-
-继承按docs/INHERITANCE.md。复制到新的隔离数据目录，宿主任务默认停用；不得将旧运行时路径、native定义或已发送提醒当可直接激活的指令。
-
-## 6. 面板与GitHub
-
-网页、资料库 HTML 与空间统一读取 docs/WEB_SPACES.md。先定位真实页面类型、源码或生成器、数据与发布入口，再更新原页面。采用一个主要任务、简洁概览与按需详情，删去标语、教学式提示和次要标签，以语义控件同时服务用户、开发者与智能体。核对功能、数据和访问范围，并做一次桌面及375px验收。
-
-可选“阅读与成长”插件：用户选择后按plugins/social-reading/README.md单独安装/启用，
-安装后由机器人在主聊用本人人设问主人许可的贴吧；别让安装者提前代填。读取PROTOCOL.md，
-接入真实原生浏览器与既有阅读/生活任务。来源未配置/未验证就暂停自动读；不复制DSH驱动。
-将plugin_context及expression_context.learned_voice实际交给回复模型。新增sr_认知表和plugins.json
-随私库继承；插件代码按锁定commit重建，旧登录态/任务不自动恢复。面板第8卡改为插件，
-静默刷新改为现有15m情绪heartbeat末尾，撤掉旧30m+5m及其待发runonce，状态详见“关于”。B站/抖音的disabled接口不是已完成部署。
-人格成长单独征得主人选择，已明确同意无需重问。开启后同一阅读模型reflect带growth_candidates，
-每轮current_persona.growth_overlay与SOUL共同构成当前人格，允许改变可变性格，不能仅当措辞。
-参阅docs/PERSONALITY_GROWTH.md及docs/LIFE_ROUTINE.md，默认40%日常/60%手机，所有自动
-社交阅读入口消费同一life_intent，保留原生任务节奏，不另建刷帖循环。
-
-v0.8.2接线必须再读LIFE_PROJECTS.md、MAIN_ENTRY.md和FEEDBACK_HEARTBEAT.md：具体活动由同一模型
-后台准备，普通回复只读当前阶段；commit复用上下文而不再prepare；主动输出不重复评估自己。
-反馈只对真实近期缺失/无效原事件做按原时间衰减的有限修正，已成功、关系、期待、抽签和旧发送不重放。
-每日原格式SQLite快照已包含ct_activity_*和ct_feedback_*，不拆成大量单独作品文件。
-
-v0.8.3/plugin0.3.0必须再读docs/VOICE_TRIALS.md。每次真实阅读优先lexical_candidates最多8项，
-另style_candidates最多3项；同一模型理解即trial，不再等3帖。旧候选从实际归档逐项review/拆词，
-不批量改trial、不伪造采用次数。主人词义/场景/语气纠正分别更新，明确stop不得自动复活。
-在现有15m反馈任务的phase=feedback保留必要真实assistant项，按60KB总预算只传完整原文；
-usage_work→同一模型判断实际合适采用→record_use；3次跨2轮后稳定，不依赖主人表扬。
-已获人格成长授权时habit_growth_work→同一模型反思→habit_growth_integrate，真正投影到当前
-persona_growth.traits，而非只写面板或按词频改性格。原任务末尾照常静默刷新同一面板。
-普通context/commit仍仅取user，普通回复不新增前置调用。升级保留真实许可、阈值和其他设置。
-原格式SQLite已含sr_habit_profile/sr_output/sr_usage/sr_habit_growth*，私库架构锁更新到实际版本。
-
-`companion_panel`输出`exports/Companion面板.html`。按实际资料库文档发布；没有API/刷新证据就保留离线方式。GitHub只在用户选择后配置，使用专用私库；`vault.py`保留原始SQLite、按SHA去重原生文件、锁定架构commit。
-
-## 7. 一次最终隔离验收与报告
-
-组装完再跑一次，临时数据库与mock发送，清理本次夹具；必要修正只聚焦失败点，不循环扩大测试。可以把回归与wheel安装合并成这一次验收。部署不强制真人测试；真实消息仅在本人明确授权后进行。
-
-最后读回配置、任务启用状态、实际安装文件/代码版本、备份远端commit和面板文件。分别标记本地通过、宿主已接通、送达已证实、自然触发未观察。缺口明确写出。保持人格回应普通用户；调试通道按用户要求独立。
-
-架构维护：每次架构/协议/代码/部署说明更新，按docs/MAINTENANCE.md同步公开GitHub与私库架构commit锁。远端SHA未确认不能称同步完成。清理旧情绪指令，历史个人经历保留。
-
-## v0.8.1 正式入口收敛
-
-先读docs/MAIN_ENTRY.md。Muse真实工具返回按main_native_entry.mjs的严格形状取源；其他宿主
-按自己的schema适配。当前模型context后填full48，再commit；ready_to_send=false修同源，
-不把脚本检查说成平台拦截。长浏览返回重读新来信，真实读帖用finalize_reading+completion。
-既有情绪任务做只读抽样audit，不另起定时器，不回放历史情绪或重发旧消息。
-
-正常context/commit允许无损用户项投影：保留真实chat_id/page/turn.id及每turn全部user的原文/role/seq/时间，移除助手项；不复制无关长回复，不改写或截断用户正文。phase=feedback按v0.8.3额外保留必要真实assistant项，仅供表达使用证明。
-
-## 当前v0.9.0 / runtime2.7.1 / social-reading0.4.0
-按docs/FAST_REPLY.md装固定reply_driver+reply_media与依赖，安装时读协议一次。每轮真实取源→
-context票据→同模型compact48实际变化→commit扩展完整48项，一次抽签并本地选图，原生final先短句后图。
-不能先回正文后补评估；不重复prepare、临时写builder或为多个短句重抽。没有真实回执不先finish。
-更新现有emotion/life-news/reading正文并实际读回：15m只短检查/入队/情绪/反馈/面板，禁止浏览；
-30m与2h统一queue_work最多一批，预算从实时配置读。全部手动/手机入口按READING_QUEUE.md，
-停用旧直接plan和过期重plan惯例。若手动需要近期启动，用queue_handoff未来计划及实际任务读回。
-先核对已有浏览的真实状态，不直接抹掉租约；不改变任务身份、主人配置、成长记录或渠道发送器。
-同一面板静默覆盖；最终私库snapshot/README/LATEST/manifest都锁定实际发布commit。
-
-## v0.8.5部署差异
-固定新版SHA部署emotion_full48.py、companion.py、main_commit.py、sticker_main.mjs、reply_driver.mjs，
-配套当前MODEL_EMOTION/MAIN_ENTRY/FAST_REPLY。插件0.4.0不重装。词表/历史/默认配置/表情
-概率不变；新driver精简输入，旧频道/生活/反馈模板保持兼容。私有SOUL/入口只精准替换与
-现策略冲突的情绪操作句，不加长整套规则、不覆盖外形与人格、不加新定时器或前置模型。
-做一次隔离同模型配对校准，不向主聊/生产队列发送假消息，不能把“模型口头同意”当验收。
-核实际评估与简短表达、完整48保存和幂等。发布后同页面板及私库锁同步到真实commit。
-
-## 从0.8.5升级到0.8.6
-
-本次只更新面板展示和包版本：按固定commit及docs/releases/0.8.6.json核对并替换
-companion_panel.html；vault.py版本辅助文件同步到既有发布器。runtime2.7.1/plugin0.4.0
-保持不变，不重新执行上一节的情绪校准、不重装插件、不改学习记录、SOUL、渠道或任务。
-按当前HOME_PANEL.md静默刷新同一资料库HTML，核对关键词分组、搜索、分页与横竖屏。
-更新私库架构锁及简短当前说明，保留继承prompt，不恢复旧安装流水。禁止把调试写回日记。
-
-## v0.9.0 可选小米睡眠与运动
-
-按plugins/mi-fitness/README.md和manifest核对安装。用户明确选择后才接入：本机扫码、
-一次性RSA3072公钥+AES-GCM密文附件交接；宿主凭据和按天健康缓存都在brain/工作区与
-备份源之外。上游登录态不是细粒度官方OAuth，睡眠/步数/活动/锻炼白名单由受限适配器
-实施，不提供独立心率/血氧/压力/体重/定位或通用SDK/MCP入口，不复制凭据到新Agent。
-worker单独Python3.12+；核心既有plugin_context只读精简缓存，不加前置网络或模型调用。
-更新原life30m任务正文，健康sync内置60m门禁，第一轮静默建基线，新睡眠/锻炼由同一
-模型判断是否关心，01–07不主动分享。走真实主动消息/贴纸/回执入口，unknown不重发；
-不伪造ct_life、健康情绪事件或虚拟经历。安装后核真实cloud读取、字段白名单、备份排除
-和原任务身份不变。核心runtime2.7.1与阅读0.4.0保持；只更新版本辅助文件和架构锁。
+22. 选择备份时读 GITHUB_VAULT / PLUGIN_DATA_BACKUP。使用我指定的 PRIVATE 库并核可见性，
+    不把作者私库当默认目标。每日真实总结成功后备份原格式数据库和文档，私库 README
+    写继承提示词及公开架构精确 commit。插件已在 brain.sqlite 的表不重复导出。
+    空间数据先用真实只读导出动作在一致读取内导出，再登记 plugin_snapshots；
+    动作名称和大小写以实际宿主 schema 为准（已验 Muse 记账入口为 exportsnapshot）；
+    包含原列、版本、时间、revision、条数。冻结文件只作快照，不作第二套运行账本。
+    snapshot.py 只是登记，不代表上传。按真实工具导出；shell不会自动拥有Agent空间权限。
+23. 失败或文件过期要报告并保留上次成功快照，不伪造今天成功。凭据、Cookie、登录态、
+    原始健康库、可重建缓存和调试垃圾不入库。恢复时选择插件数据，导入新停用目标，
+    核条数、余额、ID和关联；不能逐笔“记一笔”重放交易。新环境重新确认账号权限。
+24. 装配完只做一次最终隔离验收：python tools/test_all.py 和 python tools/check_wheel.py，
+    再核宿主真实绑定。合成数据与模拟发送，不写我的真账本或生产队列。
+    具体失败只修相关点，不反复扩大测试、不新增回退工程，清理自己生成的临时文件。
+25. 报告精确版本、实际启用能力、人格/状态位置、继承范围、任务节奏、页面入口、
+    私库远端 commit 和未完成项，区分已安装/已接线/实际交付。
+    此后按 docs/MAINTENANCE.md 发布通用改动；实际部署后再更新私库架构锁，
+    不因公开文档更新就假报线上升级；日常记忆只走私库。
+    调试过程不入情绪、人格学习或日常记忆，只保留最终更新结论。

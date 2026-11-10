@@ -1,0 +1,117 @@
+{
+  "release": "0.15.1",
+  "runtime": "2.11.1",
+  "home_frontend": "0.2.8",
+  "life_camera_version": "0.3.0",
+  "social_reading_version": "0.4.1",
+  "mi_fitness_version": "0.1.0",
+  "bookkeeping_version": "0.1.0",
+  "base_architecture": "0f44d1f3f817a38f1b26ed9b4f4170e41c6a3e4e",
+  "scope": "documentation and package metadata only; runtime and plugin implementations unchanged",
+  "deployment": "public release only; no live host upgrade or private vault lock change",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "344a42a1faf7cd100f8f70e20676dff2fb7b087575eee6897a3607de1f61afde"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "c5a693815d6cbb31594fb62b98739a3e6b2315a1ea8f4324a1b81f6a989df8e7"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "9de57a30cdc4b52ddb0d04da1a3bbe34d7772d47b79008d2dd7ceea9a2f10f2b"
+    },
+    {
+      "path": "README.md",
+      "sha256": "3710bb32223fc255f0451f60b3974ac0ba79f46696a7e17c3831bdd6bd2220bd"
+    },
+    {
+      "path": "docs/API.md",
+      "sha256": "35c8c9cdced37da664fdf8d92b93d6f0d49bd3ef26014444fa52f68e1ecd05aa"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "c32a3af459773f03bf8d9edd8276bc194d1d7314807ebcc5d49c401af7458b20"
+    },
+    {
+      "path": "docs/CAPABILITIES.md",
+      "sha256": "377f84b50f366c510e07bd8da73b3ca465a473a3164146d133e7f30cedc68887"
+    },
+    {
+      "path": "docs/CORE_PLUGINS_PROPOSAL.md",
+      "sha256": "08ab07e342ff91959572a631518df08fd90b83158121c59133a057b972acaa3c"
+    },
+    {
+      "path": "docs/CURRENT_RULES.md",
+      "sha256": "01f44bc758ecd7c8eadc2e83adf86169be00abed47b915385e6ce04283bf4160"
+    },
+    {
+      "path": "docs/DEPLOY_MUSE_DOT.md",
+      "sha256": "198d3ea39018db6517f688b24f3101ce450d986a7250609cbb0191b0336c2992"
+    },
+    {
+      "path": "docs/FAST_REPLY.md",
+      "sha256": "f1bcd7a0fb130b58444b573719ce7df91100f2a93b0a32c9d4c4ee2ff274316e"
+    },
+    {
+      "path": "docs/HOST_TASKS.md",
+      "sha256": "6d449c3016eafd8ad46edc6186ec72c5cd5df29190797750fa064e7a0489d759"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "0268ffbc6c8f8151af2eb707e9f6e3ef967740c3ac701debf88861770fd76b5b"
+    },
+    {
+      "path": "docs/MAINTENANCE.md",
+      "sha256": "ea8f10410d0b311c4b7fc1f11cac954e8c821b40211d985ea15113359d40e503"
+    },
+    {
+      "path": "docs/MAIN_ENTRY.md",
+      "sha256": "dd66ce4ec7e50ddef735718d18412ab8f668ad8a8252ea5f2b5df33b9fd07786"
+    },
+    {
+      "path": "docs/MODEL_EMOTION.md",
+      "sha256": "75ae89a154f281745252dadcc7c1ce1cf40f2cbda8a7265b8b6f509bbe8ed4ea"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "845b968d5003b9717c9c2c4588a5a60e1f551d2d58e2616fccb1089b818cf756"
+    },
+    {
+      "path": "docs/SYSTEM_REPLICATION.md",
+      "sha256": "8de5e261c0c4bc1fcbba3b36e6cf42187b9d362c81cef6461451ac8b5e59af8d"
+    },
+    {
+      "path": "docs/legacy/README.md",
+      "sha256": "7a6553c8d6b2e4b0b156f2e42622eadad54984e1e531e65ab32b530fa8d1beb0"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-11-open-source-stage1.md",
+      "sha256": "34215a4adf8dcb3c3a89ac477347ff6bdc73492a400cce15d8b408506e0cd6cd"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "69c432d4bbfa3a3b40bb0a91f2c0f6ded2a880aae7b412f80572a7c2d64ac9b6"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "bf6403f0d45d783370cff8492de6a6e7aad2327a9011d1bbfc26e9fff83ff88b"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "4a7c8aea7bdeb5976c02186c393d723ae85d0bcb1e78c4101f853357bb5f76f3"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "836fe5de28491b3894d842be380c63b5edafc7bed9c88b48881fce6a66b10039"
+    }
+  ],
+  "validation": {
+    "documentation": "local link, phase, step and version checks passed; independent review found no blocking issues",
+    "acceptance": "331-case initial pass: one version literal mismatch, corrected and its existing case passed; one pre-existing skip",
+    "baseline": "passed",
+    "node_tests": 13,
+    "wheel": "rebuilt and accepted outside checkout"
+  }
+}

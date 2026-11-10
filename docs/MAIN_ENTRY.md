@@ -1,4 +1,4 @@
-# 主聊正式入口、轻量提交与反馈闭环 · v0.8.5
+# 主聊正式入口、轻量提交与反馈闭环
 
 当前固定调用见[FAST_REPLY.md](FAST_REPLY.md)，阅读见[READING_QUEUE.md](READING_QUEUE.md)。
 以下main_native_entry是底层兼容契约，正常部署由reply_driver封装。不要每轮另写临时驱动。
@@ -22,7 +22,7 @@ chat.read_messages，也不能替当前模型判断48项情绪。单靠“我下
    main_native_entry.mjs接收此真实结果，按role=user、seq、原始毫秒时间选人类原文，
    校验可信--chat-id；不手抄摘要、不取助手内容、不截断正文。仅支持已验证的字符串content；
    非字符串/媒体走实际媒体适配，结构不符不能猜。只有空白的无负载消息在可信入口忽略。
-2. phase=context返回当前SOUL+growth_overlay、心情、原话记忆、梗候选与full48模板，并保存
+2. 底层 main_native_entry 的 phase=context 返回当前SOUL+growth_overlay、心情、原话记忆、梗候选与完整模板；正常 reply_driver 封装返回 compact48-v1 模板。它同时保存
    本轮原文完整SHA和context回执。任何普通回应（包括“好的我去看”）都在此之后。
 3. 当前回复模型填返回模板；新driver用compact48-v1只报实际变化、未报为0。phase=commit本地扩展并保存完整full48、梗学习等；它检查context、原文SHA、
    对应事件情绪保存与本轮表情决策。缺失/冲突会非零退出、ready_to_send=false；根据错误

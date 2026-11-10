@@ -1,4 +1,8 @@
-# v0.6 additions
+# JSON API 与调用边界
+
+这是底层程序操作参考，不是另一套主聊安装步骤。正常主聊走 [FAST_REPLY](FAST_REPLY.md) 的 context/commit/finish；具体字段按同一 checkout 的实际 schema。历史兼容操作不等于当前推荐入口。
+
+## 表达与梗知识
 
 See HUMOR.md for complete host bindings and official read-only sync contract.
 
@@ -12,7 +16,7 @@ See HUMOR.md for complete host bindings and official read-only sync contract.
 
 Global control is trusted local administration after the host authenticates the owner; a body-provided owner/scope claim is not authentication. Scoped knowledge references must be active external events. Runtime rules are not sourced from Wiki content.
 
-## Earlier v0.5 additions
+## 六层伙伴操作
 
 Fresh CLI roots set companion_v2=true; upgrade old roots explicitly.
 All companion_* operations are trusted local administration, owner-private only.
@@ -28,9 +32,7 @@ prepare adds companion, scene_context, persona_context, emotion_protocol and cur
 Emotion envelope and limits: MODEL_EMOTION.md. GitHub native snapshot CLI: GITHUB_VAULT.md.
 The existing companion_backup/companion_delivery ops remain for explicitly selected local/file workflows, not automatic sidechat delivery.
 
-## Existing core API (compatible)
-
-# JSON API 与验收
+## 核心请求入口（保留兼容）
 
 命令入口：`python -m personal_bot --root <STATE> request --file request.json`；也可在stdin传UTF-8 JSON。单次不超过65536字节，正文最多12000字符。读取结果中的ok及具体reason：澄清/静默/未到点是结构化结果，不一定是程序崩溃。CLI在ok=false时返回非零，但保留JSON字段。
 

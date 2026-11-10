@@ -261,7 +261,7 @@ def export_snapshot(root,destination,architecture_ref,day=None,bootstrap=False,i
                 p.unlink()
     manifest={'schema':SCHEMA,'created_at':time.time(),'summary_proof':proof,'files':files,'aliases':aliases,
               'plugins':plugin_metadata,
-              'architecture':{'repository':architecture_repo,'commit':architecture_ref,'package':'personal-ai-companion-kit','version':'0.15.0'},
+              'architecture':{'repository':architecture_repo,'commit':architecture_ref,'package':'personal-ai-companion-kit','version':'0.15.1'},
               'inheritance':{'default':['native_memory_or_persona','cognitive_database'],'never_auto_activate':['operational_reference','plugin_private_data'],
                              'excluded':['credentials','SSH keys','channel login state','runtime code','models','generated panels','completed learning queue files']}}
     write_json(marker,manifest)

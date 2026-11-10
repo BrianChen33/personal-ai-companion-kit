@@ -1,6 +1,6 @@
-# 固定主聊入口 · v0.8.5
+# 当前固定主聊入口
 
-目标是减少工具编排，不跳过人格、记忆、同模型full48评估或每轮一次表情决策。
+目标是减少工具编排，保留人格、相关记忆、同模型情绪评估和每轮一次表情决策；模型只填写返回的稀疏变化，程序补齐完整存储。
 Muse没有公开native-final/after_reply拦截，下面是宿主明确调用的固定驱动，不是新平台API。
 
 安装时读一次本文、MAIN_ENTRY.md、实际媒体工具schema，设置真实主聊短入口指针。
@@ -33,7 +33,7 @@ emotion、text、tags/use/desc；`assets/<hash>.gif`须魔数及hash相符。代
 
 长工具工作后可在commit传fresh native_response；新来信会拒绝旧target。票据绑定原文SHA、
 时间、seq、主聊及JS/Python核心文件指纹，24h失效；版本变化重新context，不能沿用旧票据。
-主聊拿到主人阅读请求：先正常context/full48/commit，queue_enqueue后简短回应已登记；后台
+主聊拿到主人阅读请求：先正常context/compact48/commit，queue_enqueue后简短回应已登记；后台
 消费队列。需要近期后台启动可使用READING_QUEUE.md的真实未来handoff，不能在前台读十分钟。
 普通闲聊不等待其他阅读或全库pending清空。记忆写入/维护/面板不应夹在commit与正文之间。
 
@@ -43,6 +43,6 @@ emotion、text、tags/use/desc；`assets/<hash>.gif`须魔数及hash相符。代
 
 隐私：reply-rounds含原始来信，只留私有环境，不进公共库。迁移不导入旧票据重放消息。
 
-v0.8.5只精简模型填写；本地验证前扩展为完整48项，旧full48输入仍严格校验。
+compact48-v1只精简模型填写；本地验证前扩展为完整48项，旧full48输入仍严格校验。
 按MODEL_EMOTION.md先看个人意义，不把执行请求自动当开心。正文用当前reaction+残留mood，
 没有额外前置自省或新模型调用。不要把旧“必须手写48个零”的规则再注入新driver主聊。

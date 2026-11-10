@@ -96,7 +96,7 @@
     ]
   },
   "current_code_hashes": {
-    "__init__.py": "a27b7b31ba1f868be1e5f352493014a248a53b5a57595aee365ca7152069604a",
+    "__init__.py": "69c432d4bbfa3a3b40bb0a91f2c0f6ded2a880aae7b412f80572a7c2d64ac9b6",
     "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "cli.py": "7d827b169c9c9cc67f9823c2f494b9c0eb56d7f562ce7968595b62258e4c433b",
     "deploy.py": "ef179422270daa56976db4a47d53d6cec475e061cc129ba2c54e486a42593b96",
@@ -149,7 +149,7 @@
     "runtime/sticker_emotion.mjs": "6d6b4275602d9fda9bc2eca0e62e31d40ed15179c4720d0dcd25b8212a3258bc",
     "runtime/sticker_intent.mjs": "691e4fafb83a9ba179cb6b3e6b5f6bf5472ca0ab50355572f0505c55f2e22084",
     "runtime/sticker_main.mjs": "38129adb0e9ee51eda0f85d306e12c1acd73958864342fb82b6233bfc29675c8",
-    "vault.py": "82bf5fea8b0f61dc54abb7e7e49bea0c6d610fff372b6805c702896455fee628"
+    "vault.py": "4a7c8aea7bdeb5976c02186c393d723ae85d0bcb1e78c4101f853357bb5f76f3"
   },
   "emotion48_update": {
     "date": "2026-11-05",
@@ -901,5 +901,27 @@
       "core runtime and other plugin versions",
       "credentials and raw health exclusions"
     ]
+  },
+  "open_source_stage1_update": {
+    "date": "2026-11-11",
+    "release": "0.15.1",
+    "base_architecture": "0f44d1f3f817a38f1b26ed9b4f4170e41c6a3e4e",
+    "runtime": "2.11.1",
+    "scope": "documentation and package metadata only",
+    "changes": [
+      "one staged deployment entry and short current operating rules",
+      "honest capability catalogue with host prerequisites and delivery boundaries",
+      "historical outcomes separated from default runtime instructions",
+      "inheritance and host overview remove obsolete duplicate prepare and pinned older plugin recipes",
+      "align exported architecture version with package version; no backup behavior change"
+    ],
+    "preserved": [
+      "runtime code",
+      "all plugin implementations and versions",
+      "3D frontend and private assets",
+      "data formats",
+      "live deployment and private architecture lock"
+    ],
+    "next_stage": "platform dependency extraction, not implemented in this release"
   }
 }

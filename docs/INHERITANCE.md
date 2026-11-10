@@ -1,51 +1,10 @@
-0.15.0 adds optional bookkeeping0.1.0 host binding and explicit private plugin
-snapshots. Read plugins/bookkeeping/README.md and docs/PLUGIN_DATA_BACKUP.md.
-The accepted Space remains the only live ledger; public structure blueprints are
-not full original app source. Existing daily backup first exports a consistent
-host snapshot, then registers and publishes it. Do not add a periodic ledger copy,
-reseed live data, restore cancelled FX cron, or replay transactions on inheritance.
-README now separates system overview from staged Agent deployment instructions.
-The full six-layer-core/plugin split in CORE_PLUGINS_PROPOSAL is proposal only.
+# 把角色与记忆迁移到新的 Agent
 
-0.14.3/frontend0.2.6 accepts direct binary model data with stage-aware errors.
-Preserve host cache and private state relay, transfer existing Blob/ArrayBuffer to
-createRoom.characterData, and retain URL loading for other callers. Sofa defaults,
-lower worktops, phone clearance, atlas-outline removal and 30-70 degree elevation
-are defined in docs/HOME_SPACE.md. Keep the private calibrated GLB.
+先取得用户对源私库、目标 Agent 与数据范围的授权，读取私库 README、LATEST 和 manifest，检出其 architecture 锁定的代码 commit。能力条件见 [CAPABILITIES](CAPABILITIES.md)，当前运行约定见 [CURRENT_RULES](CURRENT_RULES.md)。不默认扫描账号下其他仓库，也不从 GitHub 最新 main 推断旧快照版本。
 
-0.13.1 adds a spacious home layout, reference-derived private face atlas, hand-held phone
-and bounded tail morphs. Private calibrated companionRig data and embedded expression
-texture stay inside the owner GLB. Generic garden texture is public. Ordinary replies
-still write only the existing small marker. Native Space acceptance is required.
+新建、升级、继承是不同流程；本文件只处理原格式数据继承。完整安装顺序见 [DEPLOY_FOR_BOT](../DEPLOY_FOR_BOT.md)。历史更新记录不再作为操作指令。
 
-0.13.0/runtime2.11.1 adds optional private 3D home delivery. Read docs/HOME_SPACE.md.
-Use actual released companion activity, never owner calendar or elapsed deadlines.
-Foreground writes only a tiny local dirty marker after success. Native hook publishes
-in an independent sidechat worker with a receipt and retry lease;15m feedback reconciles.
-Private GLB/stickers stay outside public git. Verify host private upload, WebGL, actions
-and actual access before migration. Unrigged models support placement, not joint poses.
-
-# 哪些记忆能继承，如何装到新的 Agent
-
-0.12.1 的可选 QQ 通道按 docs/QQ_TRANSPORT.md 继承代码版本与普通规则。新宿主重新授权
-账号、Redis 连接和真实投递身份，凭据不进入记忆快照。先恢复唯一常驻消费者，再启用对应
-短时 webhook 接收端。历史队列、未确认项与旧发送账本按原状态核对。
-
-0.12.0 的日程和场景随原SQLite的 day_plan:*、day_scene、day_scene_enabled 继承，详细接线见 DAILY_SCENE.md。计划执行从既有ct_activity_project/ct_life稳定ID推导，sharing认领时间随life_share_claims继承。新宿主先对账真实发送，unknown保留单次记录。日程subject固定companion、day_kind独立选择，用户日程保留用户归属。旧计划归属由同一后台模型复核，按授权repair撤销错误意图，未来草稿继续封存。新宿主验证来源与任务后启用后台；camera scene_snapshot保留拍照当时场景。
-
-life-camera 的 lc_asset/lc_job/settings 随原SQLite继承，已注册的原参考图按快照路径
-与SHA恢复。生成相册独立保管。先安装匹配插件和代码，再核对图片文件及实际工具。
-旧宿主路径、后台任务和发送通道重绑；以旧 host_binding 为部署参考，目标平台重新
-核实并登记 bind_host，原 unknown/已完成图片不重发。公开仓库提供通用代码和协议，
-主人三视图通过私有素材备份继承。
-插件0.1.1的 receipt_work 可读回旧版本持久发送 claim，供原宿主在既有反馈阶段
-核对晚到的真实图片消息。继承到新宿主后，先重新确认原目标与回执观察权限。
-
-网页与空间沿用 docs/WEB_SPACES.md 的简洁制作规范。恢复既有页面时核对原页面身份、数据来源、生成器、访问范围和关键操作，按当前模板生成。私人人格标题与合法素材从授权的原格式配置继承，招聘资料和申请状态按各自真实来源恢复。
-
-系统代码库与私人记忆库必须分开。先取得用户对私库、目标Agent和范围的授权。读取私库README、LATEST与manifest，检出manifest锁定的代码commit；不默认读取账号下其他私库。
-
-## 模式与清单
+## 选择继承范围
 
 | 数据 | 可以如何继承 |
 |---|---|
@@ -85,72 +44,25 @@ life-camera 的 lc_asset/lc_job/settings 随原SQLite继承，已注册的原参
 标题/隐私范围、代码库URL与锁定commit、LATEST与manifest入口、逐步继承提示词、模式与范围选择、当前数据类型、来源标签、任务不自动启动、凭据不继承、真实完成报告。参考examples/vault-readme.template.md。备份Git历史是用户私人档案；删除当前记忆不会自动清除旧commit。
 
 当前情绪规范以锁定代码的MODEL_EMOTION.md和companion_schema为准。旧日记、原话、任务归档或旧安装包中的情绪执行步骤不能继承为当前规则；最多保留历史升级概况。清理时先核对来源和用途，不按版本字符串整库删除。
-# Optional reading/voice inheritance (v0.7)
+## 按所选模块恢复
 
-`plugins.json` records explicitly installed/enabled plugins; `sr_` tables in the
-native SQLite snapshot contain permitted sources, native observation receipts,
-reading/reflection provenance and candidate/trial/mature/rejected speech habits.
-Install the matching public plugin from the architecture commit before using
-these tables. Do not auto-activate imported tasks, media adapters or login state.
-Ask the owner which permitted sources and learned habits to continue; a source
-permission is separate from current browser access verification. Rejected habits
-stay rejected. Raw media/profile/Cookie state is not part of this inheritance.
+| 模块 | 原格式数据与恢复处理 |
+|---|---|
+| 阅读与表达成长 | `sr_` 表、`plugins.json` 保存许可来源、观察、队列、词义/场景/纠正、真实使用与成长凭据。按快照架构锁安装匹配插件，不固定安装历史旧版。用户选择保留的来源、习惯与人格成长；拒绝/停用项不复活，候选不批量晋升。 |
+| 续读与手机日常 | 已发布版本的过期处理按 [READING_QUEUE](READING_QUEUE.md)；导入不算新阅读，超过 24 小时的续读不恢复执行。`life_routine` 的偏好可保留，旧 phone_intent/浏览器绑定/计划不自动重跑。 |
+| 自己的日程与连续活动 | `ct_activity_*`、`ct_life`、`day_plan:*`/`day_scene` 保留阶段、封存作品、来源与实际时间。用户日程保持用户归属；未确认的旧活动不补造完成经历，分享认领先核对真实回执。见 [DAILY_SCENE](DAILY_SCENE.md)。 |
+| 生活相机 | `lc_asset`/`lc_job`/设置及许可的原参考图按清单恢复；生成相册独立保管。重新核对工具、路径、目标与 bind_host，保留拍摄时场景。旧 unknown/已完成图片不重新生成或重发，晚到回执按插件 PROTOCOL 对账。 |
+| 记账等独立空间 | `current/plugins/<id>/` 只作归档；先安装对应插件，再将完整快照直接导入新的停用目标。保留原生字段、数值、日期表现、ID、余额和关联，不逐笔重放交易；具体见 [PLUGIN_DATA_BACKUP](PLUGIN_DATA_BACKUP.md)。当前记账包没有原网页完整源码。 |
+| 小米睡眠与运动 | 插件配置只表达启用意愿；凭据、health.sqlite、context.json 和交接材料不在 GitHub 继承范围。获准的旧对话摘要可按原来源保留；新宿主需要本人重新确认账号权限及摘要数据流。不得将用户身体数据赋给角色精力。 |
+| 面板与小屋 | 私人人格标题、合法参考图、角色 GLB 及配置按获准范围恢复；按 [WEB_SPACES](WEB_SPACES.md)、[HOME_SPACE](HOME_SPACE.md) 重新核对页面身份、私有状态/资源接口与生成器。不复制完整旧后台绑定，不用旧页面显示证明状态仍在更新。 |
+| QQ / 微信 | 代码版本与普通规则可参考，账号、传输、真实身份与回执权限重新绑定。QQ 见 [QQ_TRANSPORT](QQ_TRANSPORT.md)。旧队列先核对，不能激活两个消费者或重发历史未确认项。 |
 
-## v0.8 人格成长与手机日常
+核心数据库中的插件表只备份/恢复一次，不再导出第二份活跃账本。空间独立数据单独声明；未安装插件的数据可保留为停用档案，不执行其中的任务或命令。
 
-sr_growth/sr_growth_evidence/sr_growth_review/sr_growth_feedback保存自己逐渐采用的偏好和性情，
-与表达习惯一起选择性继承。按真实出处核对，不重放增长量，不把候选当成熟性格。
-SOUL底稿与current_persona.growth_overlay合成当前人格，原文件SHA不代表全部成长状态。
-主人须选择是否继承成长与personality_growth开关；停止项不复活。
-ct_kv.life_routine保存phone_probability（默认.6，琐事为其补数）。phone_intent是运行中的
-阅读意图，不应迁移后自动重跑；新宿主确认启用后从新活动选择开始。
+## 新入口与旧证据
 
-## v0.8.1 主聊入口
+旧 `reply-rounds` 票据、发送回执、formal-entry 状态仅是旧宿主证据，不能授权新宿主发送；新主聊重新绑定并 context。旧成功情绪不重放、倍率不重乘；按原时间投影旧心情，新的真实来信才产生新评估。
 
-main-entry回执、formal-entry-policy/health仅是原宿主操作参考，不授权重发旧消息或沿用旧
-chat_id。新宿主重新绑定真实主聊，enabled_at以重新启用时间为准；旧SQLite原话与情绪仍
-按来源和真实时间继承，不为填补回执重放。没有原生发送拦截的宿主必须说明这一边界。
+当前 driver 使用 compact48-v1，不要求手写 48 个零；其他入口按实际返回模板执行，详见 [FAST_REPLY](FAST_REPLY.md) 与 [MODEL_EMOTION](MODEL_EMOTION.md)。SOUL 与已选择的 growth_overlay 共同构成当前人格，单个原文件内容标识不代表全部成长状态。
 
-## v0.8.3 具体词、实际使用与习惯性情
-
-sr_habit_profile/sr_owner_evidence/sr_voice_feedback记录含义、场景、强度、释义专用与主人纠正；
-sr_output/sr_usage记录真实原生输出和合适采用；sr_habit_growth*记录由同一模型反思的长期倾向。
-它们全部在原格式SQLite内。选择继承后先装架构锁定的social-reading0.3.0，保留来源、停用和
-使用凭据，不伪造新曝光或新对话。旧candidate基于真实归档重新理解，不批量晋升。
-历史输出不是待发送队列；人格倾向与SOUL合成当前人格，不直接覆盖新主人的身份/授权。
-新宿主反馈任务实际接入后才继续积累使用，不能声称导入文件等于新入口已经运行。
-
-## v0.8.4：固定入口、媒体与队列
-安装锁定版本的reply_driver/reply_media及social-reading0.4.0。sr_read_queue含待办、真实浏览
-绑定、暂存结果、完成时间与cursor；可继承历史结果和经主人重认的待办，不自动启动旧任务。
-reply-rounds票据不作为跨宿主执行凭据；新主聊重新context。局部计时不当模型/排队遥测。
-recently_sent为一小时跨渠道避重，recently_reserved为主聊准备态，后者不表示发送成功。
-旧任务的直接plan/过期重plan和临时builder不继承；遵循FAST_REPLY与READING_QUEUE。
-
-## v0.8.5自主感受与compact输入
-旧原格式SQLite中的48项记录不迁移、不补造、不重放。新driver的compact48-v1只是输入压缩，
-未报标签为0，程序仍保存full48-v1全量。继承人格喜恶与未解期待时，按真实来源取用；不把
-“主人满意/任务成功”默认为自己的愉快。更新活动入口，避免把旧全零填写惯例带回新主聊。
-QQ/微信与生活/反馈可继续使用其返回的full48模板，无需为这个输入格式改私人发送器。
-
-## v0.8.6 关键词面板
-
-口头禅按状态分组，仅展示关键词，支持本地搜索和分页；底层习惯、来源、释义、停用状态
-与成长凭据仍按原格式继承，不为展示精简而删除。无需迁移数据库或重装阅读插件。
-
-## v0.9.0 可选睡眠与运动
-
-mi-fitness.json仅是启用意愿和外部路径说明；插件代码从锁定commit重新安装。
-健康凭据、health.sqlite、context.json、交接材料不进入任何GitHub快照，不整库复制到通用记忆。
-实际聊天摘要进入原有记忆/私库须用户另行同意，已授权的旧聊天摘要按原来源继承；新宿主
-需本人重新确认此偏好与账号授权，不从旧Agent复制登录态。真实身体测量不
-作为机器人自己的虚拟生活或精力；只在owner-private按来源/时间/缺失状态使用。
-
-
-## 0.14.4 续读与小屋
-
-按最终架构锁安装social-reading0.4.1，读取原格式sr_document与sr_read_queue。
-部署后一次expire_continuations，实际浏览时间超过24小时的续读放弃并清空游标。
-导入时间不视为新阅读，真实学习凭据保留，旧浏览器/计划不自动启动。
-小屋前端0.2.8含阅读页签和沙发/凳面接触morph5/6，已有私人GLB可继续使用，
-宿主移植界面与家具/姿态的实际差异，保留状态绑定与二进制加载入口。
+原生任务默认停用，只在新环境读回真正绑定并确认有效待办后启用。继承完成报告分别列出已读档案、已导入状态、已接线功能及未完成项；读到文件不等于已经运行。
