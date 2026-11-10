@@ -1,0 +1,144 @@
+{
+  "release": "0.16.0",
+  "runtime": "2.11.1",
+  "host_message_protocol": "companion-host-messages-v1",
+  "home_frontend": "0.2.8",
+  "life_camera_version": "0.3.0",
+  "social_reading_version": "0.4.1",
+  "mi_fitness_version": "0.1.0",
+  "bookkeeping_version": "0.1.0",
+  "base_architecture": "3c8fb5684b7b752576c4318a395d6da604c50709",
+  "scope": "Muse decoding extraction and portable owner-private direct text adapter; same Python algorithms/model flow and host-owned tools",
+  "deployment": "public release only; no live host upgrade or private vault lock change",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "3aa351a1635f23ab9d64b143d411cadd0a817736a4818563dfab7aa0477c431c"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "963cb358c7519a1a23165aeecdc61fc64e4eb6535046c5f9839f7cd4b12e3984"
+    },
+    {
+      "path": "README.md",
+      "sha256": "965217c7aa96231ea5ea9a36fd3412c912197e0a0f15e80ba5a413b5bcd758f1"
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "9c7077097b734124cf76e3f6919249f2cafd93807af45ddf8b87d06b492ca805"
+    },
+    {
+      "path": "docs/CAPABILITIES.md",
+      "sha256": "aa0c3c04636a71f5b9775ff6491bab237819b56b2eec295f380771cdf5363e4a"
+    },
+    {
+      "path": "docs/CORE_PLUGINS_PROPOSAL.md",
+      "sha256": "e26323e9ec7a82ce1c73a2b164277ad5a093d6760436ada7d706be817b5c0f57"
+    },
+    {
+      "path": "docs/CURRENT_RULES.md",
+      "sha256": "a829e69b7ee171e97bde2b99d0875519bf71c48d1bdb25199af6236863b3eea5"
+    },
+    {
+      "path": "docs/DEPLOY_MUSE_DOT.md",
+      "sha256": "fce0700a7ae6e4b0549ac10b550c2d6bddb09f38028c81a74b5877bc28491c51"
+    },
+    {
+      "path": "docs/FAST_REPLY.md",
+      "sha256": "f178346c10e419cb035e1770839aa19832ab1d04023e8a2c2a5b5e9ddba36be9"
+    },
+    {
+      "path": "docs/HOST_ADAPTERS.md",
+      "sha256": "8b0538dd36dc039b4507b25156e28b30eca05853d001895176c63e78ff16531e"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "1565f3983747f6d506c40c092bd126f111c94d1b9b583387543435fa408452d5"
+    },
+    {
+      "path": "docs/MAIN_ENTRY.md",
+      "sha256": "aa980f40d7b0da218ba2eb7fd1d8e8f477be1811d23111a5ec31fdc3178839ff"
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "918bc0dbac77bd361d7eab5fbc2d1d959a999bc9819f359734fc80f554698e77"
+    },
+    {
+      "path": "docs/SYSTEM_REPLICATION.md",
+      "sha256": "66496c471a261370a22195c309dd303066b0fa93270c5f076e5dd43d5352c9e7"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-11-host-adapter-boundary.md",
+      "sha256": "af52b3c5991236747a9636326b4f5da5861a1b6ce4670f5858c7baa44c6afac5"
+    },
+    {
+      "path": "examples/hosts/README.md",
+      "sha256": "1e4654a34b5f43ef11a6b1e0bf97086bec83d44b4cd6c4b54f0ff5b258d2c548"
+    },
+    {
+      "path": "examples/hosts/portable-context.json",
+      "sha256": "bd8218011e906c65b75fae3d0171e307ae703f36ab37c8631e96e1ef8b609437"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "60f555a10f22703879ad7dbb09a7d23bd2e37f05bd8fb7263d7b27177801fccf"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "500449db817b258e78389d950865e7493cd7bffe45fa8a73192b37d96396e3cc"
+    },
+    {
+      "path": "personal_bot/runtime/host_entry.mjs",
+      "sha256": "072a5c2a57b616a9f323bb1a21cc523df7ba25fbe8c0180bbf9f9e331d71a9cc"
+    },
+    {
+      "path": "personal_bot/runtime/host_message_adapter.mjs",
+      "sha256": "b2983a29063af7c2d9f9b26d2a3b7bd6275e7398025ea15d66b6b6d305f51270"
+    },
+    {
+      "path": "personal_bot/runtime/host_runtime.mjs",
+      "sha256": "d11990cf339bbb98bee906101848e641dfb6203e258b19b9952d7baf527a19df"
+    },
+    {
+      "path": "personal_bot/runtime/main_native_entry.mjs",
+      "sha256": "f19b2c5a0c19f8b89ed52f6903c23497a935a1e178caa61ecbd764d4b68b8a83"
+    },
+    {
+      "path": "personal_bot/runtime/reply_driver.mjs",
+      "sha256": "d983a2265728d41689ff53f1abbd0b6322865ec1b8fd2c5dea5141b1722dea9e"
+    },
+    {
+      "path": "personal_bot/runtime/sticker_main.mjs",
+      "sha256": "29955f5be7f31866bce1aea31e62194a95b12e80d21fce9d6665911e1563acf2"
+    },
+    {
+      "path": "personal_bot/runtime/tests/sticker-turn.test.mjs",
+      "sha256": "a319a3468c9a8ab456f614b5e9f4938ad1d12231aa0855428269a160df32b298"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "7bcf1ef174bd661df6f82e3d61e8e773f20fe3fbf32844afcacc4c9907f270f9"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "ccdb6d6a69c85466767abaef2953b02064a835eb425d82bef7128b220412dc81"
+    },
+    {
+      "path": "tests/test_host_adapters.py",
+      "sha256": "5bcd155983e0505005d049ad79254461020fc411bfb5a73d95107fcd67368b4f"
+    },
+    {
+      "path": "tools/check_wheel.py",
+      "sha256": "91415f84c1bd2dc1b64bf0e349ccc166c7760920750c934e8b88eba1168df568"
+    }
+  ],
+  "validation": {
+    "python_initial": "338 cases, one pre-existing skip; passed",
+    "runtime_baseline": "passed",
+    "review_fixes": "2 important findings reproduced then fixed; host suite 9/9 and Muse suite 12/12 passed",
+    "node_final": "13/13 passed after aligning stale-source fixture; initial QQ timeout under load resolved without production change",
+    "wheel": "rebuilt, installed outside checkout; portable context/commit and existing checks passed",
+    "independent_review": "one read-only review; no deferred minors",
+    "limits": "synthetic host only, no second real platform or production probes"
+  }
+}

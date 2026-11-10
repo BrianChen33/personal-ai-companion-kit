@@ -1,5 +1,7 @@
 # 主聊正式入口、轻量提交与反馈闭环
 
+本文件保留 Muse 取源契约。`main_native_entry.mjs` 现为兼容入口，共享执行和解码位于 `host_entry.mjs` / `host_message_adapter.mjs`。通用私密单聊格式与路径见 [HOST_ADAPTERS](HOST_ADAPTERS.md)，不要求其他平台伪造 Muse turns。
+
 当前固定调用见[FAST_REPLY.md](FAST_REPLY.md)，阅读见[READING_QUEUE.md](READING_QUEUE.md)。
 以下main_native_entry是底层兼容契约，正常部署由reply_driver封装。不要每轮另写临时驱动。
 

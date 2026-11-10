@@ -1,5 +1,7 @@
 # 把角色与记忆迁移到新的 Agent
 
+跨平台迁移按 [HOST_ADAPTERS](HOST_ADAPTERS.md) 重新绑定主人/会话和状态路径。保留旧来源 ID、原格式记忆和送达账本；新宿主只处理迁移后真实新消息，不将历史批量导入为新情绪事件。旧票据不跨代码/绑定复用；不要把 portable 的单主人 scope 扩为群聊。
+
 先取得用户对源私库、目标 Agent 与数据范围的授权，读取私库 README、LATEST 和 manifest，检出其 architecture 锁定的代码 commit。能力条件见 [CAPABILITIES](CAPABILITIES.md)，当前运行约定见 [CURRENT_RULES](CURRENT_RULES.md)。不默认扫描账号下其他仓库，也不从 GitHub 最新 main 推断旧快照版本。
 
 新建、升级、继承是不同流程；本文件只处理原格式数据继承。完整安装顺序见 [DEPLOY_FOR_BOT](../DEPLOY_FOR_BOT.md)。历史更新记录不再作为操作指令。

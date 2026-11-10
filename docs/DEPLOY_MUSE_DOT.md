@@ -4,7 +4,7 @@
 
 ## 消息与实际执行
 
-当前主聊固定入口见 [FAST_REPLY](FAST_REPLY.md)：context → 同一回复模型评估 → commit → 组织正文和媒体 → 真实回执 finish。Muse 消息结构适配见 [MAIN_ENTRY](MAIN_ENTRY.md)；其他平台必须适配自己的真实返回结构，不能构造假的 Muse 消息或用摘要代替原话。
+当前主聊固定入口见 [FAST_REPLY](FAST_REPLY.md)：context → 同一回复模型评估 → commit → 组织正文和媒体 → 真实回执 finish。Muse 消息结构适配见 [MAIN_ENTRY](MAIN_ENTRY.md)；其他平台使用 [HOST_ADAPTERS](HOST_ADAPTERS.md) 的 portable 协议与合成示例归一化真实文字单聊，不能构造假的 Muse 消息或用摘要代替原话。
 
 平台没有已验证的 before_reply/pre_send/after_reply 时，用短入口约定与有界反馈检查，并说明不能保证原生 final 被强制拦截。宿主工具不能凭名称假定可从 shell 调用；消息提交、接受、送达分别记录。技术调试放用户指定旁聊，普通聊天保持其人格。
 

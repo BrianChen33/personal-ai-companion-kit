@@ -56,7 +56,6 @@ test('native two-phase entry validates original source, gates commits and audits
  const appended=structuredClone(native);appended.turns[0].items.push({role:'user',content:'A later owner message.',seq:13,occurred_at_ms:1003000});
  const stable=run({phase:'audit',native_response:appended});
  assert.equal(stable.audit.complete,1);assert.equal(stable.audit.gaps.length,1);
- assert.equal(run({phase:'commit',native_response:appended,target_seq:11}).error,'new_owner_turn_requires_context');
  const blank=structuredClone(native);blank.turns[0].items.push({role:'user',content:' \n ',seq:14,occurred_at_ms:1004000});
  assert.equal(run({phase:'context',native_response:blank}).event,'empty_user_input_ignored');
  assert.equal(run({phase:'audit',native_response:blank}).audit.complete,1);
@@ -66,6 +65,10 @@ test('native two-phase entry validates original source, gates commits and audits
  const reading=run({...request,phase:'commit',reading_documents:['not-observed']});
  assert.equal(reading.ready_to_send,false);assert.notEqual(reading.code,0);
  assert.equal(run({...request,phase:'commit'}).ready_to_send,false);
+ assert.equal(run({phase:'commit',native_response:appended,target_seq:11}).error,'new_owner_turn_requires_context');
+ // A rejected fresh snapshot still advances the source head; stale snapshots
+ // cannot revive the old target by omitting the newly observed owner message.
+ assert.equal(run({phase:'gate',native_response:blank,target_seq:11}).error,'new_owner_turn_requires_context');
  native.turns.push({id:'fixture:unprocessed',items:[{role:'user',content:'Another real-shaped fixture.',seq:12,occurred_at_ms:1002000}]});
  const audit=run({...request,phase:'audit'});assert.equal(audit.code,0);
  assert.equal(audit.audit.checked,2);assert.equal(audit.audit.gaps.length,2);

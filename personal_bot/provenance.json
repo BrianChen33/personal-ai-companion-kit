@@ -96,7 +96,7 @@
     ]
   },
   "current_code_hashes": {
-    "__init__.py": "69c432d4bbfa3a3b40bb0a91f2c0f6ded2a880aae7b412f80572a7c2d64ac9b6",
+    "__init__.py": "60f555a10f22703879ad7dbb09a7d23bd2e37f05bd8fb7263d7b27177801fccf",
     "__main__.py": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
     "cli.py": "7d827b169c9c9cc67f9823c2f494b9c0eb56d7f562ce7968595b62258e4c433b",
     "deploy.py": "ef179422270daa56976db4a47d53d6cec475e061cc129ba2c54e486a42593b96",
@@ -104,7 +104,7 @@
     "runtime/brain.py": "7c67d25ca06d63fc1d85d7106fdcb087b34da3b8d863340e66baab8c8160fc7a",
     "runtime/learn.mjs": "790eae305518c953216740b1f72a64736483ef3eaaf62f05c1abed542622ad0e",
     "runtime/main_entry_guard.mjs": "361012a06e73d3849e7e0b947f2098a2b19ca3c2fe68f011154f0b3e807a73de",
-    "runtime/main_native_entry.mjs": "ccf969444db0a867c4e1294e10e5d0f1d8516c4369d35a270f15cf660c16dc0a",
+    "runtime/main_native_entry.mjs": "f19b2c5a0c19f8b89ed52f6903c23497a935a1e178caa61ecbd764d4b68b8a83",
     "runtime/model-assets.json": "123babcabc0903fd4cc02a7269d59fd224867324b7e9c24ec9090918482421c3",
     "runtime/muse_ext/__init__.py": "4bf8f41e81a7e6b2930c051cf08e6cdef6a1d35f6d099ace496bcb1521c8cf5f",
     "runtime/muse_ext/backup.py": "1a20e5cd1fe9ea818a4a3ba049c37e13909e53bc860bc31c0a14a5e6539ea6f4",
@@ -142,14 +142,18 @@
     "runtime/ops.py": "cc52bf4c364784a1c09d9129a38f6fa789853f3997847a40030796c6cbc29e8c",
     "runtime/proactive.py": "50ab1b55db3cc35c2d9d2036eb6b704acb51bf9e88c6167c03437eda3d40f4aa",
     "runtime/qq-adapter.mjs": "2302e48614d96149cc131ecb0546848021822001b2a443f3c371c662d5b7da8c",
-    "runtime/reply_driver.mjs": "b59142668ed3d336e35991c30ebfedecbf29c7108956a69852fe67e218d71230",
+    "runtime/reply_driver.mjs": "d983a2265728d41689ff53f1abbd0b6322865ec1b8fd2c5dea5141b1722dea9e",
     "runtime/reply_media.mjs": "a644f416375f0d1d46e3413b8ff1174395b4c9ee0fe57e953998f71233be5464",
     "runtime/requirements-embedding.txt": "1843de70ebdd99b72b76b9208cb1ffbb6684a50d7a0501f4e3a2dba7cf051d84",
     "runtime/sticker_decision.mjs": "bddb1e4478550efc57ecf2d852ba98e6d14d0ee19b7f4eebf91b993a786ba5c4",
     "runtime/sticker_emotion.mjs": "6d6b4275602d9fda9bc2eca0e62e31d40ed15179c4720d0dcd25b8212a3258bc",
     "runtime/sticker_intent.mjs": "691e4fafb83a9ba179cb6b3e6b5f6bf5472ca0ab50355572f0505c55f2e22084",
-    "runtime/sticker_main.mjs": "38129adb0e9ee51eda0f85d306e12c1acd73958864342fb82b6233bfc29675c8",
-    "vault.py": "4a7c8aea7bdeb5976c02186c393d723ae85d0bcb1e78c4101f853357bb5f76f3"
+    "runtime/sticker_main.mjs": "29955f5be7f31866bce1aea31e62194a95b12e80d21fce9d6665911e1563acf2",
+    "vault.py": "7bcf1ef174bd661df6f82e3d61e8e773f20fe3fbf32844afcacc4c9907f270f9",
+    "runtime/host_entry.mjs": "072a5c2a57b616a9f323bb1a21cc523df7ba25fbe8c0180bbf9f9e331d71a9cc",
+    "runtime/host_message_adapter.mjs": "b2983a29063af7c2d9f9b26d2a3b7bd6275e7398025ea15d66b6b6d305f51270",
+    "runtime/host_runtime.mjs": "d11990cf339bbb98bee906101848e641dfb6203e258b19b9952d7baf527a19df",
+    "runtime/tests/sticker-turn.test.mjs": "a319a3468c9a8ab456f614b5e9f4938ad1d12231aa0855428269a160df32b298"
   },
   "emotion48_update": {
     "date": "2026-11-05",
@@ -923,5 +927,30 @@
       "live deployment and private architecture lock"
     ],
     "next_stage": "platform dependency extraction, not implemented in this release"
+  },
+  "open_source_host_adapter_update": {
+    "date": "2026-11-11",
+    "release": "0.16.0",
+    "runtime": "2.11.1",
+    "base_architecture": "3c8fb5684b7b752576c4318a395d6da604c50709",
+    "protocol": "companion-host-messages-v1",
+    "changes": [
+      "shared Muse/portable message decoding and execution",
+      "trusted provider/owner/direct-chat binding with stable namespaced message IDs",
+      "same model/context/commit and real receipt path; no new dependency or model call",
+      "generic state/Python paths and installed-package script fallback",
+      "synthetic portable integration and installed-wheel acceptance"
+    ],
+    "preserved": [
+      "Muse IDs and CLI defaults",
+      "six-layer Python algorithms and native database",
+      "all plugin and frontend versions",
+      "live Muse deployment and private architecture lock"
+    ],
+    "limitations": [
+      "owner-private direct text only",
+      "host-owned authentication and sending/tools",
+      "no second real platform certification or automatic installer"
+    ]
   }
 }

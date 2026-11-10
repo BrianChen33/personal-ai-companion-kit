@@ -9,14 +9,15 @@ import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
 import {decide,setPaths,getDecision,settleDecision} from './sticker_decision.mjs';
 import {classifyIntent} from './sticker_intent.mjs';
+import {resolveHostRuntime} from './host_runtime.mjs';
 import {recordEntry,entryStatus,auditEntries,boundReadings,observeNativeSource} from './main_entry_guard.mjs';
 const HERE=dirname(fileURLToPath(import.meta.url));
 const arg=process.argv.indexOf('--root');
 const workspace=arg>=0?process.argv[arg+1]:(process.env.STICKER_ROOT||join(HERE,'..','..'));
-const brainRoot=process.env.STICKER_BRAIN_ROOT||join(workspace,'muse-brain');
+const {brainRoot,brainScript,python}=resolveHostRuntime(workspace);
 setPaths({configPath:join(workspace,'stickers','config.json'),decisionDir:join(workspace,'stickers','decisions')});
 function runBrain(req){
-  const child=spawnSync(process.env.STICKER_PYTHON||'python3',[join(brainRoot,'brain.py'),'--root',brainRoot],
+  const child=spawnSync(python,[brainScript,'--root',brainRoot],
     {input:JSON.stringify(req),encoding:'utf8',timeout:8000,maxBuffer:131072});
   if(child.error||child.status!==0)return {ok:false,error:'brain_call_failed'};
   try{return JSON.parse(child.stdout);}catch{return {ok:false,error:'brain_response_invalid'};}

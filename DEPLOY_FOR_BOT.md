@@ -1,6 +1,6 @@
 # 给部署 Agent 的分阶段手册
 
-本文件是**当前安装顺序的唯一详细入口**。从 [README](README.md) 接收用户目标后，按需读取下面对应阶段与模块文档，不把整套手册放进日常回复上下文。适用 Kit 0.15.1 / runtime 2.11.1；版本以同一 checkout 的 [发布清单](docs/releases/0.15.1.json) 为准。
+本文件是**当前安装顺序的唯一详细入口**。从 [README](README.md) 接收用户目标后，按需读取下面对应阶段与模块文档，不把整套手册放进日常回复上下文。适用 Kit 0.16.0 / runtime 2.11.1；版本以同一 checkout 的 [发布清单](docs/releases/0.16.0.json) 为准。
 
 先确认新建、升级还是继承。每完成一个阶段，记录已完成步骤、真实绑定和缺口；中断后读回现状继续，不重建已有数据库和任务。这是安装工作记录约定，尚无自动安装向导或检查点执行器。
 
@@ -51,8 +51,9 @@ https://github.com/BrianChen33/personal-ai-companion-kit
 
 ## 阶段 3：六层接到真实聊天
 
-7. 阅读 docs/FAST_REPLY.md、docs/MAIN_ENTRY.md、docs/MODEL_EMOTION.md。
-   Muse 已知消息结构使用 reply_driver.mjs / reply_media.mjs；其他宿主须先适配真实结构，不能直接套用。每轮保留可信来源、稳定消息 ID、
+7. 先读 docs/HOST_ADAPTERS.md 选择入口，再读 docs/FAST_REPLY.md、docs/MAIN_ENTRY.md、docs/MODEL_EMOTION.md。
+   Muse 继续使用 reply_driver 默认入口；其他宿主按 portable 协议传真实单聊原文，
+   显式绑定 provider、owner、chat，并配置通用 STATE/Python 路径。只支持已认证主人的私密文字单聊；群聊/媒体输入不可冒充主人文字。每轮保留可信来源、稳定消息 ID、
    原始正文/时间、actor、person_id、scope；不凭昵称合并身份，不把调试当日常刺激。
    链路：context 取得私有 ticket 与模板 → 当前回复模型填写变化 → commit 提交 ticket
    与模板 → 读回状态 → 组织回复 → finish 保存真实回执。

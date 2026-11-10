@@ -1,0 +1,20 @@
+{
+  "phase": "context",
+  "host_response": {
+    "schema": "companion-host-messages-v1",
+    "host_id": "example-host",
+    "conversation_id": "example-direct-chat",
+    "conversation_type": "direct",
+    "page": {"has_more": false},
+    "messages": [
+      {
+        "id": "example-message-1",
+        "sequence": 1,
+        "role": "user",
+        "sender_id": "example-owner",
+        "text": "这是一条隔离演示消息，不是用户真实经历。",
+        "occurred_at_ms": 1700000000123
+      }
+    ]
+  }
+}

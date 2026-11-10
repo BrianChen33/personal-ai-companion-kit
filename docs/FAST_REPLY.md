@@ -1,5 +1,7 @@
 # 当前固定主聊入口
 
+Kit 0.16.0 起两种宿主共用本驱动。下文示例是兼容的 Muse 命令；其他平台按 [HOST_ADAPTERS](HOST_ADAPTERS.md) 配置 `--adapter portable`、可信身份与 `host_response`，不调用 Muse 专用工具。手动升级时须同时交付 `host_entry.mjs`、`host_message_adapter.mjs`、`host_runtime.mjs` 与其余同版本驱动依赖；升级后重新 context，保留原事件 ID，不重放历史。
+
 目标是减少工具编排，保留人格、相关记忆、同模型情绪评估和每轮一次表情决策；模型只填写返回的稀疏变化，程序补齐完整存储。
 Muse没有公开native-final/after_reply拦截，下面是宿主明确调用的固定驱动，不是新平台API。
 

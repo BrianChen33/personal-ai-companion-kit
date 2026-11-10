@@ -18,16 +18,41 @@ def main():
         run([py,'-c','from pathlib import Path; import personal_bot,sys; assert Path(personal_bot.__file__).is_relative_to(Path(sys.prefix)); print("installed package origin verified")'],work,env)
         installed=subprocess.run([str(py),'-c','from personal_bot import deploy; print(deploy.RUNTIME)'],cwd=work,env=env,capture_output=True,text=True,check=True)
         installed_runtime=Path(installed.stdout.strip())
-        for entry in ('main_entry_guard.mjs','main_native_entry.mjs','reply_driver.mjs','reply_media.mjs'):
+        for entry in ('main_entry_guard.mjs','main_native_entry.mjs','reply_driver.mjs','reply_media.mjs',
+                      'host_entry.mjs','host_message_adapter.mjs','host_runtime.mjs'):
             if not (installed_runtime/entry).is_file():raise RuntimeError('installed main entry component missing')
         if shutil.which('node'):
             run(['node',installed_runtime/'main_native_entry.mjs','--help'],work,env)
             run(['node',installed_runtime/'reply_driver.mjs','--help'],work,env)
+            run(['node',installed_runtime/'host_entry.mjs','--help'],work,env)
         run([py,'-m','personal_bot','self-test'],work,env)
         state=work/'state with spaces'
         run([py,'-m','personal_bot','--root',state,'init'],work,env)
         run([py,'-m','personal_bot','--root',state,'enable'],work,env)
         run([py,'-m','personal_bot','--root',state,'doctor'],work,env)
+        if shutil.which('node'):
+            host_env={k:v for k,v in env.items() if not k.startswith(('STICKER_','COMPANION_'))}
+            host_env.update(COMPANION_BRAIN_ROOT=str(state),COMPANION_PYTHON=str(py),STICKERS_ENABLED='0')
+            driver=['node',str(installed_runtime/'reply_driver.mjs'),'--root',str(work/'host workspace'),
+                    '--adapter','portable','--host-id','wheel-host','--owner-id','wheel-owner',
+                    '--chat-id','wheel-direct']
+            def invoke(request):
+                result=subprocess.run(driver,input=json.dumps(request),cwd=work,env=host_env,
+                                      capture_output=True,text=True,encoding='utf-8')
+                output=json.loads(result.stdout)
+                if result.returncode or not output.get('ok'):
+                    raise RuntimeError({key:output.get(key) for key in ('error','formal_entry','decision')})
+                return output
+            context=invoke(dict(phase='context',host_response=dict(
+                schema='companion-host-messages-v1',host_id='wheel-host',
+                conversation_id='wheel-direct',conversation_type='direct',messages=[dict(
+                    id='wheel-message-1',sequence=1,role='user',sender_id='wheel-owner',
+                    text='Isolated installed-wheel message.',occurred_at_ms=1700000000123)])))
+            committed=invoke(dict(phase='commit',ticket=context['ticket'],media=False,
+                                  emotion_assessment=context['context']['emotion_template']))
+            if not committed.get('ready_to_send'):raise RuntimeError('installed portable commit failed')
+            if (state/'brain.py').exists():raise RuntimeError('portable install copied a runtime into state')
+            print('Installed portable context/commit accepted; no real send attempted.')
         request_file=work/'panel-request.json'
         request_file.write_text(json.dumps({'op':'companion_panel','scope':'owner-private'}),encoding='utf-8')
         run([py,'-m','personal_bot','--root',state,'request','--file',request_file],work,env)
