@@ -5,6 +5,11 @@
 先读取源 manifest 的架构 commit 并确认兼容性。以下入口只暂存到不存在的新目录，
 不会安装源快照中的代码、任务或登录凭据：
 
+从 Git 获取私库时使用 `git -c core.autocrlf=false clone PRIVATE_REPO`，或直接读取
+Git 原始 blob，避免 Windows 自动转换换行导致原格式清单不匹配。若已经发生转换，
+只在新的传输副本中恢复换行，并以原 manifest 的大小与内容标识确认；不修改数据库、
+二进制文件或清单来掩盖差异。
+
 ```sh
 python -m personal_bot --root /private/new-companion inherit --snapshot /private/vault/current --source-commit SOURCE_40_HEX --plugins dashboard --character-name NEW_NAME
 ```
