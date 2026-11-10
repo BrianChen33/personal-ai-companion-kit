@@ -1,0 +1,11 @@
+{
+  "id": "home-space",
+  "name": "home-space",
+  "version": "0.1.0",
+  "api": 1,
+  "context_mode": "none",
+  "files": {
+    "README.md": "ccb62a84130d6bd0b97b5b9ccb4850537a37d28572fc5c0e2894a7aec4b10fdf",
+    "__init__.py": "7b067350445428d6d604ef7df1db0e48fd1f2fccf452fa9c4c796658d65c121f"
+  }
+}

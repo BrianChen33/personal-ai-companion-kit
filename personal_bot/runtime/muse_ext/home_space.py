@@ -27,6 +27,9 @@ def write(root, name, value):
 
 def mark(root, operation):
     """A tiny post-success marker. Never build a panel or call a model here."""
+    from muse_ext.capabilities import enabled
+    if not enabled(root, 'home-space'):
+        return
     config = read_json(path(root, 'binding'))
     if config.get('enabled') is not True:
         return
@@ -55,6 +58,9 @@ def install(Brain):
 
 def probe(root, now=None):
     """Native hook polls locally. A lease bounds retries until a real receipt arrives."""
+    from muse_ext.capabilities import enabled
+    if not enabled(root, 'home-space'):
+        return {'wake': False, 'reason': 'plugin_disabled'}
     now = time.time() if now is None else now
     with guard(root):
         if read_json(path(root, 'binding')).get('enabled') is not True:
@@ -73,6 +79,8 @@ def probe(root, now=None):
 
 def capture(root):
     """Read the canonical panel once in the background, without static private art."""
+    from muse_ext.capabilities import require
+    require(root, 'home-space')
     from brain import Brain
     from muse_ext.companion_io import panel_snapshot
     with guard(root):

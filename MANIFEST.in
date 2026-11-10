@@ -1,0 +1,2 @@
+recursive-include plugins *.py *.json *.md *.txt
+include personal_bot/plugin_catalog.json

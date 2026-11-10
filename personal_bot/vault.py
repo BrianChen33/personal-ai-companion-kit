@@ -261,7 +261,7 @@ def export_snapshot(root,destination,architecture_ref,day=None,bootstrap=False,i
                 p.unlink()
     manifest={'schema':SCHEMA,'created_at':time.time(),'summary_proof':proof,'files':files,'aliases':aliases,
               'plugins':plugin_metadata,
-              'architecture':{'repository':architecture_repo,'commit':architecture_ref,'package':'personal-ai-companion-kit','version':'0.16.0'},
+              'architecture':{'repository':architecture_repo,'commit':architecture_ref,'package':'personal-ai-companion-kit','version':'0.17.0'},
               'inheritance':{'default':['native_memory_or_persona','cognitive_database'],'never_auto_activate':['operational_reference','plugin_private_data'],
                              'excluded':['credentials','SSH keys','channel login state','runtime code','models','generated panels','completed learning queue files']}}
     write_json(marker,manifest)
@@ -351,6 +351,17 @@ def finish_receipt(root,ledger,receipts,record_key,receipt):
 
 
 def publish(root,worktree,repo,key,architecture_ref,day=None,bootstrap=False,identity_file=None,architecture_repo='https://github.com/BrianChen33/personal-ai-companion-kit',ssh_transport='standard'):
+    # Kept standalone-compatible for existing Muse installations.
+    config_path = Path(root) / 'config.json'
+    if config_path.exists():
+        config = json.loads(config_path.read_text(encoding='utf-8'))
+        if config.get('inheritance_pending'):
+            raise ValueError('inherited_state_requires_host_review')
+        if config.get('plugin_profile') == 'managed-core-v1':
+            registry_path = Path(root) / 'plugins.json'
+            registry = json.loads(registry_path.read_text(encoding='utf-8')) if registry_path.exists() else {}
+            if registry.get('version') != 1 or registry.get('plugins', {}).get('github-vault', {}).get('enabled') is not True:
+                raise ValueError('plugin_disabled:github-vault')
     if not re.fullmatch(r'[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+',repo): raise ValueError('invalid_repository')
     if ssh_transport not in ('standard','github443','github443-proxy'): raise ValueError('invalid_SSH_transport')
     root=safe_source(root).resolve(); worktree=Path(worktree).expanduser().resolve()

@@ -287,6 +287,8 @@ def main():
     args = p.parse_args()
     from brain import Brain
     with closing(Brain(args.root)) as b:
+        from muse_ext.capabilities import require
+        require(b, 'memes')
         if b.config().get('companion_v2') is not True:
             raise ValueError('companion_v2_required')
         if not b.config().get('enabled'):

@@ -82,12 +82,18 @@ def install(b, source):
         raise ValueError('plugin_source_is_install_target')
     if target.exists() and any(target.iterdir()):
         old = target / 'manifest.json'
-        if not old.is_file() or json.loads(old.read_text(encoding='utf-8')).get('id') != data['id']:
+        owner = safe_file(target, '.install-owner.json')
+        owned = owner.is_file() and json.loads(owner.read_text(encoding='utf-8')).get('plugin') == data['id']
+        if not owned and (not old.is_file() or json.loads(old.read_text(encoding='utf-8')).get('id') != data['id']):
             raise ValueError('nonowned_plugin_directory')
     registry = read_registry(b)
     registry['plugins'][data['id']] = dict(id=data['id'], name=str(data.get('name', data['id']))[:80],
-                                          version=str(data.get('version', ''))[:40], enabled=False)
+                                          version=str(data.get('version', ''))[:40], enabled=False,
+                                          context_mode=data.get('context_mode', 'reply'))
     write_registry(b, registry)  # A failed update remains disabled, never half-active.
+    from muse_ext.companion_io import atomic
+    target.mkdir(parents=True, exist_ok=True)
+    atomic(safe_file(target, '.install-owner.json'), json.dumps({'plugin': data['id']}))
     for name in data['files']:
         copy_bytes(safe_file(source, name), safe_file(target, name))
     copy_bytes(source / 'manifest.json', target / 'manifest.json')
@@ -127,6 +133,8 @@ def dispatch(b, q):
         if action not in ('enable', 'disable') or pid not in registry['plugins']:
             raise ValueError('unknown_plugin_or_management_action')
         if action == 'enable':
+            if b.config().get('inheritance_pending'):
+                raise ValueError('inherited_state_requires_host_review')
             load(b, pid).initialize(b)
         registry['plugins'][pid]['enabled'] = action == 'enable'
         write_registry(b, registry)
@@ -145,7 +153,7 @@ def context(b, q):
     result = {}
     try:
         for pid, item in read_registry(b)['plugins'].items():
-            if item.get('enabled'):
+            if item.get('enabled') and item.get('context_mode') != 'none':
                 try:
                     result[pid] = load(b, pid).context(b, q)
                 except Exception as exc:

@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from muse_ext.emotion_catalog import LABELS, HALF, CATALOG_VERSION, normalize, reaction, schema as emotion_schema
 
-VERSION = '2.11.1'
+VERSION = '2.11.2'
 TZ = timezone(timedelta(hours=8))
 RNG = random.SystemRandom()
 
@@ -655,6 +655,10 @@ def install(Brain):
         if self.config().get('companion_v2') is not True:
             return old_dispatch(self,q)
         op=q.get('op','')
+        from muse_ext.capabilities import enabled as capability_enabled, operation_plugin
+        required = operation_plugin(op)
+        if required and not capability_enabled(self, required):
+            return dict(ok=True, disabled=True, error='plugin_disabled', plugin=required)
         if op in ('plugin_manage','plugin_call'):
             from muse_ext.plugins import dispatch as plugin_dispatch
             return plugin_dispatch(self,q)
@@ -766,9 +770,9 @@ def install(Brain):
                 if 'group_changes' in effect:
                     result['reaction']['group_changes']=effect['group_changes']
             from muse_ext import humor
-            if self.available('style') and eid and (q.get('humor_assessment') is not None or q.get('meme_updates')):
+            if self.available('style') and capability_enabled(self,'memes') and eid and (q.get('humor_assessment') is not None or q.get('meme_updates')):
                 result['humor_updates']=humor.apply_updates(self,q,eid)
-            result['expression_context']=humor.context(self,q,eid) if self.available('style') else dict(disabled=True)
+            result['expression_context']=humor.context(self,q,eid) if self.available('style') and capability_enabled(self,'memes') else dict(disabled=True)
             from muse_ext.plugins import context as plugin_context
             result['plugin_context']=plugin_context(self,q) if self.available('style') else {}
             result['expression_context']['learned_voice']={k:v['voice_overlay'] for k,v in result['plugin_context'].items()

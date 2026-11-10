@@ -10,6 +10,9 @@ def main(argv=None):
     p=argparse.ArgumentParser(description='Personal-bot local memory; explicit data root; host integration remains separate')
     p.add_argument('--root');p.add_argument('--version',action='version',version=__version__)
     sub=p.add_subparsers(dest='action',required=True)
+    sub.add_parser('catalog')
+    s=sub.add_parser('setup');s.add_argument('--plugins',default='');s.add_argument('--apply',action='store_true')
+    s=sub.add_parser('inherit');s.add_argument('--snapshot',required=True);s.add_argument('--source-commit',required=True);s.add_argument('--plugins',default='');s.add_argument('--character-name')
     for name in ('init','status','doctor','self-test','rollback','relocate','companion-upgrade'):sub.add_parser(name)
     s=sub.add_parser('enable');s.add_argument('--features',default=','.join(d.DEFAULT_FEATURES))
     s=sub.add_parser('request');s.add_argument('--file')
@@ -22,11 +25,21 @@ def main(argv=None):
     s=sub.add_parser('meme-sync');s.add_argument('--seed',action='store_true');s.add_argument('--seed-file');s.add_argument('--mode',choices=('incremental','full'),default='incremental');s.add_argument('--max-pages',type=int,default=30);s.add_argument('--max-details',type=int,default=60);s.add_argument('--budget-seconds',type=int,default=180)
     args=p.parse_args(argv)
     try:
-        if args.action=='self-test':result=d.self_test()
+        if args.action=='catalog':
+            from .onboarding import catalogue
+            result=catalogue()
+        elif args.action=='self-test':result=d.self_test()
         else:
             if not args.root:raise ValueError('root_required')
             root=d.root_path(args.root)
-            if args.action=='init':result=d.init(root)
+            if args.action=='inherit':
+                from .inheritance import stage
+                result=stage(args.snapshot,root,args.source_commit,[x.strip() for x in args.plugins.split(',') if x.strip()],args.character_name)
+            elif args.action=='setup':
+                from . import onboarding
+                selected=[x.strip() for x in args.plugins.split(',') if x.strip()]
+                result=(onboarding.apply if args.apply else onboarding.plan)(root,selected)
+            elif args.action=='init':result=d.init(root)
             else:
                 d.owned(root)
                 if args.action in ('status','doctor'):

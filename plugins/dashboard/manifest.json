@@ -1,0 +1,11 @@
+{
+  "id": "dashboard",
+  "name": "dashboard",
+  "version": "0.1.0",
+  "api": 1,
+  "context_mode": "none",
+  "files": {
+    "README.md": "fdce7675b2491f924253a254ae482647b39153889ae38b4aeb47b0a1d2919ae4",
+    "__init__.py": "da5354cd4549e2579618e83a0ff6a12a2823f776e787155c5b2034ece5b09076"
+  }
+}

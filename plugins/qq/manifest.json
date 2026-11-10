@@ -1,0 +1,11 @@
+{
+  "id": "qq",
+  "name": "qq",
+  "version": "0.1.0",
+  "api": 1,
+  "context_mode": "none",
+  "files": {
+    "README.md": "ebdb562459c725d535bfcccd5de015f671b739056c6855386bd8b378551eb798",
+    "__init__.py": "5e3418c58d13c48d92173ccd1d064c3db786b2abd3ee3ea757e4772a92b9b314"
+  }
+}

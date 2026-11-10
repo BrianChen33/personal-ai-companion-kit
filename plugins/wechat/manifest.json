@@ -1,0 +1,11 @@
+{
+  "id": "wechat",
+  "name": "wechat",
+  "version": "0.1.0",
+  "api": 1,
+  "context_mode": "none",
+  "files": {
+    "README.md": "e9d1d165a124fdf8626930ad51e5d66def706a149a81741305b4f9390bd1c9e9",
+    "__init__.py": "2463a02bae7a99e0a841e5f8d8b349c3213023f9843c37ae2aada68192d877d5"
+  }
+}

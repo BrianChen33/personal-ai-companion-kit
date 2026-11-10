@@ -1,0 +1,11 @@
+{
+  "id": "memes",
+  "name": "memes",
+  "version": "0.1.0",
+  "api": 1,
+  "context_mode": "none",
+  "files": {
+    "README.md": "173c039ad9bddb688297254d7ea57efccd35f81d8dd3c810861f6855df56b551",
+    "__init__.py": "81ee070c1173578743b235596b6dfda4f974002b43d68c58b99d89f4292cc0ea"
+  }
+}

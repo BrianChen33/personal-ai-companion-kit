@@ -26,6 +26,12 @@ def main():
             run(['node',installed_runtime/'reply_driver.mjs','--help'],work,env)
             run(['node',installed_runtime/'host_entry.mjs','--help'],work,env)
         run([py,'-m','personal_bot','self-test'],work,env)
+        run([py,'-c',
+             'from personal_bot import onboarding; from pathlib import Path; '
+             'ids=[p["id"] for p in onboarding.catalogue()["plugins"] if p["status"]=="available"]; '
+             'r=onboarding.apply(Path("managed-state"),ids); '
+             'assert r["status"]=="prepared" and not r["enabled"]; '
+             'print("All available plugins installed from wheel, disabled")'],work,env)
         state=work/'state with spaces'
         run([py,'-m','personal_bot','--root',state,'init'],work,env)
         run([py,'-m','personal_bot','--root',state,'enable'],work,env)

@@ -40,7 +40,8 @@ def commit(b,q):
         current.update(emotions=effect['applied_labels'],emotion_gain=effect['gain'])
         if 'group_changes' in effect: current['group_changes']=effect['group_changes']
     updates=None
-    if good and (q.get('humor_assessment') is not None or q.get('meme_updates')) and b.available('style'):
+    from muse_ext.capabilities import enabled
+    if good and (q.get('humor_assessment') is not None or q.get('meme_updates')) and b.available('style') and enabled(b,'memes'):
         from muse_ext.humor import apply_updates
         updates=apply_updates(b,q,eid)
     return dict(ok=True,event=dict(id=eid,status='replayed'),emotion=result,mood=mood(b,'owner-private'),

@@ -7,14 +7,21 @@ import {join,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {createHash} from 'node:crypto';
 import {spawnSync} from 'node:child_process';
-import {decide,setPaths,getDecision,settleDecision} from './sticker_decision.mjs';
+import {decide as storedDecision,setPaths,getDecision,settleDecision} from './sticker_decision.mjs';
 import {classifyIntent} from './sticker_intent.mjs';
 import {resolveHostRuntime} from './host_runtime.mjs';
+import {optionalEnabled} from './plugin_profile.mjs';
 import {recordEntry,entryStatus,auditEntries,boundReadings,observeNativeSource} from './main_entry_guard.mjs';
 const HERE=dirname(fileURLToPath(import.meta.url));
 const arg=process.argv.indexOf('--root');
 const workspace=arg>=0?process.argv[arg+1]:(process.env.STICKER_ROOT||join(HERE,'..','..'));
 const {brainRoot,brainScript,python}=resolveHostRuntime(workspace);
+if(!optionalEnabled(brainRoot,'stickers')) process.env.STICKERS_ENABLED='0';
+function decide(options){
+  const value=storedDecision(options);
+  return optionalEnabled(brainRoot,'stickers')?value:
+    {...value,sampled:false,mode:'disabled',reason:'plugin_disabled'};
+}
 setPaths({configPath:join(workspace,'stickers','config.json'),decisionDir:join(workspace,'stickers','decisions')});
 function runBrain(req){
   const child=spawnSync(python,[brainScript,'--root',brainRoot],

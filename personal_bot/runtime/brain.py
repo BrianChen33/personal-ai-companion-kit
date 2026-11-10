@@ -634,6 +634,8 @@ class Brain:
             with config_guard(self.root):
                 c = self.config()
                 if 'enabled' in q:
+                    if q['enabled'] is True and c.get('inheritance_pending'):
+                        raise ValueError('inherited_state_requires_host_review')
                     if not isinstance(q['enabled'],bool):
                         raise ValueError('invalid_enabled')
                     c['enabled'] = q['enabled']

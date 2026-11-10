@@ -4,6 +4,7 @@ import {dirname,join,resolve,basename,isAbsolute} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {createHash,randomUUID} from 'node:crypto';
+import {optionalEnabled} from './plugin_profile.mjs';
 
 const DEFAULT_ROOT=dirname(fileURLToPath(import.meta.url));
 const validId=x=>typeof x==='string'&&/^[A-Za-z0-9_-]{1,128}$/.test(x);
@@ -32,7 +33,7 @@ export function prepareRequest(data,identity,scope){
 export function enhance(prepared,options={}){
   const start=Date.now(),root=options.root||DEFAULT_ROOT,codeRoot=options.codeRoot||DEFAULT_ROOT;
   const cfg=config(root);
-  if(cfg.enabled!==true||cfg.qq_enabled!==true) return {disabled:true,memories:[],elapsed_ms:Date.now()-start};
+  if(cfg.enabled!==true||cfg.qq_enabled!==true||!optionalEnabled(root,'qq')) return {disabled:true,memories:[],elapsed_ms:Date.now()-start};
   try{
     const data=prepared.inbox, identity=prepared.sender_identity;
     const scope=scopeFor(data,identity);
@@ -51,7 +52,7 @@ export function enhance(prepared,options={}){
 export function enqueueLearning(bridgeDir,inboxFile,options={}){
   const root=options.root||DEFAULT_ROOT,codeRoot=options.codeRoot||DEFAULT_ROOT;
   const cfg=config(root);
-  if(cfg.enabled!==true||cfg.qq_enabled!==true||cfg.modules?.input!==true) return {ok:false,disabled:true};
+  if(cfg.enabled!==true||cfg.qq_enabled!==true||cfg.modules?.input!==true||!optionalEnabled(root,'qq')) return {ok:false,disabled:true};
   try{
     if(typeof inboxFile!=='string'||!inboxFile) throw Error('invalid_ref');
     if(isAbsolute(inboxFile)){

@@ -1,0 +1,195 @@
+{
+  "schema": "companion-plugin-catalog-v1",
+  "default_selection": [],
+  "plugins": [
+    {
+      "id": "social-reading",
+      "name": "阅读与成长",
+      "kind": "runtime",
+      "requires": [
+        "browser",
+        "approved_sources"
+      ],
+      "data": "brain.sqlite: sr_*; original library documents",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "life-camera",
+      "name": "生活相机",
+      "kind": "runtime",
+      "requires": [
+        "reference_image_generation",
+        "private_assets",
+        "image_sender"
+      ],
+      "data": "brain.sqlite: lc_*; approved references; no job replay",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "mi-fitness",
+      "name": "睡眠与运动",
+      "kind": "runtime",
+      "requires": [
+        "owner_login",
+        "restricted_health_scope"
+      ],
+      "data": "authorized conversational summaries only; no raw health store or credentials",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "bookkeeping",
+      "name": "记账中心",
+      "kind": "host_adapter",
+      "requires": [
+        "private_space",
+        "native_database",
+        "export_action"
+      ],
+      "data": "host-native JSON snapshot; no duplicate active ledger",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "memes",
+      "name": "梗与表达",
+      "kind": "runtime",
+      "requires": [
+        "public_http_for_weekly_sync"
+      ],
+      "data": "brain.sqlite: ct_meme_*; expression_settings",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "stickers",
+      "name": "表情包",
+      "kind": "integration_adapter",
+      "requires": [
+        "licensed_images",
+        "reply_driver",
+        "image_sender"
+      ],
+      "data": "private image catalogue and decision/send ledger; no replay",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "dashboard",
+      "name": "离线面板",
+      "kind": "runtime",
+      "requires": [
+        "private_html_delivery"
+      ],
+      "data": "derived HTML excluded; approved private artwork optional",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "home-space",
+      "name": "3D小屋",
+      "kind": "integration_adapter",
+      "requires": [
+        "private_space",
+        "state_actions",
+        "private_asset_storage"
+      ],
+      "data": "approved GLB/artwork and host projection; old bindings inactive",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "github-vault",
+      "name": "GitHub私库备份",
+      "kind": "integration_adapter",
+      "requires": [
+        "private_repository",
+        "repo_scoped_authorization"
+      ],
+      "data": "native core and explicitly approved plugin snapshots; no credentials",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "qq",
+      "name": "QQ渠道",
+      "kind": "integration_adapter",
+      "requires": [
+        "channel_transport",
+        "verified_identity",
+        "native_receipts"
+      ],
+      "data": "channel configuration and receipt ledger; credentials excluded",
+      "status": "available",
+      "auto_enable": false
+    },
+    {
+      "id": "wechat",
+      "name": "微信渠道",
+      "kind": "host_contract",
+      "requires": [
+        "host_owned_wechat_implementation_not_shipped"
+      ],
+      "data": "channel configuration and receipt ledger; credentials excluded",
+      "status": "experimental",
+      "auto_enable": false
+    },
+    {
+      "id": "agenda",
+      "name": "用户行程",
+      "kind": "planned",
+      "requires": [
+        "host_native_application_source"
+      ],
+      "data": "not shipped",
+      "status": "planned",
+      "auto_enable": false
+    },
+    {
+      "id": "recruitment",
+      "name": "招聘管理",
+      "kind": "planned",
+      "requires": [
+        "host_native_application_source"
+      ],
+      "data": "not shipped",
+      "status": "planned",
+      "auto_enable": false
+    },
+    {
+      "id": "mail",
+      "name": "邮件",
+      "kind": "planned",
+      "requires": [
+        "mail_connector"
+      ],
+      "data": "not shipped",
+      "status": "planned",
+      "auto_enable": false
+    },
+    {
+      "id": "douyin",
+      "name": "抖音阅读",
+      "kind": "planned",
+      "requires": [
+        "browser_video_capability"
+      ],
+      "data": "not shipped",
+      "status": "planned",
+      "auto_enable": false
+    },
+    {
+      "id": "bilibili",
+      "name": "B站阅读",
+      "kind": "planned",
+      "requires": [
+        "browser_video_capability"
+      ],
+      "data": "not shipped",
+      "status": "planned",
+      "auto_enable": false
+    }
+  ]
+}

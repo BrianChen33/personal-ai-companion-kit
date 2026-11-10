@@ -1,0 +1,11 @@
+{
+  "id": "github-vault",
+  "name": "github-vault",
+  "version": "0.1.0",
+  "api": 1,
+  "context_mode": "none",
+  "files": {
+    "README.md": "6983a1846fa16311f15c6e09c11eef1a5743e901f1d3569edf78c00d948bdce9",
+    "__init__.py": "425c9765d7e1b3efeec5b7aabdf121279397e637362ae25adec2893b193406d6"
+  }
+}

@@ -1,8 +1,8 @@
 # 给部署 Agent 的分阶段手册
 
-本文件是**当前安装顺序的唯一详细入口**。从 [README](README.md) 接收用户目标后，按需读取下面对应阶段与模块文档，不把整套手册放进日常回复上下文。适用 Kit 0.16.0 / runtime 2.11.1；版本以同一 checkout 的 [发布清单](docs/releases/0.16.0.json) 为准。
+本文件是**当前安装顺序的唯一详细入口**。从 [README](README.md) 接收用户目标后，按需读取下面对应阶段与模块文档，不把整套手册放进日常回复上下文。适用 Kit 0.17.0 / runtime 2.11.2；版本以同一 checkout 的 [发布清单](docs/releases/0.17.0.json) 为准。
 
-先确认新建、升级还是继承。每完成一个阶段，记录已完成步骤、真实绑定和缺口；中断后读回现状继续，不重建已有数据库和任务。这是安装工作记录约定，尚无自动安装向导或检查点执行器。
+先确认新建、升级还是继承。每完成一个阶段，记录已完成步骤、真实绑定和缺口；中断后读回现状继续，不重建已有数据库和任务。setup 提供本地准备检查点；宿主接线与任务仍须逐项真实读回。
 
 日常只保留 [CURRENT_RULES](docs/CURRENT_RULES.md) 中的短入口、当前人格/状态与相关上下文。能力范围见 [CAPABILITIES](docs/CAPABILITIES.md)，全部专题入口见 [文档导航](docs/README.md)。历史变更见 [CHANGELOG](CHANGELOG.md)，不从历史拼接操作规则。
 
@@ -41,10 +41,12 @@ https://github.com/BrianChen33/personal-ai-companion-kit
    不重放情绪、交易、提醒或历史消息。
 6. 克隆公开代码，建立虚拟环境，执行 python -m pip install .。
    在代码目录外选择私有 STATE，真实数据不进入公开 checkout。
-   新状态执行：python -m personal_bot --root STATE init
+   新状态按 docs/OPTIONAL_INSTALL.md 选择插件，先查看 setup 计划再 --apply；
+   只装核心：python -m personal_bot --root STATE setup --plugins "" --apply
    新目录已配置 companion_v2，但总功能初始停用。旧目录先检查，需升级时按指南
    明确执行 companion-upgrade；不重新 init 覆盖数据、不整库清空。
-   确认人格和配置后：python -m personal_bot --root STATE enable
+   若继承，先按 docs/INHERITANCE.md 完成停用暂存与宿主重绑，不能直接启用。
+   新建且确认人格和配置后：python -m personal_bot --root STATE enable
    然后：python -m personal_bot --root STATE doctor
    向量不是前置条件。资源足够且我选择后，安装 .[embeddings] 并使用固定模型常驻服务；
    不逐消息冷加载、不把全部记忆塞入提示词。

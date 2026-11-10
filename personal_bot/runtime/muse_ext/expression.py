@@ -10,6 +10,10 @@ RNG=random.SystemRandom()
 
 
 def dispatch(b,q):
+    # Keep receipt reconciliation available; never revive a historical attachment.
+    from muse_ext.capabilities import enabled
+    if q.get('action','plan') != 'finish' and not enabled(b, 'stickers'):
+        return dict(ok=False,error='plugin_disabled',plugin='stickers')
     policy=dict(DEFAULT)
     file=b.root/'expression-policy.json'
     if file.is_file(): policy.update(json.loads(file.read_text(encoding='utf-8')))

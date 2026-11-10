@@ -3,6 +3,8 @@ import {readFileSync,writeFileSync,mkdirSync,renameSync,existsSync,lstatSync,ope
 import {join} from 'node:path';
 import {createHash,randomInt,randomUUID} from 'node:crypto';
 import {setPaths,getDecision,saveDecision,settleDecision} from './sticker_decision.mjs';
+import {optionalEnabled} from './plugin_profile.mjs';
+import {resolveHostRuntime} from './host_runtime.mjs';
 
 const WINDOW=3600000;
 function acquire(path){
@@ -38,6 +40,8 @@ function localFile(dir,item){
   }catch{return null;}
 }
 export function prepareMedia(root,turnId,{query='',emotion=''}={}){
+  if(!optionalEnabled(resolveHostRuntime(root).brainRoot,'stickers'))
+    return {ok:true,status:'plugin_disabled',sampled:false};
   const dir=setup(root),decision=getDecision('main',turnId);
   if(!decision)return {ok:false,error:'decision_required'};
   if(!decision.sampled)return {ok:true,status:'not_sampled'};

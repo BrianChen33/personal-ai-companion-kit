@@ -4,6 +4,7 @@ import {join,dirname,basename} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {spawnSync} from 'node:child_process';
 import {scopeFor} from './qq-adapter.mjs';
+import {optionalEnabled} from './plugin_profile.mjs';
 
 const DEFAULT_ROOT=dirname(fileURLToPath(import.meta.url));
 
@@ -12,7 +13,7 @@ export function drainLearning(options={}){
  const python=options.python||(process.platform==='win32'?'python':'python3');
  let cfg;
  try{cfg=JSON.parse(readFileSync(join(root,'config.json'),'utf8'));}catch{return {ok:false,disabled:true};}
- if(cfg.enabled!==true||cfg.qq_enabled!==true||cfg.modules?.input!==true) return {ok:true,disabled:true,learned:0};
+ if(cfg.enabled!==true||cfg.qq_enabled!==true||cfg.modules?.input!==true||!optionalEnabled(root,'qq')) return {ok:true,disabled:true,learned:0};
  const queue=join(root,'state','learning');
  if(!existsSync(queue)) return {ok:true,learned:0,failed:0};
  let learned=0,failed=0;

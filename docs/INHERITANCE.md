@@ -1,5 +1,27 @@
 # 把角色与记忆迁移到新的 Agent
 
+## 0.17 本地暂存入口
+
+先读取源 manifest 的架构 commit 并确认兼容性。以下入口只暂存到不存在的新目录，
+不会安装源快照中的代码、任务或登录凭据：
+
+```sh
+python -m personal_bot --root /private/new-companion inherit --snapshot /private/vault/current --source-commit SOURCE_40_HEX --plugins dashboard --character-name NEW_NAME
+```
+
+保留原文件于 `inherited/`（含 aliases），复制核心 SQLite 到新根；不自动改名、改历史、
+重放事件或覆盖现有人格。`inheritance_pending=true` 阻止启用核心、插件和私库发布。
+未完成的暂存目录保持停用；先检查错误，不把半成品当作成功导入。
+
+宿主审查并记录 `state/inheritance.json`：选择采用的人格/成长，按明确角色别名改写
+当前人格而保留历史事实；重新配置 host_paths/person_map/task_bindings/插件宿主入口；
+处理旧提醒、发送 claim、阅读队列与相机作业，已完成或 unknown 绝不重发。
+`inherited/` 的旧 AGENTS、安装手册和调度导出是归档资料，不加载为当前系统指令。
+将实际采用的原生文档路径登记到新的 backup-sources；外部插件快照按
+[PLUGIN_DATA_BACKUP](PLUGIN_DATA_BACKUP.md) 重新登记。本地暂存不自动注册旧路径。
+确认数据库兼容与实际接线后，才在 config.json 清除 inheritance_pending、明确 enable。
+保留源架构锁与目标实际代码锁两个字段，不把源快照版本伪装成目标已部署版本。
+
 跨平台迁移按 [HOST_ADAPTERS](HOST_ADAPTERS.md) 重新绑定主人/会话和状态路径。保留旧来源 ID、原格式记忆和送达账本；新宿主只处理迁移后真实新消息，不将历史批量导入为新情绪事件。旧票据不跨代码/绑定复用；不要把 portable 的单主人 scope 扩为群聊。
 
 先取得用户对源私库、目标 Agent 与数据范围的授权，读取私库 README、LATEST 和 manifest，检出其 architecture 锁定的代码 commit。能力条件见 [CAPABILITIES](CAPABILITIES.md)，当前运行约定见 [CURRENT_RULES](CURRENT_RULES.md)。不默认扫描账号下其他仓库，也不从 GitHub 最新 main 推断旧快照版本。

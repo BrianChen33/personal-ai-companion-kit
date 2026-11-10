@@ -1,0 +1,241 @@
+{
+  "release": "0.17.0",
+  "runtime": "2.11.2",
+  "base_architecture": "7f3a859524bda1cc40f736a8963f5df4f6596c4a",
+  "scope": "managed optional installation, bundled plugins and disabled native inheritance",
+  "deployment": "public release; no automatic live host upgrade",
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "19e013a1bcc9818f1be012fe183ef966dcfcb4a60f76d5dc90895142967851e0"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "99c995dd0f69fd9d5464cb2e347ad83a7729c27a2d0487733dbd5bd6f4860444"
+    },
+    {
+      "path": "MANIFEST.in",
+      "sha256": "070be842e3f6cfd32bd8222324d1915dfcd6039b7a417e1b65da1a0218e72489"
+    },
+    {
+      "path": "README.md",
+      "sha256": "011b9360800c5be5b67a2c5a1874f7bad1dd5cc8133d3c100734d27f18d8b959"
+    },
+    {
+      "path": "docs/CAPABILITIES.md",
+      "sha256": "c7449ec8e13ab9684aa1944bcf11f47d28ccda9eeb6a8750dac2c510e809f394"
+    },
+    {
+      "path": "docs/DOT_VALIDATION.md",
+      "sha256": "b516a6dc6edacd3e00b294b9f8dc09b6abace0cfa854184fe64d135b301cb25d"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "067d3572d4e9a80e09acf0034951c0dd38a808824160358b9d63dd18b92476f3"
+    },
+    {
+      "path": "docs/OPTIONAL_INSTALL.md",
+      "sha256": "22ce0f4594fe4038cbd1c10c83c287f6ad145420c13326a106c7748b1be425b1"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-11-optional-install.md",
+      "sha256": "6e07db28f8f53db24150c6c2772ddcc1f76ff80ab52a76db4814654016f2c32e"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "4f1e84e879b2b86539df61e272355354a9afae7694e3b587cbfc3446611ef0d4"
+    },
+    {
+      "path": "personal_bot/cli.py",
+      "sha256": "8bac9bbeef99f40267197ff5fc11bb475b067e27e1ae700271e9425347f8707a"
+    },
+    {
+      "path": "personal_bot/inheritance.py",
+      "sha256": "ee77e8c9866de1f280f035b2330994c48c4a09062a89f9b1a068cfba2aef2f67"
+    },
+    {
+      "path": "personal_bot/onboarding.py",
+      "sha256": "93db362e86acfea76402e0199583cb53752e1dcaa76ca06889ddbaadc8a93dae"
+    },
+    {
+      "path": "personal_bot/plugin_catalog.json",
+      "sha256": "328b4e6cb7a61b95aefc65ff46170f5cf55583a65d6914b9b2891db8c4ab3014"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "81be3cc90a2a113ff8cb5352d8f23c43349013c281c7c8371056f68b6436f086"
+    },
+    {
+      "path": "personal_bot/runtime/brain.py",
+      "sha256": "20b105f2aeffffb55739667e02112bb1010b43626a38ab07a7012e5630ac5c37"
+    },
+    {
+      "path": "personal_bot/runtime/learn.mjs",
+      "sha256": "c40ed1eb14fdf303538ed5a73db57374a8d73719e304c4ad368a0ed0035e1a24"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/bundled_capabilities.py",
+      "sha256": "cc84ab359f1c00ed911c8ad911d20f10a9d3be3b770279f7a91b0c87b61cd24b"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/capabilities.py",
+      "sha256": "4fb88b82fd11ca92b8307f7351380e7de5d2fd2af20709dbf1b58df33d5d7a5d"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/companion.py",
+      "sha256": "2f99ac4eed145965ed50b94471c060eb7e65c00e2c304accc34ab611073c8bd6"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/expression.py",
+      "sha256": "1c6cc5dff32b5789c4b40ee866e6c05145c37c6631a6af5a620bb7ba6ccc1995"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/home_space.py",
+      "sha256": "a67b35c8d7872115ba219621c0a0d133d5c50e2eb65f6a8fbca5c2e3da077449"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/main_commit.py",
+      "sha256": "3324f890bbafe8c5a2b68519d3e09ce6de3a0f0784d425661d087513c943f4cc"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/meme_sync.py",
+      "sha256": "198a84093206665cf84ac1e8d0eba6af1234f88342c5dd416cb0e323ff9f83f0"
+    },
+    {
+      "path": "personal_bot/runtime/muse_ext/plugins.py",
+      "sha256": "b07d311a322a1b282e19f702e8e8f9cea1750398badf819e2bf19804d19c0771"
+    },
+    {
+      "path": "personal_bot/runtime/plugin_profile.mjs",
+      "sha256": "b71adaad005a5d6c9923422a1d1593da0b786426c2fd1afe26a40accc8baa087"
+    },
+    {
+      "path": "personal_bot/runtime/qq-adapter.mjs",
+      "sha256": "c5c66ba543d7a4a20a6e38bd385685545b37114af68bf90640188e1e3c852fca"
+    },
+    {
+      "path": "personal_bot/runtime/reply_driver.mjs",
+      "sha256": "cc548c437aaa5c40f8c88752075482743597308717f05baafff83b1b7841fc8b"
+    },
+    {
+      "path": "personal_bot/runtime/reply_media.mjs",
+      "sha256": "7e69cd30efd853f8c5201271d3368ed2236856ce96815db3fa791f34b319e093"
+    },
+    {
+      "path": "personal_bot/runtime/sticker_main.mjs",
+      "sha256": "805fb252d43657b50d6ae71f1eb9c683231ec1b1fd29bacda98ff5993dc858ba"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "dc0ae6cb4b72d51528e27eb663136c9d93fb5ecac29de7982b0fe6c2f158a993"
+    },
+    {
+      "path": "plugins/bookkeeping/manifest.json",
+      "sha256": "5aba6ef1513d75fa1f61cd775e48aa59bc10614452a08b38b3b79dabc3462e83"
+    },
+    {
+      "path": "plugins/dashboard/README.md",
+      "sha256": "fdce7675b2491f924253a254ae482647b39153889ae38b4aeb47b0a1d2919ae4"
+    },
+    {
+      "path": "plugins/dashboard/__init__.py",
+      "sha256": "da5354cd4549e2579618e83a0ff6a12a2823f776e787155c5b2034ece5b09076"
+    },
+    {
+      "path": "plugins/dashboard/manifest.json",
+      "sha256": "5e7ae33fdc6a8b49538a5f7d35f424b37a5e7e422f16e71cb6ef1c19f0966e07"
+    },
+    {
+      "path": "plugins/github-vault/README.md",
+      "sha256": "6983a1846fa16311f15c6e09c11eef1a5743e901f1d3569edf78c00d948bdce9"
+    },
+    {
+      "path": "plugins/github-vault/__init__.py",
+      "sha256": "425c9765d7e1b3efeec5b7aabdf121279397e637362ae25adec2893b193406d6"
+    },
+    {
+      "path": "plugins/github-vault/manifest.json",
+      "sha256": "6599c10c80ae571dfa5f0d001f41c6091545310a08b590a7e2dd18ed8a6526af"
+    },
+    {
+      "path": "plugins/home-space/README.md",
+      "sha256": "ccb62a84130d6bd0b97b5b9ccb4850537a37d28572fc5c0e2894a7aec4b10fdf"
+    },
+    {
+      "path": "plugins/home-space/__init__.py",
+      "sha256": "7b067350445428d6d604ef7df1db0e48fd1f2fccf452fa9c4c796658d65c121f"
+    },
+    {
+      "path": "plugins/home-space/manifest.json",
+      "sha256": "5eba5a4f3bbd6a6164d8dde85c64b5a91ec7aff76da195a902a78fbecc3f7663"
+    },
+    {
+      "path": "plugins/memes/README.md",
+      "sha256": "173c039ad9bddb688297254d7ea57efccd35f81d8dd3c810861f6855df56b551"
+    },
+    {
+      "path": "plugins/memes/__init__.py",
+      "sha256": "81ee070c1173578743b235596b6dfda4f974002b43d68c58b99d89f4292cc0ea"
+    },
+    {
+      "path": "plugins/memes/manifest.json",
+      "sha256": "c1bae14e5c4bf1e251845a9784f815eef5e0f7012217cea426bf8d5e98df8ec4"
+    },
+    {
+      "path": "plugins/qq/README.md",
+      "sha256": "ebdb562459c725d535bfcccd5de015f671b739056c6855386bd8b378551eb798"
+    },
+    {
+      "path": "plugins/qq/__init__.py",
+      "sha256": "5e3418c58d13c48d92173ccd1d064c3db786b2abd3ee3ea757e4772a92b9b314"
+    },
+    {
+      "path": "plugins/qq/manifest.json",
+      "sha256": "81afe5b7466cf70ebbec84ce2f0fd2aca56ea1bc2785cfef50c834867fbb045d"
+    },
+    {
+      "path": "plugins/stickers/README.md",
+      "sha256": "f0ead6cb5041edfdb20d948fe4e80c46b295717a4c3fdcb84b4c6c12505e8101"
+    },
+    {
+      "path": "plugins/stickers/__init__.py",
+      "sha256": "85c25463d45458eb89892dc0e821165280e4eedab358164b38cd47a520932b7c"
+    },
+    {
+      "path": "plugins/stickers/manifest.json",
+      "sha256": "53ee9c184de8001429860fa6bb8edbedb7ee219c798e494365811c111604b8dd"
+    },
+    {
+      "path": "plugins/wechat/README.md",
+      "sha256": "e9d1d165a124fdf8626930ad51e5d66def706a149a81741305b4f9390bd1c9e9"
+    },
+    {
+      "path": "plugins/wechat/__init__.py",
+      "sha256": "2463a02bae7a99e0a841e5f8d8b349c3213023f9843c37ae2aada68192d877d5"
+    },
+    {
+      "path": "plugins/wechat/manifest.json",
+      "sha256": "d68af96e83a8fbe1de1536102def4ec49a9c3cc09d809dd70062ae55754f802f"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "fce7518b98751c98b4f25a0126ce080343eb6ac2670d80e53c90502dc4e8fb82"
+    },
+    {
+      "path": "setup.py",
+      "sha256": "a559ebb2943289a121f50cb0923b8fa5a9272a4a01c4785de06751b9b5a17b9b"
+    },
+    {
+      "path": "tests/test_inheritance.py",
+      "sha256": "223828240b3c4118370c5047e1f9ecf2197ed2dd8c6b188378647880e81f35cc"
+    },
+    {
+      "path": "tests/test_setup.py",
+      "sha256": "0c98bb16948b6182672145c32a53edc68e1c560f4b9281cda13c88ecfc64c9e2"
+    },
+    {
+      "path": "tools/check_wheel.py",
+      "sha256": "30164a4d06b2318be84deb0cfaa952440eaedfd208d0ec6bfa0bf0b50f43b786"
+    }
+  ]
+}

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "personal-ai-companion-kit"
-version = "0.16.0"
+version = "0.17.0"
 description = "Six-layer personal AI companions: memory, model-appraised emotion, virtual life, expression and private inheritance"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,6 +23,6 @@ include = ["memory_bridge*", "personal_bot*"]
 exclude = ["personal_bot.runtime.tests*"]
 
 [tool.setuptools.package-data]
-personal_bot = ["provenance.json"]
+personal_bot = ["provenance.json", "plugin_catalog.json"]
 "personal_bot.runtime" = ["*.json", "*.mjs", "*.txt"]
 "personal_bot.runtime.muse_ext" = ["*.html"]

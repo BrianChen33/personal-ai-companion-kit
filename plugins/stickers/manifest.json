@@ -1,0 +1,11 @@
+{
+  "id": "stickers",
+  "name": "stickers",
+  "version": "0.1.0",
+  "api": 1,
+  "context_mode": "none",
+  "files": {
+    "README.md": "f0ead6cb5041edfdb20d948fe4e80c46b295717a4c3fdcb84b4c6c12505e8101",
+    "__init__.py": "85c25463d45458eb89892dc0e821165280e4eedab358164b38cd47a520932b7c"
+  }
+}

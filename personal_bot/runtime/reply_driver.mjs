@@ -33,7 +33,7 @@ function atomic(path,value){
   renameSync(temporary,path);
 }
 function fingerprint(){
-  const js=['main_native_entry.mjs','sticker_main.mjs','reply_driver.mjs','reply_media.mjs','main_entry_guard.mjs','sticker_decision.mjs','host_entry.mjs','host_message_adapter.mjs','host_runtime.mjs'].map(name=>join(HERE,name));
+  const js=['main_native_entry.mjs','sticker_main.mjs','reply_driver.mjs','reply_media.mjs','main_entry_guard.mjs','sticker_decision.mjs','host_entry.mjs','host_message_adapter.mjs','host_runtime.mjs','plugin_profile.mjs'].map(name=>join(HERE,name));
   const adjacent=join(dirname(brainScript),'muse_ext');
   const modules=existsSync(adjacent)?adjacent:join(HERE,'muse_ext');
   const py=[brainScript,...readdirSync(modules).filter(name=>name.endsWith('.py')).sort().map(name=>join(modules,name))];
