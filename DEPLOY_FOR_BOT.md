@@ -1,3 +1,12 @@
+0.15.0 adds optional bookkeeping0.1.0 host binding and explicit private plugin
+snapshots. Read plugins/bookkeeping/README.md and docs/PLUGIN_DATA_BACKUP.md.
+The accepted Space remains the only live ledger; public structure blueprints are
+not full original app source. Existing daily backup first exports a consistent
+host snapshot, then registers and publishes it. Do not add a periodic ledger copy,
+reseed live data, restore cancelled FX cron, or replay transactions on inheritance.
+README now separates system overview from staged Agent deployment instructions.
+The full six-layer-core/plugin split in CORE_PLUGINS_PROPOSAL is proposal only.
+
 0.14.4/frontend0.2.8/social-reading0.4.1 splits reading detail into vocabulary,
 live continuations and source settings. Continuations expire after 24 actual hours
 without reading. Install the pinned optional plugin and call expire_continuations

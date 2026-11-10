@@ -117,6 +117,76 @@ def camera_reference_sources(root, database=None):
     return selected
 
 
+def plugin_snapshot_sources(catalog, now=None):
+    """Explicit frozen exports only; never run a plugin, a shell, or a network request.
+
+    Host-owned exporters obtain consistent native data before calling the vault.
+    This catalogue is private configuration, not permission from an imported file.
+    """
+    now = time.time() if now is None else now
+    entries = catalog.get('plugin_snapshots', [])
+    if not isinstance(entries, list) or len(entries) > 32:
+        raise ValueError('invalid_plugin_snapshots')
+    selected, metadata, ids, total = {}, [], set(), 0
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise ValueError('invalid_plugin_snapshot_entry')
+        if entry.get('enabled') is not True:
+            continue
+        pid = entry.get('plugin', '')
+        if (not isinstance(pid, str) or not re.fullmatch(r'[a-z][a-z0-9-]{1,40}', pid)
+                or pid in ids or entry.get('scope') != 'owner-private'
+                or entry.get('owner_approved') is not True):
+            raise ValueError('plugin_backup_requires_unique_owner_approved_scope')
+        ids.add(pid)
+        # Existing raw-health exclusion is not broadened by the plugin mechanism.
+        if pid == 'mi-fitness':
+            raise ValueError('raw_health_plugin_backup_excluded')
+        version, schema = entry.get('version'), entry.get('data_schema')
+        if not all(isinstance(x, str) and 0 < len(x) <= 120 for x in (version, schema)):
+            raise ValueError('plugin_backup_version_and_schema_required')
+        revision = entry.get('source_revision')
+        if not isinstance(revision, str) or not 0 < len(revision) <= 200:
+            raise ValueError('plugin_backup_source_revision_required')
+        captured = entry.get('captured_at')
+        if (isinstance(captured, bool) or not isinstance(captured, (float, int))
+                or not 0 <= now - captured <= 900):
+            raise ValueError('plugin_snapshot_missing_or_stale:' + pid)
+        files = entry.get('files')
+        if not isinstance(files, list) or not 1 <= len(files) <= 32:
+            raise ValueError('invalid_plugin_snapshot_files')
+        names = []
+        for item in files:
+            if not isinstance(item, dict) or not all(isinstance(item.get(k), str) for k in ('name', 'path')):
+                raise ValueError('invalid_plugin_snapshot_file')
+            name = 'plugins/' + pid + '/' + safe_name(item['name'])
+            path = safe_source(item['path'])
+            if name in selected or not path.is_file():
+                raise ValueError('plugin_snapshot_file_missing_or_duplicate:' + pid)
+            if path.suffix.lower() not in ('.json', '.jsonl', '.sqlite', '.db', '.csv', '.md', '.txt', '.png', '.jpg', '.webp', '.glb'):
+                raise ValueError('plugin_snapshot_format_not_allowed')
+            total += path.stat().st_size
+            if total > 64 * 1024 * 1024:
+                raise ValueError('plugin_snapshots_exceed_64MiB')
+            if path.suffix.lower() == '.json':
+                json.loads(path.read_text(encoding='utf-8'))
+            if path.suffix.lower() in ('.sqlite', '.db'):
+                # Caller must export/close the DB first, not copy a live WAL DB.
+                if any(Path(str(path) + suffix).exists() for suffix in ('-wal', '-journal')):
+                    raise ValueError('plugin_database_requires_consistent_closed_export')
+                with closing(sqlite3.connect(path.resolve().as_uri() + '?mode=ro', uri=True)) as db:
+                    if db.execute('PRAGMA quick_check').fetchone()[0] != 'ok':
+                        raise ValueError('plugin_snapshot_database_invalid')
+            selected[name] = path
+            names.append(name)
+        metadata.append(dict(id=pid, version=version, data_schema=schema,
+                             source_revision=revision,
+                             captured_at=captured, files=names, scope='owner-private',
+                             restore='install_matching_plugin_then_import_into_inactive_target',
+                             auto_activate=False))
+    return selected, metadata
+
+
 def export_snapshot(root,destination,architecture_ref,day=None,bootstrap=False,identity_file=None,architecture_repo='https://github.com/BrianChen33/personal-ai-companion-kit'):
     root=safe_source(root).resolve(); dest=Path(destination).resolve()
     if not re.fullmatch(r'[0-9a-f]{40}',architecture_ref): raise ValueError('exact_architecture_commit_required')
@@ -125,7 +195,7 @@ def export_snapshot(root,destination,architecture_ref,day=None,bootstrap=False,i
     proof=summary_proof(root,day,bootstrap)
     registry=root/'backup-sources.json'
     catalog=json.loads(registry.read_text(encoding='utf-8')) if registry.is_file() else {'sources':[],'trees':[]}
-    selected={}
+    selected, plugin_metadata = plugin_snapshot_sources(catalog)
     for entry in catalog.get('sources',[]):
         name=safe_name(entry['name'])
         if not name.startswith(('native/','scheduler/')): continue
@@ -179,7 +249,8 @@ def export_snapshot(root,destination,architecture_ref,day=None,bootstrap=False,i
         out.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,out);os.chmod(out,0o600)
         if sha(out)!=signature: raise ValueError('source_changed_retry_later')
         files.append({'path':name,'sha256':signature,'bytes':p.stat().st_size,
-                      'category':'operational_reference' if name.startswith(('operations/','scheduler/')) else 'native_memory_or_persona'})
+                      'category':('plugin_private_data' if name.startswith('plugins/') else
+                                  'operational_reference' if name.startswith(('operations/','scheduler/')) else 'native_memory_or_persona')})
     if any(sha(p)!=before[name] for name,p in selected.items()): raise ValueError('source_changed_retry_later')
     keep={x['path'] for x in files}
     if old:
@@ -189,8 +260,9 @@ def export_snapshot(root,destination,architecture_ref,day=None,bootstrap=False,i
                 if p.is_symlink() or not p.resolve().is_relative_to(dest): raise ValueError('unsafe_stale_file')
                 p.unlink()
     manifest={'schema':SCHEMA,'created_at':time.time(),'summary_proof':proof,'files':files,'aliases':aliases,
-              'architecture':{'repository':architecture_repo,'commit':architecture_ref,'package':'personal-ai-companion-kit','version':'0.14.4'},
-              'inheritance':{'default':['native_memory_or_persona','cognitive_database'],'never_auto_activate':['operational_reference'],
+              'plugins':plugin_metadata,
+              'architecture':{'repository':architecture_repo,'commit':architecture_ref,'package':'personal-ai-companion-kit','version':'0.15.0'},
+              'inheritance':{'default':['native_memory_or_persona','cognitive_database'],'never_auto_activate':['operational_reference','plugin_private_data'],
                              'excluded':['credentials','SSH keys','channel login state','runtime code','models','generated panels','completed learning queue files']}}
     write_json(marker,manifest)
     return manifest

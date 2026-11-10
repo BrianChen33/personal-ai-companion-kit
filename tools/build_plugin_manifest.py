@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--plugin', choices=['social-reading', 'life-camera'], default='social-reading')
+    parser.add_argument('--plugin', choices=['social-reading', 'life-camera', 'bookkeeping'], default='social-reading')
     args = parser.parse_args()
     folder = ROOT / 'plugins' / args.plugin
     paths = sorted(p for p in folder.iterdir() if p.is_file() and p.name != 'manifest.json')
@@ -19,6 +19,9 @@ def main():
                 source='https://github.com/aa1355721445-lgtm/dsh-image-studio' if camera else 'https://github.com/referiw/dsh-plugin-tieba',
                 reference_commit='fbd8f662f29546c2574a21f8c17ae1bc68c9498a' if camera else '568cc4d75dc92984ec3cf625241e47a7f9c244d4',
                 files={p.name: hashlib.sha256(p.read_bytes().replace(b'\r\n', b'\n')).hexdigest() for p in paths})
+    if args.plugin == 'bookkeeping':
+        data.update(name='记账中心', version='0.1.0', source='owner-approved-host-native-space',
+                    reference_commit=None)
     (folder / 'manifest.json').write_bytes((json.dumps(data, ensure_ascii=False, indent=2) + '\n').encode())
     print('Sealed', args.plugin, ':', len(paths), 'files; optional, not bundled into the core wheel.')
 

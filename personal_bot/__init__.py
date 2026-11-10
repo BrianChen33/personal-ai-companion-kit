@@ -1,2 +1,2 @@
 """Portable local personal-bot memory runtime."""
-__version__ = "0.14.4"
+__version__ = "0.15.0"

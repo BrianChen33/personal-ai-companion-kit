@@ -1,0 +1,120 @@
+{
+  "release": "0.15.0",
+  "runtime": "2.11.1",
+  "home_frontend": "0.2.8",
+  "life_camera_version": "0.3.0",
+  "social_reading_version": "0.4.1",
+  "mi_fitness_version": "0.1.0",
+  "bookkeeping_version": "0.1.0",
+  "base_architecture": "61b60c39d80f1b66987c05c81fb7d7666566154c",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "bc7eefe28e2fbb8f8e1aa33d71c1585812688a2051823f9fd9e0a9fd37e31ac1"
+    },
+    {
+      "path": "DEPLOY_FOR_BOT.md",
+      "sha256": "bf1b263cff289f260200403d617cff5f5ef357928ad09903a191a2e74582cf78"
+    },
+    {
+      "path": "README.md",
+      "sha256": "07700d179a082350e6a411665eb76b00735eace1117c41f19894e3d7f39c9a44"
+    },
+    {
+      "path": "docs/CORE_PLUGINS_PROPOSAL.md",
+      "sha256": "25df706dc2dac28c2b255b8c7dbe6820f24575456e29f96cd01af48745873bfa"
+    },
+    {
+      "path": "docs/GITHUB_VAULT.md",
+      "sha256": "76ceb5d501e55777680d9b2e1a35767035d29410f47e24c2b80e3d4e8851067a"
+    },
+    {
+      "path": "docs/INHERITANCE.md",
+      "sha256": "3d518762bd9bc444d428e2f16f28d129e6c67aed1ef9c28b8ff4f3c139a92ecb"
+    },
+    {
+      "path": "docs/PLUGIN_DATA_BACKUP.md",
+      "sha256": "5a3638a063e088893c6dddeb3476b944ac41c129a30aed2b738deb21eaf5199b"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-10-bookkeeping-plugin.md",
+      "sha256": "26d028dd7fe5bbfbdf3c625a324b87164768ddf994d89a002dab9712bcdb7d3b"
+    },
+    {
+      "path": "personal_bot/__init__.py",
+      "sha256": "0bfc9eab1603d3b6dd3a4d83b24bc3db985f97d908fea7582dd2fabe8d52a834"
+    },
+    {
+      "path": "personal_bot/provenance.json",
+      "sha256": "7b3831d5aa16ec20daa04f56681befb72f5cd5f15cd3e809be024dd15edec429"
+    },
+    {
+      "path": "personal_bot/vault.py",
+      "sha256": "f1f33cc38ca45e4a593418fe315fa4e0e4ce9c5a961089e32396b6634e7f8a20"
+    },
+    {
+      "path": "plugins/bookkeeping/PROTOCOL.md",
+      "sha256": "e52d27e8d2e3a048aa280d79a5382297affb2c79b48bb6e8953e8763aa9237cc"
+    },
+    {
+      "path": "plugins/bookkeeping/README.md",
+      "sha256": "a7ead2eb6b4f55dcaceaa3b3ffc3539ffad0bf4bdd5b99f787c585161671d37d"
+    },
+    {
+      "path": "plugins/bookkeeping/SPEC.md",
+      "sha256": "773b997a70f980ec41f457338fd583b41dfaba3c76b32c524abf3439455df5be"
+    },
+    {
+      "path": "plugins/bookkeeping/__init__.py",
+      "sha256": "8ccca359c659c9d81c273a09b9ace058f855b11eae37136547b31ca8440e77a0"
+    },
+    {
+      "path": "plugins/bookkeeping/manifest.json",
+      "sha256": "c43523e02911a33a44e978c1e7e2098a72b19069fd68f45960d138d66c163388"
+    },
+    {
+      "path": "plugins/bookkeeping/snapshot.py",
+      "sha256": "07da0558b7f6ab8248d472b95a608a7c96225254c6f192f44a8b62fe56eabf3c"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "e3b48b78d7ad2a592573a591ba064c13315cb5f4c2dbb04da22ea8022de2e75a"
+    },
+    {
+      "path": "tests/test_bookkeeping_plugin.py",
+      "sha256": "2ab13ebd3254c777121998b2fe1288a4db5413afe46c808a80b9f0434b84d7d2"
+    },
+    {
+      "path": "tests/test_bookkeeping_snapshot.py",
+      "sha256": "5e1c768422ae94e03f74307ca50031e93591fb587f0f0f408c933ed28d385a17"
+    },
+    {
+      "path": "tests/test_plugin_snapshots.py",
+      "sha256": "2263290167be2db0ec2547f5681ae98a25869e69201b9e16a3a982bc1a149ec1"
+    },
+    {
+      "path": "tools/build_plugin_manifest.py",
+      "sha256": "8a92483bcca9fe501e671fd9a66fb494987ce4a3069ec2436bb982e062b79ccf"
+    },
+    {
+      "path": "web/bookkeeping-blueprint/CONTRACTS.md",
+      "sha256": "58a2260502a3949b05e1a06bb96c0b539a060cdc088262a5d80a6b1ce34f0dcb"
+    },
+    {
+      "path": "web/bookkeeping-blueprint/README.md",
+      "sha256": "eae4755eed89b83e95b1b68f2439134945ffd99cf817d3faace47200213c4f22"
+    },
+    {
+      "path": "web/bookkeeping-blueprint/dependencies-reference.json",
+      "sha256": "6243785eb4e07b4b2214961cb3b578b2de4f54b4e5e8c557a50554970992e1a7"
+    },
+    {
+      "path": "web/bookkeeping-blueprint/schema.sql",
+      "sha256": "f4a77bae660622a29514df5d952deb9c5c741e25eee9c8b85d9efeb8dd214438"
+    },
+    {
+      "path": "web/bookkeeping-blueprint/schema.ts",
+      "sha256": "9d13100923579c3d9e0f408d17d3e59d699008f055e5cf7ece2a8fdef8b0016b"
+    }
+  ]
+}

@@ -2,6 +2,15 @@
 
 这与旧memory_bridge逐项授权文本交换是不同功能。只有用户明确要求整库私有备份时配置。本模块需要git、OpenSSH、出站HTTPS与仅指定私库可写的本地SSH deploy key；私钥留宿主，不进模型上下文或仓库。
 
+## 0.15.0 插件数据
+
+启用的插件可登记原格式冻结快照，详见 [PLUGIN_DATA_BACKUP.md](PLUGIN_DATA_BACKUP.md)。
+已有 SQLite 插件表只随核心库备份一次；空间数据库由原每日总结流程先调用真实只读导出，
+再登记 plugin_snapshots 并执行本发布器。每份声明附版本、schema、时间、source_revision，
+私库 manifest 将插件数据列为需单独选择的范围，恢复时默认不启用。
+失败或过期不能用旧快照冒充新成功；修复导出后再执行，上一份远端成功备份保持不变。
+发布器不调用空间工具、不创建任务。凭据与原始健康数据等既有排除继续有效。
+
 ## 数据与回执
 
 `python -m personal_bot.vault`使用SQLite Online Backup API导出含WAL已提交状态的一致性`.sqlite`；复制backup-sources.json明确登记的原生人格/记忆/任务文档，按SHA去重并记录aliases；程序/模型/旧回退原件不每日重复复制，只锁定公开架构commit。`.env`、私钥、登录态、敏感凭据路径和明显token拒绝导出；不要把用户家目录当备份树。

@@ -1,0 +1,15 @@
+{
+  "id": "bookkeeping",
+  "name": "记账中心",
+  "version": "0.1.0",
+  "api": 1,
+  "source": "owner-approved-host-native-space",
+  "reference_commit": null,
+  "files": {
+    "__init__.py": "8ccca359c659c9d81c273a09b9ace058f855b11eae37136547b31ca8440e77a0",
+    "PROTOCOL.md": "e52d27e8d2e3a048aa280d79a5382297affb2c79b48bb6e8953e8763aa9237cc",
+    "README.md": "a7ead2eb6b4f55dcaceaa3b3ffc3539ffad0bf4bdd5b99f787c585161671d37d",
+    "snapshot.py": "07da0558b7f6ab8248d472b95a608a7c96225254c6f192f44a8b62fe56eabf3c",
+    "SPEC.md": "773b997a70f980ec41f457338fd583b41dfaba3c76b32c524abf3439455df5be"
+  }
+}

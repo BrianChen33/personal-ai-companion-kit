@@ -1,3 +1,12 @@
+0.15.0 adds optional bookkeeping0.1.0 host binding and explicit private plugin
+snapshots. Read plugins/bookkeeping/README.md and docs/PLUGIN_DATA_BACKUP.md.
+The accepted Space remains the only live ledger; public structure blueprints are
+not full original app source. Existing daily backup first exports a consistent
+host snapshot, then registers and publishes it. Do not add a periodic ledger copy,
+reseed live data, restore cancelled FX cron, or replay transactions on inheritance.
+README now separates system overview from staged Agent deployment instructions.
+The full six-layer-core/plugin split in CORE_PLUGINS_PROPOSAL is proposal only.
+
 0.14.3/frontend0.2.6 accepts direct binary model data with stage-aware errors.
 Preserve host cache and private state relay, transfer existing Blob/ArrayBuffer to
 createRoom.characterData, and retain URL loading for other callers. Sofa defaults,

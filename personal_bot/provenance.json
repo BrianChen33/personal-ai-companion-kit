@@ -880,5 +880,26 @@
       },
       "native": "same-space merge pending"
     }
+  },
+  "bookkeeping_plugin_update": {
+    "release": "0.15.0",
+    "date": "2026-11-10",
+    "runtime": "2.11.1",
+    "plugin_version": "0.1.0",
+    "source": "Owner-authorized accepted Muse bookkeeping conversation and supplied sanitized billing-center-plugin.zip structure diagnostics",
+    "original_app_source_available": false,
+    "portable_changes": [
+      "optional host-native binding without a second ledger or per-reply query",
+      "bounded owner-approved native plugin snapshots in existing private vault",
+      "schema and action blueprint derived from inspection, not verbatim source",
+      "two-part README with staged opt-in deployment and inheritance prompt",
+      "six-layer core/plugin reorganization proposal only"
+    ],
+    "preserved": [
+      "existing live ledger and UI",
+      "manual FX only",
+      "core runtime and other plugin versions",
+      "credentials and raw health exclusions"
+    ]
   }
 }
