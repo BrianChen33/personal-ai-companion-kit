@@ -50,3 +50,12 @@ checkout; no public private data; no claims of unverified host interception.
 - Ruling: retain shared implementations behind explicit registry gates rather than duplicate
   algorithms per plugin; cost is that integration adapters still require host-specific binding.
 - Minor provenance observation resolved before publication; no deferred review findings.
+
+- Target owner confirmed execution in Dot. Fixed-version blank installation passed; native
+  inheritance contains 1116 memories and 482 candidates, nine plugins installed disabled.
+  Target adopted the approved short persona through its official long-term preferences and
+  read it back; no full database/debug-history import into native preferences.
+- Second-host automatic runtime remains blocked by the absence of a verified lightweight
+  writable execution path and pre-reply invocation. Stable sequence mapping is implementable,
+  not a fundamental platform blocker. Native desktop execution is not presented as low latency.
+- Public deployment evidence synchronized without private paths, identities or persona content.
