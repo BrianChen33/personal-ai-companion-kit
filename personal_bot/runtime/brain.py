@@ -24,7 +24,7 @@ except ImportError:
 VERSION = '1.0.0'
 MODULES = ('memory', 'mood', 'life', 'style', 'feedback', 'input')
 KINDS = ('episode', 'fact', 'preference', 'relation', 'reflection', 'skill', 'lesson')
-FEATURES = ('events','time_query','emotion_events','reminders','vector','consolidation','reading')
+FEATURES = ('events','time_query','emotion_events','reminders','vector','consolidation','reading','social_reading')
 
 # Morning batch digest bounds: claim at most this many pendings / chars per
 # round. Unselected pendings stay pending for later rounds (never dropped).

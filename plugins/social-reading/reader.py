@@ -26,7 +26,7 @@ def _plan(b, q):
     continuations.expire(b)
     p = store.settings(b)
     manual = q.get('manual') is True
-    if not b.available('input') or not b.available('memory') or not b.feature('reading'):
+    if not b.available('input') or not b.available('memory') or not b.feature('social_reading'):
         return dict(ok=True, action='disabled_by_core')
     from muse_ext.companion import quiet
     quiet_now = quiet()
@@ -79,8 +79,8 @@ def _plan(b, q):
 
 
 def lease(b, q):
-    if not b.available('input') or not b.available('memory') or not b.feature('reading'):
-        raise ValueError('reading_disabled_by_core')
+    if not b.available('input') or not b.available('memory') or not b.feature('social_reading'):
+        raise ValueError('social_reading_disabled_by_core')
     row = b.db.execute('SELECT * FROM sr_lease WHERE id=?', (q.get('lease_id'),)).fetchone()
     if not row or row['status'] != 'claimed' or time.time() > row['deadline']:
         raise ValueError('invalid_or_expired_reading_lease')

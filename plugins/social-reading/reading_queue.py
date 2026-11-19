@@ -66,8 +66,8 @@ def initialize(b):
 
 
 def enabled(b):
-    if not b.available('input') or not b.available('memory') or not b.feature('reading'):
-        raise ValueError('reading_disabled_by_core')
+    if not b.available('input') or not b.available('memory') or not b.feature('social_reading'):
+        raise ValueError('social_reading_disabled_by_core')
 
 
 def get(b, q):
